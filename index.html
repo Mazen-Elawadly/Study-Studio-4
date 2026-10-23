@@ -1,6 +1,5 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Study Studio</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Study Studio</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <style>
 /* Layout: a header with subject + theme, a tab strip, then each tool as a big dial/readout beside a column of settings. The accent hue follows the active subject. */
@@ -16,6 +15,14 @@
 :root,.hued{
   --accent:hsl(var(--h) var(--acc-s) var(--acc-l));
   --accent-soft:hsl(var(--h) var(--acc-s) var(--acc-l) / var(--acc-soft-a));
+  --dot:hsl(var(--h) var(--acc-s) var(--acc-l));
+  /* every colour in the app goes through one of these, so each can be changed on the Colours tab */
+  --heading:var(--ink); --link:var(--accent);
+  --btn-bg:var(--surface); --btn-ink:var(--ink); --primary-bg:var(--accent); --primary-ink:var(--on-accent);
+  --tab-ink:var(--muted); --tab-active:var(--accent);
+  --input-bg:var(--bg); --input-line:var(--line); --card-line:var(--line);
+  --ring:var(--accent); --ring-track:var(--line); --digits:var(--ink); --done:var(--bad); --countdown:var(--accent);
+  --chart:var(--accent); --rank:var(--accent);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -36,7 +43,7 @@ body{
   padding-left:max(16px,env(safe-area-inset-left,0px)); padding-right:max(16px,env(safe-area-inset-right,0px));
 }
 .app{max-width:1080px; margin:0 auto; display:flex; flex-direction:column; gap:20px}
-h1,h2,h3{font-family:var(--font-display); margin:0; text-wrap:balance; letter-spacing:-.01em}
+h1,h2,h3{color:var(--heading); font-family:var(--font-display); margin:0; text-wrap:balance; letter-spacing:-.01em}
 h2{font-size:1.25rem; font-weight:700}
 h3{font-size:1rem; font-weight:700}
 p{margin:0}
@@ -53,10 +60,10 @@ button,input,select{font:inherit; color:inherit}
 .top-ctrl{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
 .pick{display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:0 4px 0 12px; height:38px}
 .pick select{background:transparent; border:0; height:36px; padding:0 8px 0 0; font-weight:600; max-width:170px}
-.dot{width:12px; height:12px; border-radius:50%; background:var(--accent); flex:none; display:inline-block}
-.btn{height:42px; padding:0 18px; border-radius:8px; border:1px solid var(--line); background:var(--surface); font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px}
+.dot{width:12px; height:12px; border-radius:50%; background:var(--dot); flex:none; display:inline-block}
+.btn{height:42px; padding:0 18px; border-radius:8px; border:1px solid var(--line); background:var(--btn-bg); color:var(--btn-ink); font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px}
 .btn:hover{border-color:var(--muted)}
-.btn.primary{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
+.btn.primary{background:var(--primary-bg); border-color:var(--primary-bg); color:var(--primary-ink)}
 .btn.primary:hover{filter:brightness(1.06)}
 .btn.sm{height:34px; padding:0 12px; font-size:.85rem}
 .btn[disabled]{opacity:.45; cursor:not-allowed}
@@ -65,14 +72,14 @@ button,input,select{font:inherit; color:inherit}
 /* tabs */
 .tabs-wrap{overflow-x:auto; border-bottom:1px solid var(--line)}
 .tabs{display:flex; gap:4px; min-width:max-content}
-.tab{background:transparent; border:0; border-bottom:3px solid transparent; padding:10px 14px; font-weight:600; color:var(--muted); cursor:pointer; margin-bottom:-1px}
+.tab{background:transparent; border:0; border-bottom:3px solid transparent; padding:10px 14px; font-weight:600; color:var(--tab-ink); cursor:pointer; margin-bottom:-1px}
 .tab:hover{color:var(--ink)}
-.tab[aria-selected="true"]{color:var(--ink); border-bottom-color:var(--accent)}
+.tab[aria-selected="true"]{color:var(--ink); border-bottom-color:var(--tab-active)}
 
 /* shared blocks */
 .split{display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:20px; align-items:start}
 .col{display:flex; flex-direction:column; gap:16px; min-width:0}
-.card{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px; min-width:0}
+.card{background:var(--surface); border:1px solid var(--card-line); border-radius:12px; padding:20px; min-width:0}
 .card-head{display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:14px; flex-wrap:wrap}
 .pill{display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:999px; font-size:.75rem; font-weight:600; background:var(--surface-2); color:var(--muted)}
 .pill.run{background:var(--accent-soft); color:var(--accent)}
@@ -80,7 +87,7 @@ button,input,select{font:inherit; color:inherit}
 .pill.bad{background:color-mix(in srgb,var(--bad) 16%,transparent); color:var(--bad)}
 .pill.good{background:color-mix(in srgb,var(--good) 16%,transparent); color:var(--good)}
 .field{display:flex; flex-direction:column; gap:4px; font-size:.8rem; color:var(--muted); font-weight:500; min-width:0}
-input[type=text],input[type=number],input[type=datetime-local],input[type=date],select.sel{height:40px; border:1px solid var(--line); border-radius:8px; background:var(--bg); padding:0 10px; color:var(--ink); min-width:0; width:100%}
+input[type=text],input[type=number],input[type=datetime-local],input[type=date],select.sel{height:40px; border:1px solid var(--input-line); border-radius:8px; background:var(--input-bg); padding:0 10px; color:var(--ink); min-width:0; width:100%}
 input[type=range]{width:100%; accent-color:var(--accent)}
 .row{display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end}
 .row>.field{flex:1 1 120px}
@@ -90,13 +97,13 @@ input[type=range]{width:100%; accent-color:var(--accent)}
 .dial-top{align-self:stretch; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap}
 .dial{position:relative; width:min(100%,360px); aspect-ratio:1/1}
 .ring{width:100%; height:100%; display:block}
-.ring .track{stroke:var(--line)}
-.ring .prog{stroke:var(--accent); transition:stroke-dashoffset .25s linear}
+.ring .track{stroke:var(--ring-track)}
+.ring .prog{stroke:var(--ring); transition:stroke-dashoffset .25s linear}
 .ring .tick{stroke:var(--muted); opacity:.6}
 .dial-read{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; text-align:center}
-.dial-time{font-family:var(--font-mono); font-weight:500; font-size:clamp(2.6rem,11vw,4.4rem); letter-spacing:-.04em; line-height:1; font-variant-numeric:tabular-nums}
+.dial-time{color:var(--digits); font-family:var(--font-mono); font-weight:500; font-size:clamp(2.6rem,11vw,4.4rem); letter-spacing:-.04em; line-height:1; font-variant-numeric:tabular-nums}
 .dial-sub{color:var(--muted); font-size:.85rem}
-.dial.done .dial-time{color:var(--bad)}
+.dial.done .dial-time{color:var(--done)}
 .ctrls{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
 .ctrls .btn.primary{min-width:130px}
 .paper{align-self:stretch; border-top:1px solid var(--line); padding-top:16px; display:flex; flex-direction:column; gap:10px}
@@ -136,7 +143,7 @@ input[type=range]{width:100%; accent-color:var(--accent)}
 .next{display:flex; flex-direction:column; gap:14px}
 .cd{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px}
 .cd div{background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:12px 6px; text-align:center}
-.cd b{display:block; font-family:var(--font-mono); font-weight:500; font-size:clamp(1.6rem,6vw,2.6rem); line-height:1.1; font-variant-numeric:tabular-nums; color:var(--accent)}
+.cd b{display:block; font-family:var(--font-mono); font-weight:500; font-size:clamp(1.6rem,6vw,2.6rem); line-height:1.1; font-variant-numeric:tabular-nums; color:var(--countdown)}
 .cd span{font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
 .exam-list{list-style:none; margin:0; padding:0}
 .exam-list li{display:grid; grid-template-columns:auto minmax(0,1fr) auto auto; gap:12px; align-items:center; padding:12px 0; border-top:1px solid var(--line)}
@@ -149,7 +156,7 @@ input[type=range]{width:100%; accent-color:var(--accent)}
 
 /* grades */
 .notice{font-size:.88rem; color:var(--muted); display:flex; flex-wrap:wrap; gap:6px 14px; align-items:center}
-.notice a{color:var(--accent); font-weight:600}
+.notice a{color:var(--link); font-weight:600}
 .grade-list{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:16px}
 .gcard{display:flex; flex-direction:column; gap:16px}
 .gcard header{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
@@ -189,7 +196,7 @@ input[type=range].hue::-moz-range-thumb{width:16px; height:16px; border-radius:5
 .bar{display:grid; grid-template-rows:16px minmax(0,1fr) 16px; text-align:center; min-width:0}
 .bar small{font-family:var(--font-mono); font-size:.66rem; color:var(--muted); line-height:16px}
 .bar .col-wrap{position:relative; background:var(--bg); border-radius:4px 4px 0 0}
-.bar .col-wrap i{position:absolute; left:0; right:0; bottom:0; background:var(--accent); border-radius:4px 4px 0 0; min-height:2px}
+.bar .col-wrap i{position:absolute; left:0; right:0; bottom:0; background:var(--chart); border-radius:4px 4px 0 0; min-height:2px}
 table.data{width:100%; border-collapse:collapse; font-size:.9rem; min-width:620px}
 table.data th{font-weight:600; text-align:left; color:var(--muted); font-size:.72rem; letter-spacing:.07em; text-transform:uppercase; padding:6px 10px 8px 0; white-space:nowrap}
 table.data td{padding:10px 10px 10px 0; border-top:1px solid var(--line); white-space:nowrap}
@@ -207,7 +214,7 @@ table.data th.num{text-align:right; font-family:var(--font-body)}
 .lb li{display:grid; grid-template-columns:40px minmax(0,1fr) auto; gap:12px; align-items:center; padding:12px 8px; border-top:1px solid var(--line)}
 .lb li.me{background:var(--accent-soft); border-radius:8px; border-top-color:transparent}
 .lb .rk{font-family:var(--font-mono); font-weight:700; color:var(--muted); text-align:center}
-.lb li:nth-child(-n+3) .rk{color:var(--accent)}
+.lb li:nth-child(-n+3) .rk{color:var(--rank)}
 .lb .val{font-family:var(--font-mono); font-size:1.15rem; text-align:right; font-variant-numeric:tabular-nums}
 .lb .val small{font-family:var(--font-body); font-size:.72rem; color:var(--muted); font-weight:400}
 .fr-list li{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; padding:10px 0; border-top:1px solid var(--line)}
@@ -229,7 +236,19 @@ table.data th.num{text-align:right; font-family:var(--font-body)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
 @keyframes pulse{50%{opacity:.45}}
 .dial.done .dial-time{animation:pulse 1s ease-in-out infinite}
+
+[hidden]{display:none!important}
+img{max-width:100%}
+.cc-group{margin-top:18px}
+.cc-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:10px; margin-top:8px}
+.cc-item{display:flex; align-items:center; gap:10px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:8px 10px; min-width:0}
+.cc-item input[type=color]{width:42px; height:34px; padding:0; border:1px solid var(--line); border-radius:6px; background:none; cursor:pointer; flex:none}
+.cc-item span{flex:1; min-width:0; font-size:.88rem; font-weight:600}
+.cc-item small{display:block; color:var(--muted); font-weight:400; font-size:.72rem}
+.err{font-size:.85rem; color:var(--bad)}
 </style>
+</head><body>
+
 
 <div class="app">
   <header class="top">
@@ -473,11 +492,17 @@ table.data th.num{text-align:right; font-family:var(--font-body)}
         </div>
         <div class="col">
           <div class="card">
-            <div class="card-head"><h2>Page colours</h2></div>
+            <div class="card-head"><h2>Starting points</h2></div>
+            <p class="muted" style="font-size:.85rem;margin-bottom:10px">Pick a set of page colours, then change anything you like below.</p>
             <div class="mode-grid" id="bgChips"></div>
           </div>
           <div><button class="btn" id="lookReset" type="button">Reset all colours</button></div>
         </div>
+      </div>
+      <div class="card" style="margin-top:20px">
+        <div class="card-head"><h2>Every colour</h2><button class="btn sm" id="ccFlip" type="button"></button></div>
+        <p class="muted" style="font-size:.88rem">You are editing the <b id="ccWhich">light</b> colours. Light and dark each keep their own set. Tap a swatch to change it. The arrow puts one back to normal.</p>
+        <div id="ccGroups"></div>
       </div>
     </section>
     <!-- ACCOUNT -->
@@ -519,6 +544,10 @@ table.data th.num{text-align:right; font-family:var(--font-body)}
   </main>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 <script>
 (function(){
 'use strict';
@@ -542,7 +571,18 @@ var PAL={
  paper:{n:'Paper',l:['#F1EEE8','#FFFFFF','#E7E2D8','#D3CCBE'],d:['#14120E','#1D1A15','#27231C','#383228']},
  mono:{n:'Mono',l:['#EFEFEF','#FFFFFF','#E2E2E2','#CFCFCF'],d:['#0B0B0B','#151515','#1F1F1F','#2D2D2D']}
 };
-function defaultLook(){return {mode:'subject',fixed:215,tools:{timer:215,stopwatch:175,exams:28,grades:290,papers:330,progress:150,board:45,subjects:150,account:255},bg:'slate'}}
+function mergeCustom(c){c=c||{};return {light:Object.assign({},c.light),dark:Object.assign({},c.dark)}}
+function defaultLook(){return {mode:'subject',fixed:215,tools:{timer:215,stopwatch:175,exams:28,grades:290,papers:330,progress:150,board:45,subjects:150,account:255},bg:'slate',custom:{light:{},dark:{}}}}
+var CC_BG=['bg','surface','surface-2','line'];
+var CC=[
+ ['Page',[['bg','Page background'],['surface','Cards and panels'],['surface-2','Raised areas and pills'],['line','Borders and dividers'],['ink','Main text'],['heading','Headings'],['muted','Secondary text']]],
+ ['Accent',[['accent','Accent'],['on-accent','Text on accent'],['accent-soft','Highlight tint'],['link','Links']]],
+ ['Buttons',[['btn-bg','Button fill'],['btn-ink','Button text'],['primary-bg','Main button fill'],['primary-ink','Main button text']]],
+ ['Tabs and fields',[['tab-ink','Tab text'],['tab-active','Active tab line'],['input-bg','Field fill'],['input-line','Field border'],['card-line','Card border']]],
+ ['Timer',[['ring','Timer ring'],['ring-track','Ring track'],['digits','Timer digits'],['done','Time up'],['countdown','Exam countdown digits']]],
+ ['Charts and ranks',[['chart','Chart bars'],['rank','Top 3 ranks']]],
+ ['Status',[['good','Good'],['warn','Warning'],['bad','Bad']]]
+];
 var CATALOG=[
  {n:'Physics',b:'cambridge',m:160},{n:'Chemistry',b:'cambridge',m:160},{n:'Biology',b:'cambridge',m:160},
  {n:'Combined Science',b:'edexcel',m:240},{n:'Mathematics',b:'edexcel',m:200},{n:'Additional Mathematics',b:'cambridge',m:120},
@@ -665,7 +705,7 @@ function freshState(){var s=seedState();s.v=2;s.look=defaultLook();s.subjects.fo
 var S=freshState();
 try{var raw=localStorage.getItem(KEY); if(raw){var L=JSON.parse(raw); if(L&&L.subjects&&L.subjects.length){
   S=Object.assign(freshState(),L); S.noise=Object.assign({type:'brown',vol:.5,link:true},L.noise||{});
-  var dl=defaultLook(),ll=L.look||{};S.look=Object.assign(dl,ll);S.look.tools=Object.assign(defaultLook().tools,ll.tools||{});
+  var dl=defaultLook(),ll=L.look||{};S.look=Object.assign(dl,ll);S.look.tools=Object.assign(defaultLook().tools,ll.tools||{});S.look.custom=mergeCustom(ll.custom);
   if(L.v!==2){S.subjects.forEach(function(x){var mk=x.mark;applyBounds(x,x.bounds&&x.bounds.max);x.mark=mk});S.v=2}
 }}}catch(e){}
 var LOAD_TS=S.ts||0,TOUCHED=false;
@@ -673,7 +713,7 @@ function save(){S.ts=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}
 function normalizeRemote(r){
   var n=Object.assign(freshState(),r),rl=r.look||{};
   n.noise=Object.assign({type:'brown',vol:.5,link:true},r.noise||{});
-  n.look=Object.assign(defaultLook(),rl);n.look.tools=Object.assign(defaultLook().tools,rl.tools||{});
+  n.look=Object.assign(defaultLook(),rl);n.look.tools=Object.assign(defaultLook().tools,rl.tools||{});n.look.custom=mergeCustom(rl.custom);
   n.me=Object.assign({username:'',claimed:false},r.me||{});
   return n;
 }
@@ -712,31 +752,61 @@ function isDark(){
   return t==='dark'||(t!=='light'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);
 }
 function applyPalette(){
-  var r=document.documentElement,p=PAL[S.look.bg]||PAL.slate,keys=['--bg','--surface','--surface-2','--line'];
-  keys.forEach(function(k,i){if(p.l)r.style.setProperty(k,(isDark()?p.d:p.l)[i]);else r.style.removeProperty(k)});
+  var el=document.getElementById('ccStyle');
+  if(!el){el=document.createElement('style');el.id='ccStyle';document.head.appendChild(el)}
+  var m=((S.look&&S.look.custom)||{})[isDark()?'dark':'light']||{},css='';
+  Object.keys(m).forEach(function(k){
+    if(!/^#[0-9a-f]{6}$/i.test(m[k]))return;
+    css+='--'+k+':'+(k==='accent-soft'?'color-mix(in srgb,'+m[k]+' 18%,transparent)':m[k])+';';
+  });
+  if(m.accent&&!m['accent-soft'])css+='--accent-soft:color-mix(in srgb,'+m.accent+' 16%,transparent);';
+  el.textContent=css?':root:root:root,.hued.hued.hued{'+css+'}':'';
 }
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyPalette)}catch(e){}
 try{new MutationObserver(applyPalette).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']})}catch(e){}
 
 /* ---------- colours tab ---------- */
+var _cv=document.createElement('canvas');_cv.width=_cv.height=1;
+var _cx=_cv.getContext('2d',{willReadFrequently:true});
+function toHex(c){
+  _cx.clearRect(0,0,1,1);_cx.fillStyle='#000';_cx.fillStyle=c;_cx.fillRect(0,0,1,1);
+  var d=_cx.getImageData(0,0,1,1).data;
+  return '#'+[d[0],d[1],d[2]].map(function(x){return ('0'+x.toString(16)).slice(-2)}).join('');
+}
+function curHex(tok){
+  var p=document.createElement('i');p.style.cssText='position:absolute;width:0;height:0;background:var(--'+tok+')';
+  document.body.appendChild(p);var c=getComputedStyle(p).backgroundColor;document.body.removeChild(p);return toHex(c);
+}
 function hueRow(id,label,val){
   return '<label class="field" for="'+id+'"><span style="display:flex;justify-content:space-between;gap:8px"><span>'+label+'</span><span class="mono" id="'+id+'-v">'+val+'°</span></span><input type="range" class="hue" id="'+id+'" min="0" max="360" value="'+val+'"></label>';
+}
+function renderPresets(){
+  $('bgChips').innerHTML=Object.keys(PAL).map(function(k){
+    var p=PAL[k],l=p.l||['#ECEFF3','#FFFFFF'],d=p.d||['#0E1217','#161B22'];
+    function sq(c){return '<i style="width:20px;height:20px;border-radius:4px;background:'+c+';border:1px solid rgba(128,128,128,.5);display:inline-block"></i>'}
+    return '<button type="button" class="mode" data-bg="'+k+'" aria-pressed="'+(S.look.bg===k)+'"><b>'+p.n+'</b><small style="display:flex;gap:4px;margin-top:4px">'+sq(l[0])+sq(l[1])+sq(d[0])+sq(d[1])+'</small></button>'}).join('');
 }
 function renderLook(){
   var L=S.look,h='';
   $('lookModes').innerHTML=[['subject','Follow my subject'],['fixed','One colour'],['tool','Colour per tool']].map(function(m){
     return '<button type="button" class="chip" data-lm="'+m[0]+'" aria-pressed="'+(L.mode===m[0])+'">'+m[1]+'</button>'}).join('');
-  if(L.mode==='subject')h='<p class="muted">The accent changes with the subject you pick at the top. Set each subject\'s colour in My subjects.</p>';
+  if(L.mode==='subject')h='<p class="muted">The accent changes with the subject you pick at the top. Set each subject\'s colour in My subjects. Setting "Accent" under Every colour overrides this.</p>';
   else if(L.mode==='fixed')h=hueRow('hue-fixed','Accent colour',L.fixed)+'<div class="sw-row">'+HUES.map(function(x,i){
     return '<button type="button" class="sw" data-fh="'+x+'" aria-label="'+HUE_NAMES[i]+'" aria-pressed="'+(L.fixed===x)+'" style="background:hsl('+x+' 70% 45%)"></button>'}).join('')+'</div>';
   else h=TOOLS.map(function(t){return hueRow('hue-'+t[0],t[1],L.tools[t[0]])}).join('');
   $('lookHues').innerHTML=h;
   $('themeChips').innerHTML=[['auto','Auto'],['light','Light'],['dark','Dark']].map(function(m){
     return '<button type="button" class="chip" data-th="'+m[0]+'" aria-pressed="'+(S.theme===m[0])+'">'+m[1]+'</button>'}).join('');
-  $('bgChips').innerHTML=Object.keys(PAL).map(function(k){
-    var p=PAL[k],l=p.l||['#ECEFF3','#FFFFFF'],d=p.d||['#0E1217','#161B22'];
-    function sq(c){return '<i style="width:20px;height:20px;border-radius:4px;background:'+c+';border:1px solid rgba(128,128,128,.5);display:inline-block"></i>'}
-    return '<button type="button" class="mode" data-bg="'+k+'" aria-pressed="'+(L.bg===k)+'"><b>'+p.n+'</b><small style="display:flex;gap:4px;margin-top:4px">'+sq(l[0])+sq(l[1])+sq(d[0])+sq(d[1])+'</small></button>'}).join('');
+  renderPresets();
+  var dark=isDark(),mm=L.custom[dark?'dark':'light'];
+  $('ccWhich').textContent=dark?'dark':'light';
+  $('ccFlip').textContent='Edit '+(dark?'light':'dark')+' colours';
+  $('ccGroups').innerHTML=CC.map(function(g){
+    return '<div class="cc-group"><div class="eyebrow">'+g[0]+'</div><div class="cc-grid">'+g[1].map(function(t){
+      var k=t[0];
+      return '<div class="cc-item"><input type="color" data-cc="'+k+'" value="'+curHex(k)+'" aria-label="'+t[1]+'"><span>'+t[1]+'<small>'+(mm[k]?'Custom':'Default')+'</small></span><button type="button" class="x" data-ccr="'+k+'" aria-label="Reset '+t[1]+'" title="Reset"'+(mm[k]?'':' hidden')+'>↺</button></div>';
+    }).join('')+'</div></div>';
+  }).join('');
 }
 $('lookModes').addEventListener('click',function(e){var b=e.target.closest('[data-lm]');if(!b)return;S.look.mode=b.dataset.lm;applyHue();save();renderLook()});
 $('lookHues').addEventListener('input',function(e){
@@ -748,7 +818,29 @@ $('lookHues').addEventListener('input',function(e){
 $('lookHues').addEventListener('change',save);
 $('lookHues').addEventListener('click',function(e){var b=e.target.closest('[data-fh]');if(!b)return;S.look.fixed=parseInt(b.dataset.fh,10);applyHue();save();renderLook()});
 $('themeChips').addEventListener('click',function(e){var b=e.target.closest('[data-th]');if(!b)return;S.theme=b.dataset.th;applyTheme();save();renderLook()});
-$('bgChips').addEventListener('click',function(e){var b=e.target.closest('[data-bg]');if(!b)return;S.look.bg=b.dataset.bg;applyPalette();save();renderLook()});
+$('bgChips').addEventListener('click',function(e){
+  var b=e.target.closest('[data-bg]');if(!b)return;
+  var k=b.dataset.bg,p=PAL[k];
+  ['light','dark'].forEach(function(md){
+    var arr=md==='light'?p.l:p.d;
+    CC_BG.forEach(function(t,i){if(arr)S.look.custom[md][t]=arr[i];else delete S.look.custom[md][t]});
+  });
+  S.look.bg=k;applyPalette();save();renderLook();
+});
+$('ccGroups').addEventListener('input',function(e){
+  var k=e.target.dataset&&e.target.dataset.cc;if(!k)return;
+  S.look.custom[isDark()?'dark':'light'][k]=e.target.value;
+  if(CC_BG.indexOf(k)>-1)S.look.bg='';
+  applyPalette();
+  var it=e.target.closest('.cc-item');it.querySelector('small').textContent='Custom';it.querySelector('[data-ccr]').hidden=false;
+});
+$('ccGroups').addEventListener('change',function(e){if(e.target.dataset&&e.target.dataset.cc){save();renderPresets()}});
+$('ccGroups').addEventListener('click',function(e){
+  var b=e.target.closest('[data-ccr]');if(!b)return;
+  delete S.look.custom[isDark()?'dark':'light'][b.dataset.ccr];
+  applyPalette();save();renderLook();
+});
+$('ccFlip').addEventListener('click',function(){S.theme=isDark()?'light':'dark';applyTheme();save();renderLook()});
 $('lookReset').addEventListener('click',function(){S.look=defaultLook();applyHue();applyPalette();save();renderLook()});
 function renderSubjectSelect(){
   var sel=$('activeSubject');
@@ -763,7 +855,7 @@ $('activeSubject').addEventListener('change',function(e){S.active=e.target.value
 
 /* ---------- tabs ---------- */
 function switchTab(name){
-  curTab=name;applyHue();
+  curTab=name;applyHue();if(name==='colours')renderLook();
   ['timer','stopwatch','exams','grades','papers','progress','board','subjects','colours','account'].forEach(function(t){$('tab-'+t).hidden=t!==name});
   [].forEach.call(document.querySelectorAll('.tab'),function(b){b.setAttribute('aria-selected',b.dataset.tab===name?'true':'false')});
   if(name==='exams')tickCountdown(true);
@@ -1298,12 +1390,30 @@ function renderProgress(){
   $('ppNote').textContent='Expected mark applies your average paper score to the subject\'s total marks and reads the grade from the boundaries in Grade boundaries. It is a guide only. Real boundaries change every series.';
 }
 
-/* ---------- account, sync, friends ---------- */
-function cap(n){
-  try{return (window.claude&&window.claude.use)?Promise.resolve(window.claude.use(n)).catch(function(){return null}):Promise.resolve(null)}catch(e){return Promise.resolve(null)}
+/* ---------- account, sync, friends (Firebase: Google sign-in + Firestore) ---------- */
+var SY={fs:null,auth:null,uid:null,me:null,cfg:false,state:'local',timer:0,flushing:false,dirty:false,lastPush:0,players:[],unsub:null,unsubSave:null,busy:false,err:''};
+var UID_KEY='studystudio.uid';
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function signedIn(){return !!(SY&&SY.fs&&SY.uid)}
+function fbSetup(){
+  try{
+    var c=window.STUDY_FIREBASE;
+    if(!window.firebase||!c||!c.apiKey||!c.projectId||/^(YOUR|PASTE|REPLACE)/i.test(c.apiKey))return false;
+    firebase.initializeApp(c);
+    SY.auth=firebase.auth();SY.fs=firebase.firestore();
+    try{SY.fs.enablePersistence({synchronizeTabs:true}).catch(function(){})}catch(e){}
+    return true;
+  }catch(e){SY.err='Firebase could not start: '+(e&&e.message||e);return false}
 }
-var SY={db:null,user:null,uid:null,me:null,state:'local',timer:0,flushing:false,dirty:false,players:[],unsub:null};
-function privPath(){return 'data/users/'+SY.uid+'/save'}
+function authMsg(e){
+  var c=e&&e.code||'';
+  if(c==='auth/unauthorized-domain')return 'This website address is not authorised in Firebase yet. Add it under Authentication, Settings, Authorized domains.';
+  if(c==='auth/operation-not-allowed')return 'Google sign-in is not switched on in Firebase (Authentication, Sign-in method).';
+  if(c==='auth/network-request-failed')return 'No connection. Check your internet and try again.';
+  if(c==='auth/invalid-api-key'||c==='auth/api-key-not-valid')return 'The apiKey in firebase-config.js is not valid.';
+  return 'Sign-in failed'+(c?' ('+c+')':'')+'. Try again.';
+}
 function pubDoc(){
   var st=calcStreak(),tot=0,k,avg=null;
   for(k in S.log)tot+=S.log[k];
@@ -1312,20 +1422,26 @@ function pubDoc(){
   return {username:S.me.username,uname:S.me.username.toLowerCase(),pts:S.pts||0,wk:{k:S.wk.k,p:S.wk.p},streak:st.cur,best:st.best,focus:tot,papers:S.papers.length,avg:avg,day:dKey(),ts:Date.now()};
 }
 function queueSync(now){
-  if(!SY||!SY.db||!SY.uid||SY.state==='readonly')return;
+  if(!SY||!SY.fs||!SY.uid||SY.state==='denied')return;
   clearTimeout(SY.timer);SY.timer=setTimeout(flush,now?200:1800);
 }
 async function flush(){
+  if(!signedIn())return;
   if(SY.flushing){SY.dirty=true;return}
   SY.flushing=true;SY.state='syncing';renderAccountStatus();
   try{
     do{
       SY.dirty=false;
-      await SY.db.doc(privPath()).set({ts:S.ts||Date.now(),blob:JSON.stringify(S)});
-      if(S.me.claimed&&S.me.username)await SY.db.doc('players/'+SY.uid).set(pubDoc());
+      var ts=S.ts||Date.now();
+      SY.lastPush=ts;
+      await SY.fs.doc('users/'+SY.uid).set({ts:ts,blob:JSON.stringify(S)});
+      if(S.me.claimed&&S.me.username)await SY.fs.doc('players/'+SY.uid).set(pubDoc());
     }while(SY.dirty);
-    SY.state='saved';
-  }catch(e){SY.state=(e&&e.code==='invalid_argument')?'readonly':'error'}
+    SY.state='saved';SY.err='';
+  }catch(e){
+    SY.state=(e&&e.code==='permission-denied')?'denied':'error';
+    SY.err=SY.state==='denied'?'Firebase refused the save. Check that the Firestore rules from SETUP.md are published.':'';
+  }
   SY.flushing=false;renderAccountStatus();
 }
 function refreshAll(){
@@ -1333,72 +1449,134 @@ function refreshAll(){
   if(!locked())setMode(modeById(S.mode)||modeById('phys-p4'));else renderModePicker();
   renderExams();renderGrades();renderSubjects();renderPapers();renderProgress();renderBoard();renderAccount();updateChips();
 }
-async function initSync(){
-  var u=await cap('user'),d=await cap('db');
-  SY.user=u;SY.db=d;
-  if(u){try{SY.me=await u.me();SY.uid=SY.me.id}catch(e){}}
-  if(!d||!SY.uid){SY.state='local';renderAccount();renderBoard();return}
-  SY.state='syncing';renderAccountStatus();
+function pristine(){return !(S.pts>0)&&!S.papers.length&&!Object.keys(S.log||{}).length&&!S.friends.length}
+function takeRemote(r){
+  S=normalizeRemote(JSON.parse(r.blob));S.ts=r.ts;
+  try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  refreshAll();
+}
+function pullRemote(r,tries){
+  var a=document.activeElement;
+  if(a&&a.tagName==='INPUT'&&a.type!=='range'&&a.type!=='checkbox'&&tries<5){setTimeout(function(){pullRemote(r,tries+1)},3000);return}
+  if(r.ts<=(S.ts||0))return;
+  takeRemote(r);
+}
+async function onUser(u){
+  if(!u){
+    if(SY.unsub){try{SY.unsub()}catch(e){}SY.unsub=null}
+    if(SY.unsubSave){try{SY.unsubSave()}catch(e){}SY.unsubSave=null}
+    SY.uid=null;SY.me=null;SY.players=[];SY.state='local';SY.busy=false;
+    renderAccount();renderBoard();return;
+  }
+  SY.uid=u.uid;SY.me={id:u.uid,name:u.displayName||'',email:u.email||'',avatarUrl:u.photoURL||''};
+  SY.state='syncing';SY.busy=false;renderAccount();
   try{
-    var snap=await d.doc(privPath()).get();
-    if(snap.exists){
-      var r=snap.data();
-      if(r&&r.blob&&r.ts>LOAD_TS&&!TOUCHED){
-        S=normalizeRemote(JSON.parse(r.blob));S.ts=r.ts;
-        try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
-        refreshAll();
-      }
-    }
+    var snap=await SY.fs.doc('users/'+u.uid).get(),r=snap.exists?snap.data():null;
+    if(r&&r.blob){
+      var owner=lsGet(UID_KEY),take=false;
+      if(pristine())take=true;
+      else if(owner===u.uid)take=r.ts>(S.ts||0);
+      else take=confirm('This device already has progress ('+(S.pts||0)+' pts) that is not linked to this Google account.\n\nOK: replace it with the progress saved in your account.\nCancel: keep this device\'s progress and overwrite the account with it.');
+      if(take)takeRemote(r);else S.me.claimed=false;
+    }else{S.me.claimed=false}
+    lsSet(UID_KEY,u.uid);
+  }catch(e){
+    SY.state=(e&&e.code==='permission-denied')?'denied':'error';
+    SY.err=SY.state==='denied'?'Firebase refused access. Check that the Firestore rules from SETUP.md are published.':'Could not reach your saved progress. It will retry when something changes.';
+  }
+  try{
+    SY.unsubSave=SY.fs.doc('users/'+u.uid).onSnapshot(function(s){
+      if(!s.exists||s.metadata.hasPendingWrites)return;
+      var d=s.data();if(!d||!d.blob||d.ts<=(S.ts||0)||d.ts===SY.lastPush)return;
+      pullRemote(d,0);
+    },function(){});
   }catch(e){}
   subscribePlayers();
   if(S.me.username&&!S.me.claimed)await claimUsername(S.me.username,true);
-  SY.state='saved';queueSync(true);renderAccount();renderBoard();
+  if(SY.state!=='denied'&&SY.state!=='error')SY.state='saved';
+  queueSync(true);renderAccount();renderBoard();
 }
 function subscribePlayers(){
-  if(SY.unsub||!SY.db)return;
+  if(SY.unsub||!SY.fs)return;
   try{
-    SY.unsub=SY.db.collection('players').orderBy('pts','desc').limit(500).onSnapshot(function(s){
+    SY.unsub=SY.fs.collection('players').orderBy('pts','desc').limit(500).onSnapshot(function(s){
       SY.players=s.docs.map(function(x){var o=Object.assign({},x.data());o.id=x.id;return o});
       renderBoard();renderFriends();
     },function(){SY.players=[];renderBoard()});
   }catch(e){}
 }
+function initSync(){
+  SY.cfg=fbSetup();
+  renderAccount();renderBoard();
+  if(!SY.cfg)return;
+  SY.auth.getRedirectResult().catch(function(e){SY.err=authMsg(e);renderAccountStatus()});
+  SY.auth.onAuthStateChanged(onUser);
+}
+async function signIn(){
+  if(!SY.auth)return;
+  SY.err='';SY.busy=true;renderAccountStatus();
+  var p=new firebase.auth.GoogleAuthProvider();
+  try{await SY.auth.signInWithPopup(p)}
+  catch(e){
+    var c=e&&e.code||'';
+    if(c==='auth/popup-blocked'||c==='auth/operation-not-supported-in-this-environment'){
+      try{await SY.auth.signInWithRedirect(p);return}catch(e2){e=e2;c=e2&&e2.code||''}
+    }
+    if(c!=='auth/popup-closed-by-user'&&c!=='auth/cancelled-popup-request')SY.err=authMsg(e);
+  }
+  SY.busy=false;renderAccountStatus();
+}
 async function claimUsername(name,silent){
   var low=name.toLowerCase();
   function say(t){if(!silent||t)$('acMsg').textContent=t}
   if(!/^[a-z0-9_]{3,16}$/.test(low)){say('Use 3 to 16 letters, numbers or underscores.');return false}
-  if(!SY.db||!SY.uid){
+  if(!signedIn()){
     S.me.username=name;S.me.claimed=false;save();updateChips();renderAccount();
-    say('Saved on this device. Open this page from claude.ai while signed in to join the leaderboard.');return true;
+    say(SY.cfg?'Saved on this device. Sign in with Google to join the leaderboard.':'Saved on this device.');return true;
   }
   try{
-    var ref=SY.db.doc('usernames/'+low),r=await ref.acquire({holder:SY.uid,ttlMs:6000});
-    if(!r.acquired){say('Someone is claiming that name right now. Try again in a few seconds.');return false}
-    var snap=await ref.get(),o=snap.exists?snap.data():null;
-    if(o&&o.owner&&o.owner!==SY.uid){say('That username is taken.');return false}
-    await ref.set({owner:SY.uid,at:Date.now()});
-    var old=(S.me.claimed&&S.me.username)?S.me.username.toLowerCase():'';
-    if(old&&old!==low){try{await SY.db.doc('usernames/'+old).delete()}catch(e){}}
+    var old=(S.me.claimed&&S.me.username)?S.me.username.toLowerCase():'',uid=SY.uid,fs=SY.fs;
+    await fs.runTransaction(async function(tx){
+      var ref=fs.doc('usernames/'+low),snap=await tx.get(ref);
+      if(snap.exists&&snap.data().owner!==uid){var er=new Error('taken');er.code='taken';throw er}
+      tx.set(ref,{owner:uid,at:Date.now()});
+      if(old&&old!==low)tx.delete(fs.doc('usernames/'+old));
+    });
     S.me.username=name;S.me.claimed=true;save();queueSync(true);updateChips();renderAccount();renderBoard();
     say('Username saved.');return true;
   }catch(e){
-    say(e&&e.code==='invalid_argument'?'You can view this page but not save to it. Ask the owner for Contributor access.':'Could not save the username. Try again.');
+    var c=e&&e.code;
+    say(c==='taken'?'That username is taken.':c==='permission-denied'?'Firebase refused that. Check that the Firestore rules from SETUP.md are published.':'Could not save the username. Try again.');
     return false;
   }
 }
 function renderAccountStatus(){
   var pill=$('acPill'),h='',txt='On this device',cls='pill';
-  if(SY.uid){
-    txt=SY.state==='readonly'?'View only':SY.state==='error'?'Not saved':SY.state==='syncing'?'Saving':'Saved to account';
-    cls+=SY.state==='readonly'||SY.state==='error'?' warn':' good';
-    h+='<div class="who">'+(SY.me&&SY.me.avatarUrl?'<img class="ava" alt="" src="'+SY.me.avatarUrl+'">':'')+'<div><div class="t" style="font-weight:600">Signed in with your Claude account</div><div class="muted" style="font-size:.85rem">Your progress follows you to any device where you open this page. There is no separate password.</div></div></div>';
-    if(SY.state==='readonly')h+='<p class="hint">You can view this page but not save to it, so your progress stays on this device. Ask the owner for Contributor access.</p>';
-    if(SY.state==='error')h+='<p class="hint">The last save did not go through. It will retry the next time something changes.</p>';
+  if(!SY.cfg){
+    h+='<p class="muted">Cloud sync is not set up yet, so everything is saved on this device only. Paste your Firebase project settings into <b>firebase-config.js</b> to turn on Google sign-in (steps are in SETUP.md).</p>';
+    if(SY.err)h+='<p class="err">'+esc(SY.err)+'</p>';
+  }else if(!SY.uid){
+    txt='Signed out';
+    h+='<p class="muted">Sign in with Google to keep your points, streaks, subjects and colours on every device, and to join the leaderboards.</p>'+
+      '<div><button type="button" class="btn primary" data-act="signin"'+(SY.busy?' disabled':'')+'>'+(SY.busy?'Opening Google…':'Continue with Google')+'</button></div>';
+    if(SY.err)h+='<p class="err">'+esc(SY.err)+'</p>';
   }else{
-    h+='<p class="muted">You are not signed in here, so your progress is saved on this device only. Open this page from claude.ai while signed in to save it to your account and join the leaderboards.</p>';
+    txt=SY.state==='denied'?'Not saved':SY.state==='error'?'Not saved':SY.state==='syncing'?'Saving':'Saved to account';
+    cls+=SY.state==='denied'||SY.state==='error'?' warn':' good';
+    h+='<div class="who">'+(SY.me.avatarUrl?'<img class="ava" alt="" referrerpolicy="no-referrer" src="'+esc(SY.me.avatarUrl)+'">':'')+
+      '<div style="min-width:0"><div class="t" style="font-weight:600;overflow-wrap:anywhere">'+esc(SY.me.name||SY.me.email||'Signed in')+'</div>'+
+      '<div class="muted" style="font-size:.85rem;overflow-wrap:anywhere">'+esc(SY.me.email)+'</div></div></div>'+
+      '<p class="muted" style="font-size:.88rem">Your progress follows you to any device where you sign in with this Google account.</p>'+
+      '<div><button type="button" class="btn sm" data-act="signout">Sign out</button></div>';
+    if(SY.err)h+='<p class="err">'+esc(SY.err)+'</p>';
   }
   pill.textContent=txt;pill.className=cls;$('acStatus').innerHTML=h;
 }
+$('acStatus').addEventListener('click',function(e){
+  var b=e.target.closest('[data-act]');if(!b)return;
+  if(b.dataset.act==='signin')signIn();
+  else if(b.dataset.act==='signout'&&SY.auth)SY.auth.signOut();
+});
 function renderAccount(){
   renderAccountStatus();
   var el=$('acName');if(document.activeElement!==el)el.value=S.me.username||'';
@@ -1416,16 +1594,22 @@ function renderFriends(){
 }
 $('acSave').addEventListener('click',function(){claimUsername($('acName').value.trim(),false)});
 $('acName').addEventListener('keydown',function(e){if(e.key==='Enter')claimUsername($('acName').value.trim(),false)});
-$('frAdd').addEventListener('click',function(){
+async function addFriend(){
   var low=$('frName').value.trim().toLowerCase(),msg=$('frMsg');
   if(!low){msg.textContent='Type your friend\'s username.';return}
-  if(!SY.db||!SY.uid){msg.textContent='Friends need you signed in. Open this page from claude.ai.';return}
-  var p=SY.players.filter(function(x){return x.uname===low})[0];
-  if(!p){msg.textContent='No player has that username yet. They need to open Study Studio and save a username first.';return}
-  if(p.id===SY.uid){msg.textContent='That is your own username.';return}
-  if(S.friends.some(function(f){return f.id===p.id})){msg.textContent='Already in your friends.';return}
-  S.friends.push({id:p.id,u:p.username});$('frName').value='';msg.textContent='Added '+p.username+'.';save();renderFriends();renderBoard();
-});
+  if(!signedIn()){msg.textContent='Sign in with Google to add friends.';return}
+  try{
+    var u=await SY.fs.doc('usernames/'+low).get();
+    if(!u.exists){msg.textContent='No player has that username yet. They need to sign in and save a username first.';return}
+    var id=u.data().owner;
+    if(id===SY.uid){msg.textContent='That is your own username.';return}
+    if(S.friends.some(function(f){return f.id===id})){msg.textContent='Already in your friends.';return}
+    var pd=await SY.fs.doc('players/'+id).get(),nm=pd.exists&&pd.data().username?pd.data().username:low;
+    S.friends.push({id:id,u:nm});$('frName').value='';msg.textContent='Added '+nm+'.';save();renderFriends();renderBoard();
+  }catch(e){msg.textContent='Could not look that username up. Try again.'}
+}
+$('frAdd').addEventListener('click',addFriend);
+$('frName').addEventListener('keydown',function(e){if(e.key==='Enter')addFriend()});
 $('frList').addEventListener('click',function(e){
   var b=e.target.closest('[data-delfriend]');if(!b)return;
   S.friends=S.friends.filter(function(f){return f.id!==b.dataset.delfriend});save();renderFriends();renderBoard();
@@ -1438,7 +1622,7 @@ function metricVal(d){return BOARD.metric==='wk'?wkVal(d):BOARD.metric==='streak
 function renderBoard(){
   $('lbScope').innerHTML=[['all','Everyone'],['friends','Friends']].map(function(m){return '<button type="button" class="chip" data-ls="'+m[0]+'" aria-pressed="'+(BOARD.scope===m[0])+'">'+m[1]+'</button>'}).join('');
   $('lbMetric').innerHTML=[['pts','All-time points'],['wk','This week'],['streak','Streak']].map(function(m){return '<button type="button" class="chip" data-lm2="'+m[0]+'" aria-pressed="'+(BOARD.metric===m[0])+'">'+m[1]+'</button>'}).join('');
-  var list=SY.players.slice(),signed=!!(SY.db&&SY.uid);
+  var list=SY.players.slice(),signed=signedIn();
   if(signed&&S.me.claimed&&S.me.username&&!list.some(function(p){return p.id===SY.uid})){var mine=pubDoc();mine.id=SY.uid;list.push(mine)}
   if(BOARD.scope==='friends'){var ids={};S.friends.forEach(function(f){ids[f.id]=1});if(SY.uid)ids[SY.uid]=1;list=list.filter(function(p){return ids[p.id]})}
   list.sort(function(a,b){return metricVal(b)-metricVal(a)||String(a.username).localeCompare(String(b.username))});
@@ -1449,8 +1633,8 @@ function renderBoard(){
     return '<li class="'+(me?'me':'')+'"><span class="rk">'+(i+1)+'</span><div style="min-width:0"><div class="t">'+esc(p.username)+(me?' <span class="pill run">You</span>':'')+'</div><div class="when">'+(p.pts||0)+' pts · '+effStreak(p)+' day streak · '+fmtMin(p.focus||0)+' focus'+(p.avg!=null?' · '+Math.round(p.avg)+'% papers':'')+'</div></div><span class="val">'+metricVal(p)+' <small>'+label+'</small></span></li>';
   }).join('');
   var e=$('lbEmpty');e.hidden=list.length>0;
-  e.textContent=!signed?'Leaderboards work when you open this page from claude.ai while signed in. Until then your points are saved on this device only.':BOARD.scope==='friends'?'No friends here yet. Add friends by username in the Account tab.':'No players yet. Save a username in the Account tab to be the first.';
-  $('lbNote').textContent=(signed&&!S.me.claimed?'Save a username in the Account tab to appear on the leaderboard. ':'')+'Everyone who has opened this page and saved a username appears here. Scores are reported by each player\'s own browser.';
+  e.textContent=!signed?'Sign in with Google in the Account tab to join the leaderboards. Until then your points are saved on this device only.':BOARD.scope==='friends'?'No friends here yet. Add friends by username in the Account tab.':'No players yet. Save a username in the Account tab to be the first.';
+  $('lbNote').textContent=(signed&&!S.me.claimed?'Save a username in the Account tab to appear on the leaderboard. ':'')+'Everyone who has signed in and saved a username appears here. Scores are reported by each player\'s own browser.';
 }
 $('tab-board').addEventListener('click',function(e){
   var a=e.target.closest('[data-ls]'),b=e.target.closest('[data-lm2]');
@@ -1486,5 +1670,4 @@ renderExams();renderGrades();renderSubjects();renderLaps();swPaint();swUi();
 renderPapers();renderProgress();renderBoard();renderAccount();updateChips();initSync();
 })();
 </script>
-
 </body></html>
