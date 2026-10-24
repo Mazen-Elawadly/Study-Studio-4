@@ -70,7 +70,8 @@ button,input,select{font:inherit; color:inherit}
 .btn.danger{color:var(--bad)}
 
 /* tabs */
-.tabs-wrap{overflow-x:auto; border-bottom:1px solid var(--line)}
+.tabs-wrap{overflow-x:auto; overflow-y:hidden; scrollbar-width:none; -ms-overflow-style:none; border-bottom:1px solid var(--line)}
+.tabs-wrap::-webkit-scrollbar{display:none}
 .tabs{display:flex; gap:4px; min-width:max-content}
 .tab{background:transparent; border:0; border-bottom:3px solid transparent; padding:10px 14px; font-weight:600; color:var(--tab-ink); cursor:pointer; margin-bottom:-1px}
 .tab:hover{color:var(--ink)}
@@ -185,6 +186,26 @@ input[type=range].hue{-webkit-appearance:none; appearance:none; height:14px; bor
 input[type=range].hue::-webkit-slider-thumb{-webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:var(--surface); border:3px solid var(--ink); cursor:pointer}
 input[type=range].hue::-moz-range-thumb{width:16px; height:16px; border-radius:50%; background:var(--surface); border:3px solid var(--ink); cursor:pointer}
 .look-stack{display:flex; flex-direction:column; gap:16px}
+.pl-grid{display:grid; grid-template-columns:minmax(0,310px) minmax(0,1fr); gap:20px; align-items:start}
+.pl-side{display:flex; flex-direction:column; gap:16px}
+.pl-paper{background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:18px 20px; min-width:0}
+.pl-head{display:flex; justify-content:space-between; gap:10px; align-items:flex-start; flex-wrap:wrap; margin-bottom:8px}
+.pl-head small{color:var(--muted); font-size:.82rem}
+.pl-year{border-top:1px solid var(--line)}
+.pl-year>summary{cursor:pointer; padding:10px 0; font-family:var(--font-display); font-weight:700; list-style:none; display:flex; justify-content:space-between}
+.pl-year>summary::-webkit-details-marker{display:none}
+.pl-year>summary::after{content:'+'; color:var(--muted); font-family:var(--font-mono)}
+.pl-year[open]>summary::after{content:'\2212'}
+.pl-row{display:grid; grid-template-columns:84px minmax(0,1fr); gap:10px; padding:7px 0; align-items:center}
+.pl-ses{font-size:.82rem; color:var(--muted); font-weight:600}
+.pl-vars{display:flex; flex-wrap:wrap; gap:8px 16px}
+.pl-var{display:inline-flex; align-items:center; gap:4px}
+.pl-var b{font-family:var(--font-mono); font-size:.78rem; min-width:2.3em; color:var(--muted)}
+.lk{display:inline-flex; align-items:center; gap:6px; height:28px; padding:0 10px; border-radius:6px; border:1px solid var(--line); background:var(--bg); font-size:.78rem; font-weight:600; color:var(--ink); text-decoration:none}
+.lk:hover{border-color:var(--accent); color:var(--accent)}
+.lk.src{height:38px; padding:0 14px; font-size:.86rem; justify-content:space-between}
+.src-list{display:flex; flex-direction:column; gap:8px}
+@media (max-width:820px){.pl-grid{grid-template-columns:minmax(0,1fr)}.pl-row{grid-template-columns:minmax(0,1fr); gap:4px}}
 .subnav{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px}
 .pill.lg{height:34px; padding:0 14px; font-size:.85rem}
 .pill.lg b{font-family:var(--font-mono); font-weight:700; margin-right:4px}
@@ -403,7 +424,7 @@ img{max-width:100%}
 
     <!-- PAST PAPERS -->
     <section id="tab-papers" hidden>
-      <div class="subnav" role="group" aria-label="Past papers sections"><button type="button" class="chip" data-sub="pp-log" aria-pressed="true">Log papers</button><button type="button" class="chip" data-sub="pp-grades" aria-pressed="false">Grade boundaries</button></div>
+      <div class="subnav" role="group" aria-label="Past papers sections"><button type="button" class="chip" data-sub="pp-log" aria-pressed="true">Log papers</button><button type="button" class="chip" data-sub="pp-grades" aria-pressed="false">Grade boundaries</button><button type="button" class="chip" data-sub="pp-links" aria-pressed="false">Past paper links</button></div>
       <div class="subpanel" id="pp-log">
       <div class="split">
         <div class="col">
@@ -445,6 +466,26 @@ img{max-width:100%}
         </div>
         <div class="grade-list" id="gradeList"></div>
       </div>
+      </div>
+      <div class="subpanel" id="pp-links" hidden>
+        <div class="pl-grid">
+          <div class="pl-side">
+            <div class="card">
+              <div class="card-head"><h2>Find a paper</h2></div>
+              <div class="stack">
+                <label class="field" for="plSubj">Subject<select class="sel" id="plSubj"></select></label>
+                <div class="group" id="plPapersWrap"><div class="eyebrow">Papers</div><div class="chip-row" id="plPapers" role="group" aria-label="Papers"></div></div>
+                <label class="field" for="plYear" id="plYearWrap">Year<select class="sel" id="plYear"></select></label>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h2>Sites</h2></div>
+              <div class="src-list" id="plSources"></div>
+              <p class="muted" id="plNote" style="font-size:.8rem;margin-top:10px"></p>
+            </div>
+          </div>
+          <div class="stack" id="plResults"></div>
+        </div>
       </div>
     </section>
 
@@ -906,6 +947,7 @@ function showSub(top,id){
   [].forEach.call(sec.querySelectorAll('.subnav [data-sub]'),function(b){b.setAttribute('aria-pressed',b.dataset.sub===id?'true':'false')});
   if(id==='pp-log')renderPapers();
   if(id==='pp-grades')renderGrades();
+  if(id==='pp-links')renderLinks();
   if(id==='st-account')renderAccount();
   if(id==='st-progress')renderProgress();
   if(id==='st-colors')renderLook();
@@ -1768,6 +1810,161 @@ $('tab-board').addEventListener('click',function(e){
   if(a){BOARD.scope=a.dataset.ls;renderBoard()}
   if(b){BOARD.metric=b.dataset.lm2;renderBoard()}
 });
+
+/* ---------- past paper links ---------- */
+var CAIE_FILES='https://pastpapers.papacambridge.com/directories/CAIE/CAIE-pastpapers/upload/';
+var PMT_FILES='https://pmt.physicsandmathstutor.com/download/';
+var PMT_PAGES='https://www.physicsandmathstutor.com/past-papers/';
+var PAPA='https://pastpapers.papacambridge.com/papers/caie/';
+var DYN_C='https://dynamicpapers.com/past-papers/cambridge-past-papers/o-level/';
+var DYN_E='https://dynamicpapers.com/past-papers/edexcel-past-papers/o-level/';
+function plEnc(s){return encodeURIComponent(s).replace(/[()]/g,function(c){return '%'+c.charCodeAt(0).toString(16).toUpperCase()})}
+function lk(href,txt,cls){return '<a class="lk'+(cls?' '+cls:'')+'" href="'+esc(href)+'" target="_blank" rel="noopener noreferrer">'+txt+'</a>'}
+var SCI=[{n:'1',l:'Paper 1',t:'Multiple choice (Core)'},{n:'2',l:'Paper 2',t:'Multiple choice (Extended)'},{n:'3',l:'Paper 3',t:'Theory (Core)'},{n:'4',l:'Paper 4',t:'Theory (Extended)'},{n:'5',l:'Paper 5',t:'Practical test'},{n:'6',l:'Paper 6',t:'Alternative to practical'}];
+function esci(a,b){return [{n:'1',l:'Paper 1',t:'Paper '+a},{n:'2',l:'Paper 2',t:'Paper '+b}]}
+function idx(id,grp,name,links,keys){return {id:id,grp:grp,name:name,kind:'idx',keys:keys||[],src:links}}
+var PL=[
+ {id:'c-phys',grp:'Cambridge IGCSE',name:'Physics',code:'0625',keys:['physics'],kind:'caie',papers:SCI,def:['2','4','6'],pmt:'gcse-physics',
+  src:[['PapaCambridge',PAPA+'igcse-physics-0625'],['Dynamic Papers',DYN_C+'subjects-f-z/physics/'],['Demerdash','https://demerdash.uk/physics/igcse-cambridge-past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'gcse-physics/']]},
+ {id:'c-chem',grp:'Cambridge IGCSE',name:'Chemistry',code:'0620',keys:['chemistry'],kind:'caie',papers:SCI,def:['2','4','6'],pmt:'gcse-chemistry',
+  src:[['PapaCambridge',PAPA+'igcse-chemistry-0620'],['Dynamic Papers',DYN_C+'subjects-a-e/chemistry/'],['Demerdash','https://demerdash.uk/chemistry/igcse-cambridge-past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'gcse-chemistry/']]},
+ {id:'c-bio',grp:'Cambridge IGCSE',name:'Biology',code:'0610',keys:['biology'],kind:'caie',papers:SCI,def:['2','4','6'],pmt:'gcse-biology',
+  src:[['PapaCambridge',PAPA+'igcse-biology-0610'],['Dynamic Papers',DYN_C+'subjects-a-e/biology/'],['Demerdash','https://demerdash.uk/biology/igcse-cambridge-past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'gcse-biology/']]},
+ {id:'c-math',grp:'Cambridge IGCSE',name:'Mathematics',code:'0580',keys:['mathematics','maths'],kind:'caie',
+  papers:[{n:'1',l:'Paper 1',t:'Core'},{n:'2',l:'Paper 2',t:'Extended'},{n:'3',l:'Paper 3',t:'Core'},{n:'4',l:'Paper 4',t:'Extended'}],def:['2','4'],pmt:'gcse-maths',
+  src:[['PapaCambridge',PAPA+'igcse-mathematics-0580'],['Dynamic Papers',DYN_C+'subjects-f-z/maths/'],['Demerdash (may ask for a password)','https://demerdash.uk/math/igcse-cambridge/past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'gcse-maths/']]},
+ {id:'e-math',grp:'Edexcel International GCSE',name:'Mathematics A',code:'4MA1',keys:['mathematics','maths','mathematics a'],kind:'em',
+  papers:[{n:'1H',l:'Paper 1H',t:'Higher tier'},{n:'2H',l:'Paper 2H',t:'Higher tier'},{n:'1F',l:'Paper 1F',t:'Foundation tier'},{n:'2F',l:'Paper 2F',t:'Foundation tier'}],def:['1H','2H'],
+  src:[['Physics & Maths Tutor, Paper 1',PMT_PAGES+'gcse-maths/edexcel-igcse-a-paper-1/'],['Physics & Maths Tutor, Paper 2',PMT_PAGES+'gcse-maths/edexcel-igcse-a-paper-2/'],['Dynamic Papers',DYN_E+'maths-2/'],['Demerdash (may ask for a password)','https://demerdash.uk/math/igcse-edexcel/past-papers/'],['Save My Exams','https://www.savemyexams.com/igcse/maths/edexcel/a/past-papers/'],['ExamPapersPractice','https://www.exampaperspractice.co.uk/igcse-maths-edexcel']]},
+ {id:'e-phys',grp:'Edexcel International GCSE',name:'Physics',code:'4PH1',keys:['physics'],kind:'es',dir:'Physics',papers:esci('1P','2P'),def:['1','2'],pmt:'gcse-physics',
+  src:[['Physics & Maths Tutor, Paper 1',PMT_PAGES+'gcse-physics/edexcel-igcse-paper-1/'],['Physics & Maths Tutor, Paper 2',PMT_PAGES+'gcse-physics/edexcel-igcse-paper-2/'],['Dynamic Papers',DYN_E+'physics/'],['Demerdash','https://demerdash.uk/physics/igcse-edexcel-past-papers/']]},
+ {id:'e-chem',grp:'Edexcel International GCSE',name:'Chemistry',code:'4CH1',keys:['chemistry'],kind:'es',dir:'Chemistry',papers:esci('1C','2C'),def:['1','2'],pmt:'gcse-chemistry',
+  src:[['Physics & Maths Tutor, Paper 1',PMT_PAGES+'gcse-chemistry/edexcel-igcse-paper-1/'],['Physics & Maths Tutor, Paper 2',PMT_PAGES+'gcse-chemistry/edexcel-igcse-paper-2/'],['Dynamic Papers',DYN_E+'chemistry/'],['Demerdash','https://demerdash.uk/chemistry/igcse-edexcel-past-papers/']]},
+ {id:'e-bio',grp:'Edexcel International GCSE',name:'Biology',code:'4BI1',keys:['biology'],kind:'es',dir:'Biology',nov20:true,papers:esci('1B','2B'),def:['1','2'],pmt:'gcse-biology',
+  src:[['Physics & Maths Tutor, Paper 1',PMT_PAGES+'gcse-biology/edexcel-igcse-paper-1/'],['Physics & Maths Tutor, Paper 2',PMT_PAGES+'gcse-biology/edexcel-igcse-paper-2/'],['Dynamic Papers',DYN_E+'biology/'],['Demerdash','https://demerdash.uk/biology/igcse-edexcel-past-papers/']]},
+ idx('i-addm','More Cambridge subjects (index pages)','Additional Mathematics 0606',[['PapaCambridge',PAPA+'igcse-mathematics-0606']],['additional mathematics']),
+ idx('i-eng','More Cambridge subjects (index pages)','English First Language 0500',[['PapaCambridge',PAPA+'igcse-english-0500']],['english language','english']),
+ idx('i-bus','More Cambridge subjects (index pages)','Business Studies 0450',[['PapaCambridge',PAPA+'igcse-business-studies-0450']],['business studies']),
+ idx('i-eco','More Cambridge subjects (index pages)','Economics 0455',[['PapaCambridge',PAPA+'igcse-economics-0455']],['economics']),
+ idx('i-cs','More Cambridge subjects (index pages)','Computer Science 0478',[['PapaCambridge',PAPA+'igcse-computer-science-0478']],['computer science']),
+ idx('i-ict','More Cambridge subjects (index pages)','ICT 0417',[['PapaCambridge',PAPA+'igcse-ict0417']],['ict']),
+ idx('i-geo','More Cambridge subjects (index pages)','Geography 0460',[['PapaCambridge',PAPA+'igcse-geography-0460']],['geography']),
+ idx('i-his','More Cambridge subjects (index pages)','History 0470',[['PapaCambridge',PAPA+'igcse-history-0470']],['history']),
+ idx('i-acc','More Cambridge subjects (index pages)','Accounting 0452',[['PapaCambridge',PAPA+'igcse-accounting-0452']],['accounting']),
+ idx('i-isl','More Cambridge subjects (index pages)','Islamiyat 0493',[['PapaCambridge',PAPA+'igcse-islamiyat-0493']],['islamic studies']),
+ idx('i-ara','More Cambridge subjects (index pages)','Arabic',[['PapaCambridge, 0508',PAPA+'igcse-arabic-0508'],['PapaCambridge, 0527',PAPA+'igcse-arabic-0527'],['PapaCambridge, 0544',PAPA+'igcse-arabic-0544']],['arabic']),
+ idx('i-sci','More Cambridge subjects (index pages)','Combined and Co-ordinated Sciences',[['PapaCambridge, Science 0653',PAPA+'igcse-science-0653'],['PapaCambridge, Sciences 0654',PAPA+'igcse-sciences-0654']],['combined science']),
+ idx('i-edx','More Edexcel subjects (index pages)','Other Edexcel subjects',[['Dynamic Papers, all Edexcel IGCSE subjects',DYN_E],['Save My Exams, Edexcel IGCSE','https://www.savemyexams.com/igcse/boards/edexcel/past-papers/']],[])
+];
+var PLS={sid:null,papers:[],year:'all'};
+function plSubject(){return PL.filter(function(s){return s.id===PLS.sid})[0]||PL[0]}
+function plSelect(id){var s=PL.filter(function(x){return x.id===id})[0]||PL[0];PLS.sid=s.id;PLS.papers=(s.def||[]).slice();PLS.year='all';$('plSubj').value=s.id}
+function plGroups(sj){
+  var cy=new Date().getFullYear(),now=new Date(),g=[],y,L=[];
+  if(sj.kind==='caie'){
+    for(y=cy;y>=2016;y--){
+      var rows=[];
+      [['w','Oct/Nov'],['s','May/June'],['m','Feb/March']].forEach(function(s){
+        if(y===cy&&s[0]==='w'&&now.getMonth()<11)return;
+        rows.push({k:s[0],m:s[1]});
+      });
+      g.push({y:String(y),yy:String(y).slice(2),rows:rows});
+    }
+    return g;
+  }
+  if(sj.kind==='em'){
+    for(y=2012;y<=2023;y++)L.push({y:y,m:'January',std:'January '+y,r:y>=2014?'January '+y+' (R)':null,ma:y>=2019});
+    for(y=2011;y<=2025;y++)L.push({y:y,m:'June',std:'June '+y,r:(y>=2013&&y!==2021)?'June '+y+' (R)':null,ma:y>=2018&&y<=2023});
+    L.push({y:2021,m:'November',std:'November 2021',r:null,ma:false});
+    L.push({y:'Specimen',m:'Specimen',std:'Specimen',r:null,ma:true});
+  }else{
+    for(y=2020;y<=2023;y++)L.push({y:y,m:'January',std:'January '+y,r:'January '+y+' (R)'});
+    for(y=2019;y<=2025;y++)L.push({y:y,m:'June',std:'June '+y,r:y!==2021?'June '+y+' (R)':null});
+    if(sj.nov20)L.push({y:2020,m:'November',std:'November 2020',r:'November 2020 (R)'});
+    L.push({y:2021,m:'November',std:'November 2021',r:null});
+    L.push({y:2017,m:'Specimen',std:'Specimen 2017',r:null});
+  }
+  var map={},order=['January','June','November','Specimen'];
+  L.forEach(function(r){var k=String(r.y);(map[k]=map[k]||[]).push(r)});
+  return Object.keys(map).sort(function(a,b){var na=+a,nb=+b;if(isNaN(na))return 1;if(isNaN(nb))return -1;return nb-na}).map(function(k){
+    return {y:k,rows:map[k].sort(function(a,b){return order.indexOf(a.m)-order.indexOf(b.m)})};
+  });
+}
+function pmtUrl(sj,p,T,series){
+  var file=series+' '+T+'.pdf';
+  if(sj.kind==='em'){
+    if(T==='MA'&&p.n.slice(-1)==='H'&&series==='January 2019 (R)')file='January 2019 (R).pdf';
+    return PMT_FILES+'Maths/GCSE/Past-Papers/Edexcel-IGCSE-A/Paper-'+p.n+'/'+T+'/'+plEnc(file);
+  }
+  return PMT_FILES+sj.dir+'/GCSE/Past-Papers/Edexcel-IGCSE/New-Spec-Paper-'+p.n+'/'+T+'/'+plEnc(file);
+}
+function pmtSet(sj,p,r,label,series){
+  if(!series)return '';
+  var types=['QP','MS'];if(sj.kind==='em'&&r.ma)types.push('MA');
+  return '<span class="pl-var"><b>'+label+'</b>'+types.map(function(T){return lk(pmtUrl(sj,p,T,series),T)}).join('')+'</span>';
+}
+function plRow(sj,p,gr,r){
+  if(sj.kind==='caie'){
+    var vars=r.k==='m'?[2]:[1,2,3];
+    return '<div class="pl-row"><span class="pl-ses">'+r.m+'</span><span class="pl-vars">'+vars.map(function(v){
+      var pv=p.n+v,base=CAIE_FILES+sj.code+'_'+r.k+gr.yy+'_';
+      return '<span class="pl-var"><b>'+pv+'</b>'+lk(base+'qp_'+pv+'.pdf','QP')+lk(base+'ms_'+pv+'.pdf','MS')+'</span>';
+    }).join('')+'</span></div>';
+  }
+  return '<div class="pl-row"><span class="pl-ses">'+r.m+'</span><span class="pl-vars">'+pmtSet(sj,p,r,'Std',r.std)+pmtSet(sj,p,r,'R',r.r)+'</span></div>';
+}
+function plPageUrl(sj,p){
+  if(sj.kind==='caie')return PMT_PAGES+sj.pmt+'/cie-igcse-paper-'+p.n+'/';
+  if(sj.kind==='em')return PMT_PAGES+'gcse-maths/edexcel-igcse-a-paper-'+p.n.charAt(0)+'/';
+  return PMT_PAGES+sj.pmt+'/edexcel-igcse-paper-'+p.n+'/';
+}
+function renderLinks(){
+  var sel=$('plSubj');
+  if(!sel.options.length){
+    var gs=[],h='';
+    PL.forEach(function(s){if(gs.indexOf(s.grp)<0)gs.push(s.grp)});
+    gs.forEach(function(g){h+='<optgroup label="'+esc(g)+'">'+PL.filter(function(s){return s.grp===g}).map(function(s){return '<option value="'+s.id+'">'+esc(s.name+(s.code?' · '+s.code:''))+'</option>'}).join('')+'</optgroup>'});
+    sel.innerHTML=h;
+    var a=activeSubj(),pre=(a&&a.board==='edexcel')?'e-':'i-',nm=a?a.name.toLowerCase():'';
+    var m=PL.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0&&(s.id.indexOf(pre)===0||s.id.indexOf('c-')===0&&pre==='i-')})[0]||PL.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0})[0];
+    plSelect(m?m.id:'c-phys');
+  }
+  var sj=plSubject(),isIdx=sj.kind==='idx';
+  $('plPapersWrap').hidden=isIdx;$('plYearWrap').hidden=isIdx;
+  $('plSources').innerHTML=sj.src.map(function(s){return lk(s[1],'<span>'+esc(s[0])+'</span><span aria-hidden="true">↗</span>','src')}).join('');
+  var res=$('plResults'),h2='';
+  if(isIdx){
+    $('plNote').textContent='These subjects open on the site\'s own index page, where you can pick a year.';
+    res.innerHTML='<div class="pl-paper"><div class="pl-head"><div><h2>'+esc(sj.name)+'</h2><small>'+esc(sj.grp)+'</small></div></div><p class="muted">Use the buttons on the left to open the past paper index for this subject.</p></div>';
+    return;
+  }
+  $('plPapers').innerHTML=sj.papers.map(function(p){return '<button type="button" class="chip" data-pp="'+p.n+'" aria-pressed="'+(PLS.papers.indexOf(p.n)>=0)+'" title="'+esc(p.t)+'">'+esc(p.l)+'</button>'}).join('');
+  var groups=plGroups(sj);
+  var yr=$('plYear');yr.innerHTML='<option value="all">All years</option>'+groups.map(function(g){return '<option value="'+esc(g.y)+'">'+esc(g.y)+'</option>'}).join('');
+  if(!groups.some(function(g){return g.y===PLS.year}))PLS.year='all';
+  yr.value=PLS.year;
+  var shown=groups.filter(function(g){return PLS.year==='all'||g.y===PLS.year});
+  $('plNote').textContent=sj.kind==='caie'?'Direct PDF links open on PapaCambridge. They are third-party copies of the Cambridge papers.':'Direct PDF links open on Physics & Maths Tutor.';
+  h2+='<p class="muted" style="font-size:.85rem">'+(sj.kind==='caie'
+    ?'Each number is the paper and variant, so 42 is Paper 4, variant 2. QP is the question paper and MS is the mark scheme. Feb/March series only have variant 2, and not every variant exists in every series.'
+    :'QP is the question paper, MS the mark scheme'+(sj.kind==='em'?' and MA the model answers':'')+'. Std is the standard paper and R is the regional version some countries sit.')+' If a link does not open, try the sites on the left.</p>';
+  sj.papers.filter(function(p){return PLS.papers.indexOf(p.n)>=0}).forEach(function(p){
+    h2+='<div class="pl-paper"><div class="pl-head"><div><h2>'+esc(p.l)+'</h2><small>'+esc(p.t)+' · '+esc(sj.name)+' '+esc(sj.code)+'</small></div>'+lk(plPageUrl(sj,p),'Paper page on PMT ↗')+'</div>';
+    shown.forEach(function(gr,i){
+      h2+='<details class="pl-year"'+((PLS.year!=='all'||i<2)?' open':'')+'><summary>'+esc(gr.y)+'</summary>'+gr.rows.map(function(r){return plRow(sj,p,gr,r)}).join('')+'</details>';
+    });
+    h2+='</div>';
+  });
+  res.innerHTML=h2;
+}
+$('plSubj').addEventListener('change',function(e){plSelect(e.target.value);renderLinks()});
+$('plPapers').addEventListener('click',function(e){
+  var b=e.target.closest('[data-pp]');if(!b)return;
+  var n=b.dataset.pp,i=PLS.papers.indexOf(n);
+  if(i>=0){if(PLS.papers.length>1)PLS.papers.splice(i,1)}else PLS.papers.push(n);
+  renderLinks();
+});
+$('plYear').addEventListener('change',function(e){PLS.year=e.target.value;renderLinks()});
 
 /* ---------- keyboard + loop ---------- */
 document.addEventListener('keydown',function(e){
