@@ -16,7 +16,7 @@
   --accent:hsl(var(--h) var(--acc-s) var(--acc-l));
   --accent-soft:hsl(var(--h) var(--acc-s) var(--acc-l) / var(--acc-soft-a));
   --dot:hsl(var(--h) var(--acc-s) var(--acc-l));
-  /* every colour in the app goes through one of these, so each can be changed on the Colours tab */
+  /* every color in the app goes through one of these, so each can be changed on the Colors tab */
   --heading:var(--ink); --link:var(--accent);
   --btn-bg:var(--surface); --btn-ink:var(--ink); --primary-bg:var(--accent); --primary-ink:var(--on-accent);
   --tab-ink:var(--muted); --tab-active:var(--accent);
@@ -185,6 +185,7 @@ input[type=range].hue{-webkit-appearance:none; appearance:none; height:14px; bor
 input[type=range].hue::-webkit-slider-thumb{-webkit-appearance:none; width:22px; height:22px; border-radius:50%; background:var(--surface); border:3px solid var(--ink); cursor:pointer}
 input[type=range].hue::-moz-range-thumb{width:16px; height:16px; border-radius:50%; background:var(--surface); border:3px solid var(--ink); cursor:pointer}
 .look-stack{display:flex; flex-direction:column; gap:16px}
+.subnav{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px}
 .pill.lg{height:34px; padding:0 14px; font-size:.85rem}
 .pill.lg b{font-family:var(--font-mono); font-weight:700; margin-right:4px}
 .stack{display:flex; flex-direction:column; gap:16px}
@@ -293,13 +294,10 @@ img{max-width:100%}
     <button class="tab" role="tab" data-tab="timer" aria-selected="true">Timer</button>
     <button class="tab" role="tab" data-tab="stopwatch" aria-selected="false">Stopwatch</button>
     <button class="tab" role="tab" data-tab="exams" aria-selected="false">Exam countdown</button>
-    <button class="tab" role="tab" data-tab="grades" aria-selected="false">Grade boundaries</button>
     <button class="tab" role="tab" data-tab="papers" aria-selected="false">Past papers</button>
-    <button class="tab" role="tab" data-tab="progress" aria-selected="false">Progress</button>
     <button class="tab" role="tab" data-tab="board" aria-selected="false">Leaderboard</button>
     <button class="tab" role="tab" data-tab="subjects" aria-selected="false">My subjects</button>
-    <button class="tab" role="tab" data-tab="colours" aria-selected="false">Colours</button>
-    <button class="tab" role="tab" data-tab="account" aria-selected="false">Account</button>
+    <button class="tab" role="tab" data-tab="settings" aria-selected="false">Settings</button>
   </div></div>
 
   <main>
@@ -400,24 +398,13 @@ img{max-width:100%}
       </div>
     </section>
 
-    <!-- GRADES -->
-    <section id="tab-grades" hidden>
-      <div style="display:flex;flex-direction:column;gap:16px">
-        <div class="card">
-          <h2 style="margin-bottom:6px">Grade boundaries</h2>
-          <p class="muted" style="max-width:68ch">Subjects marked Official use the June 2026 tables from Cambridge, Pearson Edexcel and OxfordAQA. Subjects marked Estimate are placeholders. Boundaries change every series, so edit any number to match your own sheet, then enter your mark to see the grade.</p>
-          <p class="notice" style="margin-top:10px">
-            <a href="https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-upper-secondary/cambridge-igcse/grade-threshold-tables/june-2026/" target="_blank" rel="noopener">Cambridge thresholds</a>
-            <a href="https://qualifications.pearson.com/content/dam/pdf/Support/Grade-boundaries/International-GCSE/grade-boundaries-june-2026-international-gcse.pdf" target="_blank" rel="noopener">Pearson Edexcel boundaries</a>
-            <a href="https://www.oxfordaqa.com/exams-admin/results/" target="_blank" rel="noopener">OxfordAQA results</a>
-          </p>
-        </div>
-        <div class="grade-list" id="gradeList"></div>
-      </div>
-    </section>
+
+
 
     <!-- PAST PAPERS -->
     <section id="tab-papers" hidden>
+      <div class="subnav" role="group" aria-label="Past papers sections"><button type="button" class="chip" data-sub="pp-log" aria-pressed="true">Log papers</button><button type="button" class="chip" data-sub="pp-grades" aria-pressed="false">Grade boundaries</button></div>
+      <div class="subpanel" id="pp-log">
       <div class="split">
         <div class="col">
           <div class="card">
@@ -441,33 +428,23 @@ img{max-width:100%}
         <div class="card">
           <div class="card-head"><h2>Your papers</h2><span class="muted" id="pCount" style="font-size:.85rem"></span></div>
           <ul class="plist" id="pList"></ul>
-          <p class="empty" id="pEmpty">No papers logged yet. Add your first one to see averages and expected grades in Progress.</p>
+          <p class="empty" id="pEmpty">No papers logged yet. Add your first one to see averages and expected grades in Settings, under Progress.</p>
         </div>
       </div>
-    </section>
-
-    <!-- PROGRESS -->
-    <section id="tab-progress" hidden>
-      <div class="stack">
-        <div class="stat-grid" id="stGrid"></div>
-        <div class="split">
-          <div class="card">
-            <div class="card-head"><h2>Focus, last 14 days</h2><span class="muted" id="focAvg" style="font-size:.85rem"></span></div>
-            <div class="bars" id="bars"></div>
-            <p class="muted" style="font-size:.78rem;margin-top:8px">Minutes of focus per day. The number under each bar is the day of the month.</p>
-          </div>
-          <div class="card">
-            <div class="card-head"><h2>Recent points</h2></div>
-            <ul class="feed" id="feedList"></ul>
-            <p class="empty" id="feedEmpty">Start a focus timer or log a paper to earn your first points.</p>
-          </div>
-        </div>
+      </div>
+      <div class="subpanel" id="pp-grades" hidden>
+      <div style="display:flex;flex-direction:column;gap:16px">
         <div class="card">
-          <div class="card-head"><h2>Past paper averages</h2><span class="muted" id="ppOverall" style="font-size:.85rem"></span></div>
-          <div style="overflow-x:auto"><table class="data" id="ppTable"></table></div>
-          <p class="empty" id="ppEmpty">Log past papers to see your averages and the grade they point to.</p>
-          <p class="muted" id="ppNote" style="font-size:.82rem;margin-top:10px"></p>
+          <h2 style="margin-bottom:6px">Grade boundaries</h2>
+          <p class="muted" style="max-width:68ch">Subjects marked Official use the June 2026 tables from Cambridge, Pearson Edexcel and OxfordAQA. Subjects marked Estimate are placeholders. Boundaries change every series, so edit any number to match your own sheet, then enter your mark to see the grade.</p>
+          <p class="notice" style="margin-top:10px">
+            <a href="https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-upper-secondary/cambridge-igcse/grade-threshold-tables/june-2026/" target="_blank" rel="noopener">Cambridge thresholds</a>
+            <a href="https://qualifications.pearson.com/content/dam/pdf/Support/Grade-boundaries/International-GCSE/grade-boundaries-june-2026-international-gcse.pdf" target="_blank" rel="noopener">Pearson Edexcel boundaries</a>
+            <a href="https://www.oxfordaqa.com/exams-admin/results/" target="_blank" rel="noopener">OxfordAQA results</a>
+          </p>
         </div>
+        <div class="grade-list" id="gradeList"></div>
+      </div>
       </div>
     </section>
 
@@ -487,7 +464,7 @@ img{max-width:100%}
     <section id="tab-subjects" hidden>
       <div class="split">
         <div class="card">
-          <div class="card-head"><h2>Your subjects</h2><span class="muted" style="font-size:.85rem">Each subject has its own colour</span></div>
+          <div class="card-head"><h2>Your subjects</h2><span class="muted" style="font-size:.85rem">Each subject has its own color</span></div>
           <ul class="subj-list" id="subjList"></ul>
         </div>
         <div class="col">
@@ -508,38 +485,10 @@ img{max-width:100%}
       </div>
     </section>
     <!-- COLOURS -->
-    <section id="tab-colours" hidden>
-      <div class="split">
-        <div class="col">
-          <div class="card">
-            <div class="card-head"><h2>Accent colour</h2></div>
-            <div class="look-stack">
-              <div class="chip-row" id="lookModes" role="group" aria-label="Accent colour source"></div>
-              <div class="look-stack" id="lookHues"></div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-head"><h2>Light or dark</h2></div>
-            <div class="chip-row" id="themeChips" role="group" aria-label="Light or dark"></div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card">
-            <div class="card-head"><h2>Starting points</h2></div>
-            <p class="muted" style="font-size:.85rem;margin-bottom:10px">Pick a set of page colours, then change anything you like below.</p>
-            <div class="mode-grid" id="bgChips"></div>
-          </div>
-          <div><button class="btn" id="lookReset" type="button">Reset all colours</button></div>
-        </div>
-      </div>
-      <div class="card" style="margin-top:20px">
-        <div class="card-head"><h2>Every colour</h2><button class="btn sm" id="ccFlip" type="button"></button></div>
-        <p class="muted" style="font-size:.88rem">You are editing the <b id="ccWhich">light</b> colours. Light and dark each keep their own set. Tap a swatch to change it. The arrow puts one back to normal.</p>
-        <div id="ccGroups"></div>
-      </div>
-    </section>
-    <!-- ACCOUNT -->
-    <section id="tab-account" hidden>
+    <!-- SETTINGS -->
+    <section id="tab-settings" hidden>
+      <div class="subnav" role="group" aria-label="Settings sections"><button type="button" class="chip" data-sub="st-account" aria-pressed="true">Account</button><button type="button" class="chip" data-sub="st-progress" aria-pressed="false">Progress</button><button type="button" class="chip" data-sub="st-colors" aria-pressed="false">Colors</button></div>
+      <div class="subpanel" id="st-account">
       <div class="split">
         <div class="col">
           <div class="card">
@@ -577,6 +526,60 @@ img{max-width:100%}
           <p class="empty" id="frEmpty">No friends yet. Ask a friend for their username and add it here, then switch the leaderboard to Friends.</p>
         </div>
       </div>
+      </div>
+      <div class="subpanel" id="st-progress" hidden>
+      <div class="stack">
+        <div class="stat-grid" id="stGrid"></div>
+        <div class="split">
+          <div class="card">
+            <div class="card-head"><h2>Focus, last 14 days</h2><span class="muted" id="focAvg" style="font-size:.85rem"></span></div>
+            <div class="bars" id="bars"></div>
+            <p class="muted" style="font-size:.78rem;margin-top:8px">Minutes of focus per day. The number under each bar is the day of the month.</p>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Recent points</h2></div>
+            <ul class="feed" id="feedList"></ul>
+            <p class="empty" id="feedEmpty">Start a focus timer or log a paper to earn your first points.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Past paper averages</h2><span class="muted" id="ppOverall" style="font-size:.85rem"></span></div>
+          <div style="overflow-x:auto"><table class="data" id="ppTable"></table></div>
+          <p class="empty" id="ppEmpty">Log past papers to see your averages and the grade they point to.</p>
+          <p class="muted" id="ppNote" style="font-size:.82rem;margin-top:10px"></p>
+        </div>
+      </div>
+      </div>
+      <div class="subpanel" id="st-colors" hidden>
+      <div class="split">
+        <div class="col">
+          <div class="card">
+            <div class="card-head"><h2>Accent color</h2></div>
+            <div class="look-stack">
+              <div class="chip-row" id="lookModes" role="group" aria-label="Accent color source"></div>
+              <div class="look-stack" id="lookHues"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Light or dark</h2></div>
+            <div class="chip-row" id="themeChips" role="group" aria-label="Light or dark"></div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <div class="card-head"><h2>Starting points</h2></div>
+            <p class="muted" style="font-size:.85rem;margin-bottom:10px">Pick a set of page colors, then change anything you like below.</p>
+            <div class="mode-grid" id="bgChips"></div>
+          </div>
+          <div><button class="btn" id="lookReset" type="button">Reset all colors</button></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:20px">
+        <div class="card-head"><h2>Every color</h2><button class="btn sm" id="ccFlip" type="button"></button></div>
+        <p class="muted" style="font-size:.88rem">You are editing the <b id="ccWhich">light</b> colors. Light and dark each keep their own set. Tap a swatch to change it. The arrow puts one back to normal.</p>
+        <div id="ccGroups"></div>
+      </div>
+      </div>
     </section>
   </main>
 </div>
@@ -599,7 +602,7 @@ var SCALE={cambridge:['A*','A','B','C','D','E','F','G'],edexcel:NINE,oxford:NINE
 var PCT={cambridge:[78,66,54,42,32,22,12,6],edexcel:[80,70,60,51,42,33,24,15,6],oxford:[80,70,60,51,42,33,24,15,6]};
 var BOARD_NAME={cambridge:'Cambridge · A* to G',edexcel:'Edexcel · 9 to 1',oxford:'OxfordAQA · 9 to 1'};
 var SRC_NAME={cambridge:'Cambridge',edexcel:'Pearson Edexcel',oxford:'OxfordAQA'};
-var TOOLS=[['timer','Timer'],['stopwatch','Stopwatch'],['exams','Exam countdown'],['grades','Grade boundaries'],['papers','Past papers'],['progress','Progress'],['board','Leaderboard'],['subjects','My subjects'],['account','Account']];
+var TOOLS=[['timer','Timer'],['stopwatch','Stopwatch'],['exams','Exam countdown'],['papers','Past papers'],['board','Leaderboard'],['subjects','My subjects'],['settings','Settings']];
 var PAL={
  slate:{n:'Slate'},
  ink:{n:'Ink',l:['#E9EEF7','#FFFFFF','#DDE5F2','#C3CEE2'],d:['#0A1020','#121B30','#1A2640','#27344F']},
@@ -609,7 +612,7 @@ var PAL={
  mono:{n:'Mono',l:['#EFEFEF','#FFFFFF','#E2E2E2','#CFCFCF'],d:['#0B0B0B','#151515','#1F1F1F','#2D2D2D']}
 };
 function mergeCustom(c){c=c||{};return {light:Object.assign({},c.light),dark:Object.assign({},c.dark)}}
-function defaultLook(){return {mode:'subject',fixed:215,tools:{timer:215,stopwatch:175,exams:28,grades:290,papers:330,progress:150,board:45,subjects:150,account:255},bg:'slate',custom:{light:{},dark:{}}}}
+function defaultLook(){return {mode:'subject',fixed:215,tools:{timer:215,stopwatch:175,exams:28,papers:330,board:45,subjects:150,settings:255},bg:'slate',custom:{light:{},dark:{}}}}
 var CC_BG=['bg','surface','surface-2','line'];
 var CC=[
  ['Page',[['bg','Page background'],['surface','Cards and panels'],['surface-2','Raised areas and pills'],['line','Borders and dividers'],['ink','Main text'],['heading','Headings'],['muted','Secondary text']]],
@@ -806,7 +809,7 @@ function applyPalette(){
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyPalette)}catch(e){}
 try{new MutationObserver(applyPalette).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']})}catch(e){}
 
-/* ---------- colours tab ---------- */
+/* ---------- colors tab ---------- */
 var _cv=document.createElement('canvas');_cv.width=_cv.height=1;
 var _cx=_cv.getContext('2d',{willReadFrequently:true});
 function toHex(c){
@@ -829,10 +832,10 @@ function renderPresets(){
 }
 function renderLook(){
   var L=S.look,h='';
-  $('lookModes').innerHTML=[['subject','Follow my subject'],['fixed','One colour'],['tool','Colour per tool']].map(function(m){
+  $('lookModes').innerHTML=[['subject','Follow my subject'],['fixed','One color'],['tool','Color per tool']].map(function(m){
     return '<button type="button" class="chip" data-lm="'+m[0]+'" aria-pressed="'+(L.mode===m[0])+'">'+m[1]+'</button>'}).join('');
-  if(L.mode==='subject')h='<p class="muted">The accent changes with the subject you pick at the top. Set each subject\'s colour in My subjects. Setting "Accent" under Every colour overrides this.</p>';
-  else if(L.mode==='fixed')h=hueRow('hue-fixed','Accent colour',L.fixed)+'<div class="sw-row">'+HUES.map(function(x,i){
+  if(L.mode==='subject')h='<p class="muted">The accent changes with the subject you pick at the top. Set each subject\'s color in My subjects. Setting "Accent" under Every color overrides this.</p>';
+  else if(L.mode==='fixed')h=hueRow('hue-fixed','Accent color',L.fixed)+'<div class="sw-row">'+HUES.map(function(x,i){
     return '<button type="button" class="sw" data-fh="'+x+'" aria-label="'+HUE_NAMES[i]+'" aria-pressed="'+(L.fixed===x)+'" style="background:hsl('+x+' 70% 45%)"></button>'}).join('')+'</div>';
   else h=TOOLS.map(function(t){return hueRow('hue-'+t[0],t[1],L.tools[t[0]])}).join('');
   $('lookHues').innerHTML=h;
@@ -841,7 +844,7 @@ function renderLook(){
   renderPresets();
   var dark=isDark(),mm=L.custom[dark?'dark':'light'];
   $('ccWhich').textContent=dark?'dark':'light';
-  $('ccFlip').textContent='Edit '+(dark?'light':'dark')+' colours';
+  $('ccFlip').textContent='Edit '+(dark?'light':'dark')+' colors';
   $('ccGroups').innerHTML=CC.map(function(g){
     return '<div class="cc-group"><div class="eyebrow">'+g[0]+'</div><div class="cc-grid">'+g[1].map(function(t){
       var k=t[0];
@@ -895,16 +898,29 @@ $('themeBtn').addEventListener('click',function(){S.theme=S.theme==='auto'?'ligh
 $('activeSubject').addEventListener('change',function(e){S.active=e.target.value;applyHue();save()});
 
 /* ---------- tabs ---------- */
+var SUB={papers:'pp-log',settings:'st-account'};
+function showSub(top,id){
+  SUB[top]=id;
+  var sec=$('tab-'+top);
+  [].forEach.call(sec.querySelectorAll('.subpanel'),function(p){p.hidden=p.id!==id});
+  [].forEach.call(sec.querySelectorAll('.subnav [data-sub]'),function(b){b.setAttribute('aria-pressed',b.dataset.sub===id?'true':'false')});
+  if(id==='pp-log')renderPapers();
+  if(id==='pp-grades')renderGrades();
+  if(id==='st-account')renderAccount();
+  if(id==='st-progress')renderProgress();
+  if(id==='st-colors')renderLook();
+}
 function switchTab(name){
-  curTab=name;applyHue();if(name==='colours')renderLook();
-  ['timer','stopwatch','exams','grades','papers','progress','board','subjects','colours','account'].forEach(function(t){$('tab-'+t).hidden=t!==name});
+  curTab=name;applyHue();
+  ['timer','stopwatch','exams','papers','board','subjects','settings'].forEach(function(t){$('tab-'+t).hidden=t!==name});
   [].forEach.call(document.querySelectorAll('.tab'),function(b){b.setAttribute('aria-selected',b.dataset.tab===name?'true':'false')});
   if(name==='exams')tickCountdown(true);
-  if(name==='papers')renderPapers();
-  if(name==='progress')renderProgress();
+  if(name==='papers'||name==='settings')showSub(name,SUB[name]);
   if(name==='board')renderBoard();
-  if(name==='account')renderAccount();
 }
+[].forEach.call(document.querySelectorAll('.subnav'),function(n){
+  n.addEventListener('click',function(e){var b=e.target.closest('[data-sub]');if(!b)return;showSub(n.parentNode.id.replace('tab-',''),b.dataset.sub)});
+});
 $('tabs').addEventListener('click',function(e){var b=e.target.closest('.tab');if(b)switchTab(b.dataset.tab)});
 
 /* ---------- audio ---------- */
@@ -1297,7 +1313,7 @@ function renderSubjects(){
     return '<li class="hued" data-sid="'+s.id+'" style="--h:'+s.hue+'"><span class="dot"></span>'+
       '<input type="text" data-f="name" value="'+esc(s.name)+'" maxlength="40" aria-label="Subject name">'+
       '<div class="subj-opts"><select class="sel" data-f="board" aria-label="Exam board" style="width:auto"><option value="cambridge"'+(s.board==='cambridge'?' selected':'')+'>Cambridge</option><option value="edexcel"'+(s.board==='edexcel'?' selected':'')+'>Edexcel</option><option value="oxford"'+(s.board==='oxford'?' selected':'')+'>OxfordAQA</option></select>'+
-      '<div class="sw-row" role="group" aria-label="Colour">'+HUES.map(function(h,i){return '<button type="button" class="sw" data-hue="'+h+'" aria-label="'+HUE_NAMES[i]+'" aria-pressed="'+(s.hue===h)+'" style="background:hsl('+h+' 70% 45%)"></button>'}).join('')+'</div>'+
+      '<div class="sw-row" role="group" aria-label="Color">'+HUES.map(function(h,i){return '<button type="button" class="sw" data-hue="'+h+'" aria-label="'+HUE_NAMES[i]+'" aria-pressed="'+(s.hue===h)+'" style="background:hsl('+h+' 70% 45%)"></button>'}).join('')+'</div>'+
       '<button type="button" class="x" data-delsubj="'+s.id+'" aria-label="Remove '+esc(s.name)+'"'+(S.subjects.length<2?' disabled':'')+'>×</button></div></li>';
   }).join('');
   $('quickAdd').innerHTML=CATALOG.filter(function(c){return !S.subjects.some(function(s){return s.name.toLowerCase()===c.n.toLowerCase()})}).map(function(c){
@@ -1498,7 +1514,7 @@ function renderProgress(){
   });
   $('ppTable').innerHTML='<thead><tr><th>Subject</th><th class="num">Papers</th><th class="num">Average</th><th class="num">Best</th><th>Latest vs earlier</th><th class="num">Expected mark</th><th class="num">Expected grade</th><th>Next grade</th></tr></thead><tbody>'+rows.join('')+'</tbody>';
   $('ppOverall').textContent='All papers '+Math.round(allAvg)+'% · Subject average '+Math.round(subjAvgSum/sids.length)+'%';
-  $('ppNote').textContent='Expected mark applies your average paper score to the subject\'s total marks and reads the grade from the boundaries in Grade boundaries. It is a guide only. Real boundaries change every series.';
+  $('ppNote').textContent='Expected mark applies your average paper score to the subject\'s total marks and reads the grade from the boundaries in the Grade boundaries section of Past papers. It is a guide only. Real boundaries change every series.';
 }
 
 /* ---------- account, sync, friends (Firebase: Google sign-in + Firestore) ---------- */
@@ -1668,7 +1684,7 @@ function renderAccountStatus(){
     if(SY.err)h+='<p class="err">'+esc(SY.err)+'</p>';
   }else if(!SY.uid){
     txt='Signed out';
-    h+='<p class="muted">Sign in with Google to keep your points, streaks, subjects and colours on every device, and to join the leaderboards.</p>'+
+    h+='<p class="muted">Sign in with Google to keep your points, streaks, subjects and colors on every device, and to join the leaderboards.</p>'+
       '<div><button type="button" class="btn primary" data-act="signin"'+(SY.busy?' disabled':'')+'>'+(SY.busy?'Opening Google…':'Continue with Google')+'</button></div>';
     if(SY.err)h+='<p class="err">'+esc(SY.err)+'</p>';
   }else{
@@ -1744,8 +1760,8 @@ function renderBoard(){
     return '<li class="'+(me?'me':'')+'"><span class="rk">'+(i+1)+'</span><div style="min-width:0"><div class="t">'+esc(p.username)+' '+rankBadge(p.pts)+(me?' <span class="pill run">You</span>':'')+'</div><div class="when">'+(p.pts||0)+' pts · '+effStreak(p)+' day streak · '+fmtMin(p.focus||0)+' focus'+(p.avg!=null?' · '+Math.round(p.avg)+'% papers':'')+'</div></div><span class="val">'+metricVal(p)+' <small>'+label+'</small></span></li>';
   }).join('');
   var e=$('lbEmpty');e.hidden=list.length>0;
-  e.textContent=!signed?'Sign in with Google in the Account tab to join the leaderboards. Until then your points are saved on this device only.':BOARD.scope==='friends'?'No friends here yet. Add friends by username in the Account tab.':'No players yet. Save a username in the Account tab to be the first.';
-  $('lbNote').textContent=(signed&&!S.me.claimed?'Save a username in the Account tab to appear on the leaderboard. ':'')+'Everyone who has signed in and saved a username appears here. Scores are reported by each player\'s own browser.';
+  e.textContent=!signed?'Sign in with Google in Settings, under Account to join the leaderboards. Until then your points are saved on this device only.':BOARD.scope==='friends'?'No friends here yet. Add friends by username in Settings, under Account.':'No players yet. Save a username in Settings, under Account to be the first.';
+  $('lbNote').textContent=(signed&&!S.me.claimed?'Save a username in Settings, under Account to appear on the leaderboard. ':'')+'Everyone who has signed in and saved a username appears here. Scores are reported by each player\'s own browser.';
 }
 $('tab-board').addEventListener('click',function(e){
   var a=e.target.closest('[data-ls]'),b=e.target.closest('[data-lm2]');
