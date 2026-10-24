@@ -1,0 +1,8 @@
+{
+  "name": "Study Studio",
+  "description": "Study timer, past papers tracker, exam countdown, and grade boundary manager with audio focus tones and leaderboards.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
