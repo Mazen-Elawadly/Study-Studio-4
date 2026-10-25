@@ -518,6 +518,7 @@ html[data-glass="on"] .lk{background:color-mix(in srgb,var(--input-bg) 55%,trans
             <div class="card">
               <div class="card-head"><h2>Find a paper</h2></div>
               <div class="stack">
+                <div class="chip-row" id="plLevel" role="group" aria-label="Level"></div>
                 <label class="field" for="plSubj">Subject<select class="sel" id="plSubj"></select></label>
                 <div class="group" id="plPapersWrap"><div class="eyebrow">Papers</div><div class="chip-row" id="plPapers" role="group" aria-label="Papers"></div></div>
                 <label class="field" for="plYear" id="plYearWrap">Year<select class="sel" id="plYear"></select></label>
@@ -1914,6 +1915,9 @@ function lk(href,txt,cls){return '<a class="lk'+(cls?' '+cls:'')+'" href="'+esc(
 var SCI=[{n:'1',l:'Paper 1',t:'Multiple choice (Core)'},{n:'2',l:'Paper 2',t:'Multiple choice (Extended)'},{n:'3',l:'Paper 3',t:'Theory (Core)'},{n:'4',l:'Paper 4',t:'Theory (Extended)'},{n:'5',l:'Paper 5',t:'Practical test'},{n:'6',l:'Paper 6',t:'Alternative to practical'}];
 function esci(a,b){return [{n:'1',l:'Paper 1',t:'Paper '+a},{n:'2',l:'Paper 2',t:'Paper '+b}]}
 function idx(id,grp,name,links,keys){return {id:id,grp:grp,name:name,kind:'idx',keys:keys||[],src:links}}
+var SME='https://www.savemyexams.com/';
+function plSlug(t){return t.toLowerCase().replace(/[^a-z0-9]+/g,'-')}
+function AL(grp,name,links,keys,note){var o=idx('al-'+plSlug(grp)+'-'+plSlug(name),grp,name,links,keys);o.level='alevel';if(note)o.note=note;return o}
 var PL=[
  {id:'c-phys',grp:'Cambridge IGCSE',name:'Physics',code:'0625',keys:['physics'],kind:'caie',papers:SCI,def:['2','4','6'],pmt:'gcse-physics',
   src:[['PapaCambridge',PAPA+'igcse-physics-0625'],['Dynamic Papers',DYN_C+'subjects-f-z/physics/'],['Demerdash','https://demerdash.uk/physics/igcse-cambridge-past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'gcse-physics/']]},
@@ -1924,6 +1928,15 @@ var PL=[
  {id:'c-math',grp:'Cambridge IGCSE',name:'Mathematics',code:'0580',keys:['mathematics','maths'],kind:'caie',
   papers:[{n:'1',l:'Paper 1',t:'Core'},{n:'2',l:'Paper 2',t:'Extended'},{n:'3',l:'Paper 3',t:'Core'},{n:'4',l:'Paper 4',t:'Extended'}],def:['2','4'],pmt:'gcse-maths',
   src:[['PapaCambridge',PAPA+'igcse-mathematics-0580'],['Dynamic Papers',DYN_C+'subjects-f-z/maths/'],['Demerdash (may ask for a password)','https://demerdash.uk/math/igcse-cambridge/past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'gcse-maths/']]},
+ {id:'c-bus',grp:'Cambridge IGCSE',name:'Business Studies',code:'0450',keys:['business studies','business'],kind:'caie',
+  papers:[{n:'1',l:'Paper 1',t:'Short answer and data response'},{n:'2',l:'Paper 2',t:'Case study'}],def:['1','2'],
+  src:[['PapaCambridge',PAPA+'igcse-business-studies-0450']]},
+ {id:'c-ict',grp:'Cambridge IGCSE',name:'ICT',code:'0417',keys:['ict','information and communication technology'],kind:'caie',
+  papers:[{n:'1',l:'Paper 1',t:'Theory'},{n:'2',l:'Paper 2',t:'Document production, databases and presentations'},{n:'3',l:'Paper 3',t:'Spreadsheets and website authoring'}],def:['1','2','3'],
+  src:[['PapaCambridge',PAPA+'igcse-ict0417']]},
+ {id:'c-cs',grp:'Cambridge IGCSE',name:'Computer Science',code:'0478',keys:['computer science'],kind:'caie',
+  papers:[{n:'1',l:'Paper 1',t:'Computer systems'},{n:'2',l:'Paper 2',t:'Algorithms, programming and logic'}],def:['1','2'],
+  src:[['PapaCambridge',PAPA+'igcse-computer-science-0478']]},
  {id:'e-math',grp:'Edexcel International GCSE',name:'Mathematics A',code:'4MA1',keys:['mathematics','maths','mathematics a'],kind:'em',
   papers:[{n:'1H',l:'Paper 1H',t:'Higher tier'},{n:'2H',l:'Paper 2H',t:'Higher tier'},{n:'1F',l:'Paper 1F',t:'Foundation tier'},{n:'2F',l:'Paper 2F',t:'Foundation tier'}],def:['1H','2H'],
   src:[['Physics & Maths Tutor, Paper 1',PMT_PAGES+'gcse-maths/edexcel-igcse-a-paper-1/'],['Physics & Maths Tutor, Paper 2',PMT_PAGES+'gcse-maths/edexcel-igcse-a-paper-2/'],['Dynamic Papers',DYN_E+'maths-2/'],['Demerdash (may ask for a password)','https://demerdash.uk/math/igcse-edexcel/past-papers/'],['Save My Exams','https://www.savemyexams.com/igcse/maths/edexcel/a/past-papers/'],['ExamPapersPractice','https://www.exampaperspractice.co.uk/igcse-maths-edexcel']]},
@@ -1933,22 +1946,57 @@ var PL=[
   src:[['Physics & Maths Tutor, Paper 1',PMT_PAGES+'gcse-chemistry/edexcel-igcse-paper-1/'],['Physics & Maths Tutor, Paper 2',PMT_PAGES+'gcse-chemistry/edexcel-igcse-paper-2/'],['Dynamic Papers',DYN_E+'chemistry/'],['Demerdash','https://demerdash.uk/chemistry/igcse-edexcel-past-papers/']]},
  {id:'e-bio',grp:'Edexcel International GCSE',name:'Biology',code:'4BI1',keys:['biology'],kind:'es',dir:'Biology',nov20:true,papers:esci('1B','2B'),def:['1','2'],pmt:'gcse-biology',
   src:[['Physics & Maths Tutor, Paper 1',PMT_PAGES+'gcse-biology/edexcel-igcse-paper-1/'],['Physics & Maths Tutor, Paper 2',PMT_PAGES+'gcse-biology/edexcel-igcse-paper-2/'],['Dynamic Papers',DYN_E+'biology/'],['Demerdash','https://demerdash.uk/biology/igcse-edexcel-past-papers/']]},
+ idx('e-bus','Edexcel International GCSE','Business 4BS1',[['Save My Exams, Paper 1','https://www.savemyexams.com/igcse/business/edexcel/past-papers/paper-1/'],['Save My Exams, Paper 2','https://www.savemyexams.com/igcse/business/edexcel/past-papers/paper-2/'],['ExamPapersPractice','https://www.exampaperspractice.co.uk/edexcel-igcse-business-studies-past-papers-4bs1/']],['business studies','business']),
+ idx('e-ict','Edexcel International GCSE','ICT 4IT1',[['Save My Exams, Paper 1','https://www.savemyexams.com/igcse/ict/edexcel/past-papers/paper-1'],['Save My Exams, Paper 2','https://www.savemyexams.com/igcse/ict/edexcel/past-papers/paper-2/'],['Maths Genie','https://mathsgenie.co.uk/igcse/ict/edexcel']],['ict','information and communication technology']),
+ idx('e-cs','Edexcel International GCSE','Computer Science 4CP0',[['Save My Exams, Paper 1','https://www.savemyexams.com/igcse/computer-science/edexcel/past-papers/paper-1/'],['Save My Exams, Paper 2','https://www.savemyexams.com/igcse/computer-science/edexcel/past-papers/paper-2/'],['Physics & Maths Tutor, Paper 2',PMT_PAGES+'gcse-computer-science/edexcel-igcse-paper-2/'],['ExamPapersPractice','https://www.exampaperspractice.co.uk/igcse-2/sciences/computer-science/edexcel-igcse-computer-science-4pc0-past-papers/']],['computer science']),
  idx('i-addm','More Cambridge subjects (index pages)','Additional Mathematics 0606',[['PapaCambridge',PAPA+'igcse-mathematics-0606']],['additional mathematics']),
  idx('i-eng','More Cambridge subjects (index pages)','English First Language 0500',[['PapaCambridge',PAPA+'igcse-english-0500']],['english language','english']),
- idx('i-bus','More Cambridge subjects (index pages)','Business Studies 0450',[['PapaCambridge',PAPA+'igcse-business-studies-0450']],['business studies']),
  idx('i-eco','More Cambridge subjects (index pages)','Economics 0455',[['PapaCambridge',PAPA+'igcse-economics-0455']],['economics']),
- idx('i-cs','More Cambridge subjects (index pages)','Computer Science 0478',[['PapaCambridge',PAPA+'igcse-computer-science-0478']],['computer science']),
- idx('i-ict','More Cambridge subjects (index pages)','ICT 0417',[['PapaCambridge',PAPA+'igcse-ict0417']],['ict']),
  idx('i-geo','More Cambridge subjects (index pages)','Geography 0460',[['PapaCambridge',PAPA+'igcse-geography-0460']],['geography']),
  idx('i-his','More Cambridge subjects (index pages)','History 0470',[['PapaCambridge',PAPA+'igcse-history-0470']],['history']),
  idx('i-acc','More Cambridge subjects (index pages)','Accounting 0452',[['PapaCambridge',PAPA+'igcse-accounting-0452']],['accounting']),
  idx('i-isl','More Cambridge subjects (index pages)','Islamiyat 0493',[['PapaCambridge',PAPA+'igcse-islamiyat-0493']],['islamic studies']),
  idx('i-ara','More Cambridge subjects (index pages)','Arabic',[['PapaCambridge, 0508',PAPA+'igcse-arabic-0508'],['PapaCambridge, 0527',PAPA+'igcse-arabic-0527'],['PapaCambridge, 0544',PAPA+'igcse-arabic-0544']],['arabic']),
  idx('i-sci','More Cambridge subjects (index pages)','Combined and Co-ordinated Sciences',[['PapaCambridge, Science 0653',PAPA+'igcse-science-0653'],['PapaCambridge, Sciences 0654',PAPA+'igcse-sciences-0654']],['combined science']),
- idx('a-esl','Oxford AQA International GCSE','English as a Second Language 9280',[['Save My Exams, past papers','https://www.savemyexams.com/igcse/english/oxford-aqa/english-as-a-second-language/past-papers/'],['Oxford AQA Exams (official site)','https://www.oxfordaqaexams.org.uk/']],['english as a second language','esl']),
- idx('i-edx','More Edexcel subjects (index pages)','Other Edexcel subjects',[['Dynamic Papers, all Edexcel IGCSE subjects',DYN_E],['Save My Exams, Edexcel IGCSE','https://www.savemyexams.com/igcse/boards/edexcel/past-papers/']],[])
+ idx('a-esl','Oxford AQA International GCSE','English as a Second Language 9280',[['Your ESL folder (Google Drive)','https://drive.google.com/drive/folders/1U1x3tCEaZBEaRALoVlufMpYkXzCBvXFo'],['Save My Exams, past papers','https://www.savemyexams.com/igcse/english/oxford-aqa/english-as-a-second-language/past-papers/'],['Oxford AQA Exams (official site)','https://www.oxfordaqaexams.org.uk/']],['english as a second language','esl']),
+ idx('i-edx','More Edexcel subjects (index pages)','Other Edexcel subjects',[['Dynamic Papers, all Edexcel IGCSE subjects',DYN_E],['Save My Exams, Edexcel IGCSE','https://www.savemyexams.com/igcse/boards/edexcel/past-papers/']],[]),
+ AL('Cambridge International AS & A Level','Physics 9702',[['PapaCambridge',PAPA+'as-and-a-level-physics-9702'],['Save My Exams',SME+'a-level/physics/cie/past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'a-level-physics/']],['physics']),
+ AL('Cambridge International AS & A Level','Chemistry 9701',[['PapaCambridge',PAPA+'as-and-a-level-chemistry-9701'],['Physics & Maths Tutor',PMT_PAGES+'a-level-chemistry/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['chemistry']),
+ AL('Cambridge International AS & A Level','Biology 9700',[['PapaCambridge',PAPA+'as-and-a-level-biology-9700'],['Physics & Maths Tutor',PMT_PAGES+'a-level-biology/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['biology']),
+ AL('Cambridge International AS & A Level','Mathematics 9709',[['PapaCambridge',PAPA+'as-and-a-level-mathematics-9709'],['Physics & Maths Tutor','https://www.physicsandmathstutor.com/a-level-maths-papers/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['mathematics','maths']),
+ AL('Cambridge International AS & A Level','Further Mathematics 9231',[['PapaCambridge',PAPA+'as-and-a-level-mathematics-9231'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['further mathematics','further maths']),
+ AL('Cambridge International AS & A Level','Computer Science 9618',[['PapaCambridge',PAPA+'as-and-a-level-computer-science-for-first-examination-in-2021-9618'],['Physics & Maths Tutor',PMT_PAGES+'a-level-computer-science/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['computer science']),
+ AL('Cambridge International AS & A Level','Business 9609',[['PapaCambridge',PAPA+'as-and-a-level-business9609'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['business studies','business']),
+ AL('Cambridge International AS & A Level','Economics 9708',[['PapaCambridge',PAPA+'as-and-a-level-economics-9708'],['Physics & Maths Tutor',PMT_PAGES+'a-level-economics/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['economics']),
+ AL('Cambridge International AS & A Level','Accounting 9706',[['PapaCambridge',PAPA+'as-and-a-level-accounting-9706'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['accounting']),
+ AL('Cambridge International AS & A Level','Psychology 9990',[['PapaCambridge',PAPA+'as-and-a-level-psychology-9990'],['Physics & Maths Tutor',PMT_PAGES+'a-level-psychology/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['psychology']),
+ AL('Cambridge International AS & A Level','Sociology 9699',[['PapaCambridge',PAPA+'as-and-a-level-sociology-9699'],['Save My Exams',SME+'a-level/sociology/cie/past-papers']],['sociology']),
+ AL('Cambridge International AS & A Level','Geography 9696',[['PapaCambridge',PAPA+'as-and-a-level-geography-9696'],['Physics & Maths Tutor',PMT_PAGES+'a-level-geography/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['geography']),
+ AL('Cambridge International AS & A Level','History 9489',[['PapaCambridge',PAPA+'as-and-a-level-history-9489'],['Physics & Maths Tutor',PMT_PAGES+'a-level-history/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['history']),
+ AL('Cambridge International AS & A Level','English Language 9093',[['PapaCambridge',PAPA+'as-and-a-level-english-9093'],['Physics & Maths Tutor',PMT_PAGES+'a-level-english-language/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['english language','english']),
+ AL('Cambridge International AS & A Level','English Literature 9695',[['PapaCambridge',PAPA+'as-and-a-level-english-literature-9695'],['Physics & Maths Tutor',PMT_PAGES+'a-level-english-literature/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['english literature']),
+ AL('Cambridge International AS & A Level','English General Paper 8021',[['PapaCambridge',PAPA+'as-and-a-level-english-general-paper-8021']],['english general paper']),
+ AL('Cambridge International AS & A Level','Law 9084',[['PapaCambridge',PAPA+'as-and-a-level-law-9084']],['law']),
+ AL('Cambridge International AS & A Level','Art and Design 9479',[['PapaCambridge',PAPA+'as-and-a-level-art-and-design-9479']],['art and design']),
+ AL('Cambridge International AS & A Level','Drama 9482',[['Save My Exams',SME+'a-level/drama/cie/past-papers/'],['PapaCambridge, all AS and A Level subjects',PAPA+'as-and-a-level']],['drama']),
+ AL('Cambridge International AS & A Level','Every other Cambridge subject',[['PapaCambridge, all AS and A Level subjects',PAPA+'as-and-a-level'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/'],['PapaCambridge, folder view','https://pastpapers.papacambridge.com/index.php?dir=Cambridge+International+Examinations+%28CIE%29%2FAS+and+A+Level']],[],'Information Technology, Music, Media Studies, languages, Global Perspectives and the rest are on these index pages. Pick your subject there, then the year.'),
+ AL('Pearson Edexcel International A Level','Physics',[['Save My Exams',SME+'international-a-level/physics/edexcel/past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'a-level-physics/']],['physics']),
+ AL('Pearson Edexcel International A Level','Chemistry',[['Physics & Maths Tutor',PMT_PAGES+'a-level-chemistry/'],['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/']],['chemistry']),
+ AL('Pearson Edexcel International A Level','Biology',[['Save My Exams',SME+'international-a-level/biology/edexcel/past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'a-level-biology/']],['biology']),
+ AL('Pearson Edexcel International A Level','Mathematics',[['Physics & Maths Tutor','https://www.physicsandmathstutor.com/a-level-maths-papers/'],['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/']],['mathematics','maths']),
+ AL('Pearson Edexcel International A Level','Further Mathematics',[['Save My Exams',SME+'international-a-level/further-maths/edexcel/past-papers/']],['further mathematics','further maths']),
+ AL('Pearson Edexcel International A Level','Economics',[['Save My Exams',SME+'international-a-level/economics/edexcel/past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'a-level-economics/']],['economics']),
+ AL('Pearson Edexcel International A Level','Geography',[['Physics & Maths Tutor',PMT_PAGES+'a-level-geography/'],['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/']],['geography']),
+ AL('Pearson Edexcel International A Level','History',[['Physics & Maths Tutor',PMT_PAGES+'a-level-history/'],['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/']],['history']),
+ AL('Pearson Edexcel International A Level','Psychology',[['Physics & Maths Tutor',PMT_PAGES+'a-level-psychology/'],['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/']],['psychology']),
+ AL('Pearson Edexcel International A Level','English Language',[['Physics & Maths Tutor',PMT_PAGES+'a-level-english-language/'],['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/']],['english language']),
+ AL('Pearson Edexcel International A Level','English Literature',[['Physics & Maths Tutor',PMT_PAGES+'a-level-english-literature/'],['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/']],['english literature']),
+ AL('Pearson Edexcel International A Level','Every other IAL subject',[['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/'],['Save My Exams, International AS subjects',SME+'international-as/boards/edexcel/past-papers/']],[],'Business, Accounting, Information Technology, Law and the rest are on these index pages. Pick your subject there, then the unit.'),
+ AL('UK A Level (Edexcel, AQA, OCR)','Computer Science',[['Physics & Maths Tutor',PMT_PAGES+'a-level-computer-science/'],['Save My Exams, all UK A Level subjects',SME+'a-level/']],[]),
+ AL('UK A Level (Edexcel, AQA, OCR)','Other UK A Level subjects',[['Save My Exams, all UK A Level subjects',SME+'a-level/']],[],'Edexcel, AQA and OCR papers for every subject are on Save My Exams. Pick your subject, then your exam board.')
 ];
-var PLS={sid:null,papers:[],year:'all'};
+var PLS={sid:null,papers:[],year:'all',level:'igcse'};
+(function(){var e=PL.filter(function(x){return x.id==='a-esl'})[0];if(e)e.note='Your ESL past papers folder is the first button. The other sites are backups.'})();
 function plSubject(){return PL.filter(function(s){return s.id===PLS.sid})[0]||PL[0]}
 function plSelect(id){var s=PL.filter(function(x){return x.id===id})[0]||PL[0];PLS.sid=s.id;PLS.papers=(s.def||[]).slice();PLS.year='all';$('plSubj').value=s.id}
 function plGroups(sj){
@@ -2010,24 +2058,33 @@ function plPageUrl(sj,p){
   if(sj.kind==='em')return PMT_PAGES+'gcse-maths/edexcel-igcse-a-paper-'+p.n.charAt(0)+'/';
   return PMT_PAGES+sj.pmt+'/edexcel-igcse-paper-'+p.n+'/';
 }
+function plList(){return PL.filter(function(s){return (s.level||'igcse')===PLS.level})}
 function renderLinks(){
   var sel=$('plSubj');
-  if(!sel.options.length){
-    var gs=[],h='';
-    PL.forEach(function(s){if(gs.indexOf(s.grp)<0)gs.push(s.grp)});
-    gs.forEach(function(g){h+='<optgroup label="'+esc(g)+'">'+PL.filter(function(s){return s.grp===g}).map(function(s){return '<option value="'+s.id+'">'+esc(s.name+(s.code?' · '+s.code:''))+'</option>'}).join('')+'</optgroup>'});
-    sel.innerHTML=h;
+  $('plLevel').innerHTML=[['igcse','IGCSE'],['alevel','A Level']].map(function(m){return '<button type="button" class="chip" data-lv="'+m[0]+'" aria-pressed="'+(PLS.level===m[0])+'">'+m[1]+'</button>'}).join('');
+  if(sel.dataset.lv!==PLS.level){
+    var list=plList(),gs=[],h='';
+    list.forEach(function(s){if(gs.indexOf(s.grp)<0)gs.push(s.grp)});
+    gs.forEach(function(g){h+='<optgroup label="'+esc(g)+'">'+list.filter(function(s){return s.grp===g}).map(function(s){return '<option value="'+s.id+'">'+esc(s.name+(s.code?' · '+s.code:''))+'</option>'}).join('')+'</optgroup>'});
+    sel.innerHTML=h;sel.dataset.lv=PLS.level;
     var a=activeSubj(),pre=(a&&a.board==='edexcel')?'e-':'i-',nm=a?a.name.toLowerCase():'';
-    var m=PL.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0&&(s.id.indexOf(pre)===0||s.id.indexOf('c-')===0&&pre==='i-')})[0]||PL.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0})[0];
-    plSelect(m?m.id:'c-phys');
+    var m;
+    if(PLS.level==='igcse'){
+      m=list.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0&&(s.id.indexOf(pre)===0||s.id.indexOf('c-')===0&&pre==='i-')})[0]||list.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0})[0];
+      plSelect(m?m.id:'c-phys');
+    }else{
+      m=list.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0&&(pre==='e-'?s.grp.indexOf('Edexcel')>=0:s.grp.indexOf('Cambridge')>=0)})[0]||list.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0})[0]||list[0];
+      plSelect(m.id);
+    }
   }
   var sj=plSubject(),isIdx=sj.kind==='idx';
-  $('plPapersWrap').hidden=isIdx;$('plYearWrap').hidden=isIdx;
+  $('plPapersWrap').hidden=isIdx;$('plYearWrap').hidden=isIdx;$('plSources').parentNode.hidden=isIdx;
   $('plSources').innerHTML=sj.src.map(function(s){return lk(s[1],'<span>'+esc(s[0])+'</span><span aria-hidden="true">↗</span>','src')}).join('');
   var res=$('plResults'),h2='';
   if(isIdx){
-    $('plNote').textContent='These subjects open on the site\'s own index page, where you can pick a year.';
-    res.innerHTML='<div class="pl-paper"><div class="pl-head"><div><h2>'+esc(sj.name)+'</h2><small>'+esc(sj.grp)+'</small></div></div><p class="muted">Use the buttons on the left to open the past paper index for this subject.</p></div>';
+    res.innerHTML='<div class="pl-paper"><div class="pl-head"><div><h2>'+esc(sj.name)+'</h2><small>'+esc(sj.grp)+'</small></div></div>'+
+      '<p class="muted" style="font-size:.88rem;margin-bottom:12px">'+esc(sj.note||'Each button opens the site\'s own past paper page for this subject, where you pick the year and paper.')+'</p>'+
+      '<div class="src-list">'+sj.src.map(function(x){return lk(x[1],'<span>'+esc(x[0])+'</span><span aria-hidden="true">↗</span>','src')}).join('')+'</div></div>';
     return;
   }
   $('plPapers').innerHTML=sj.papers.map(function(p){return '<button type="button" class="chip" data-pp="'+p.n+'" aria-pressed="'+(PLS.papers.indexOf(p.n)>=0)+'" title="'+esc(p.t)+'">'+esc(p.l)+'</button>'}).join('');
@@ -2041,7 +2098,7 @@ function renderLinks(){
     ?'Each number is the paper and variant, so 42 is Paper 4, variant 2. QP is the question paper and MS is the mark scheme. Feb/March series only have variant 2, and not every variant exists in every series.'
     :'QP is the question paper, MS the mark scheme'+(sj.kind==='em'?' and MA the model answers':'')+'. Std is the standard paper and R is the regional version some countries sit.')+' If a link does not open, try the sites on the left.</p>';
   sj.papers.filter(function(p){return PLS.papers.indexOf(p.n)>=0}).forEach(function(p){
-    h2+='<div class="pl-paper"><div class="pl-head"><div><h2>'+esc(p.l)+'</h2><small>'+esc(p.t)+' · '+esc(sj.name)+' '+esc(sj.code)+'</small></div>'+lk(plPageUrl(sj,p),'Paper page on PMT ↗')+'</div>';
+    h2+='<div class="pl-paper"><div class="pl-head"><div><h2>'+esc(p.l)+'</h2><small>'+esc(p.t)+' · '+esc(sj.name)+' '+esc(sj.code)+'</small></div>'+((sj.kind==='caie'&&!sj.pmt)?'':lk(plPageUrl(sj,p),'Paper page on PMT ↗'))+'</div>';
     shown.forEach(function(gr,i){
       h2+='<details class="pl-year"'+((PLS.year!=='all'||i<2)?' open':'')+'><summary>'+esc(gr.y)+'</summary>'+gr.rows.map(function(r){return plRow(sj,p,gr,r)}).join('')+'</details>';
     });
@@ -2049,6 +2106,7 @@ function renderLinks(){
   });
   res.innerHTML=h2;
 }
+$('plLevel').addEventListener('click',function(e){var b=e.target.closest('[data-lv]');if(!b||PLS.level===b.dataset.lv)return;PLS.level=b.dataset.lv;renderLinks()});
 $('plSubj').addEventListener('change',function(e){plSelect(e.target.value);renderLinks()});
 $('plPapers').addEventListener('click',function(e){
   var b=e.target.closest('[data-pp]');if(!b)return;
