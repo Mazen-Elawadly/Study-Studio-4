@@ -2041,6 +2041,30 @@ var PLS={sid:null,papers:[],year:'all',level:'igcse'};
   var d=D[s.name];s.name=s.name.replace(/ \d{4}$/,'');s.kind='caie';s.code=d[0];s.papers=d[1];s.def=d[2].slice();delete s.note;
  });
 })();
+(function(){
+ function G(a){return a.map(function(n){return {n:String(n),l:'Paper '+n,t:'Paper '+n}})}
+ function T(a){return a.map(function(x){return {n:String(x[0]),l:'Paper '+x[0],t:x[1]}})}
+ var I={'i-addm':['0606',T([[1,'Paper 1'],[2,'Paper 2']]),['1','2']],
+  'i-eng':['0500',T([[1,'Reading'],[2,'Directed writing and composition']]),['1','2']],
+  'i-eco':['0455',T([[1,'Multiple choice'],[2,'Structured questions']]),['1','2']],
+  'i-geo':['0460',T([[1,'Geographical themes'],[2,'Geographical skills'],[4,'Alternative to coursework']]),['1','2']],
+  'i-his':['0470',T([[1,'Written paper'],[2,'Source-based'],[4,'Alternative to coursework']]),['1','2']],
+  'i-acc':['0452',T([[1,'Multiple choice'],[2,'Structured questions']]),['1','2']],
+  'i-isl':['0493',T([[1,'Paper 1'],[2,'Paper 2']]),['1','2']]};
+ var A={'Accounting':['9706',[1,2,3,4]],'Psychology':['9990',[1,2,3,4]],'Sociology':['9699',[1,2,3,4]],'Geography':['9696',[1,2,3,4]],'History':['9489',[1,2,3,4]],'English Language':['9093',[1,2,3,4]],'English Literature':['9695',[1,2,3,4]],'English General Paper':['8021',[1,2]],'Law':['9084',[1,2,3,4]]};
+ PL.forEach(function(s){
+  var d=I[s.id];
+  if(d){s.name=s.name.replace(/ \d{4}$/,'');s.grp='Cambridge IGCSE';s.kind='caie';s.code=d[0];s.papers=d[1];s.def=d[2].slice();delete s.note;return}
+  if(s.level==='alevel'&&s.grp.indexOf('Cambridge')>=0){
+   var k=s.name.replace(/ \d{4}$/,'');
+   if(A[k]){s.name=k;s.kind='caie';s.code=A[k][0];s.papers=G(A[k][1]);s.def=A[k][1].slice(0,2).map(String);delete s.note}
+  }
+ });
+ var psy={id:'c-psy',grp:'Cambridge IGCSE',name:'Psychology',code:'0266',keys:['psychology'],kind:'caie',papers:T([[1,'Paper 1'],[2,'Paper 2']]),def:['1','2'],
+  src:[['PapaCambridge, all IGCSE subjects',PAPA+'igcse'],['Save My Exams',SME+'igcse/psychology/cie/past-papers/'],['Dynamic Papers, IGCSE','https://dynamicpapers.com/past-papers/cambridge-past-papers/o-level/']]};
+ var at=PL.map(function(x){return x.id}).indexOf('c-cs');
+ PL.splice(at+1,0,psy);
+})();
 (function(){var e=PL.filter(function(x){return x.id==='a-esl'})[0];if(e)e.note='Your ESL past papers folder is the first button. The other sites are backups.'})();
 function plSubject(){return PL.filter(function(s){return s.id===PLS.sid})[0]||PL[0]}
 function plSelect(id){var s=PL.filter(function(x){return x.id===id})[0]||PL[0];PLS.sid=s.id;PLS.papers=(s.def||[]).slice();PLS.year='all';$('plSubj').value=s.id}
