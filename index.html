@@ -206,6 +206,43 @@ input[type=range].hue::-moz-range-thumb{width:16px; height:16px; border-radius:5
 .lk.src{height:38px; padding:0 14px; font-size:.86rem; justify-content:space-between}
 .src-list{display:flex; flex-direction:column; gap:8px}
 @media (max-width:820px){.pl-grid{grid-template-columns:minmax(0,1fr)}.pl-row{grid-template-columns:minmax(0,1fr); gap:4px}}
+.ov{position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(8,10,18,.62); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px)}
+.ov[hidden]{display:none}
+.ov-card{width:min(560px,100%); max-height:92vh; overflow:auto; background:var(--surface); color:var(--ink); border:1px solid var(--card-line); border-radius:16px; box-shadow:0 24px 70px rgba(0,0,0,.35); position:relative}
+.in-body{padding:28px 28px 8px; min-height:300px}
+.in-body h2{font-family:var(--font-display); font-size:1.6rem; margin:6px 0 10px}
+.in-body p{color:var(--muted); line-height:1.55; margin:0 0 12px}
+.in-eyebrow{font-size:.75rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--accent)}
+.in-list{list-style:none; padding:0; margin:14px 0; display:grid; gap:10px}
+.in-list li{display:flex; gap:10px; align-items:flex-start; color:var(--ink); font-size:.94rem; line-height:1.45}
+.in-list li::before{content:''; flex:none; width:8px; height:8px; border-radius:50%; background:var(--accent); margin-top:7px}
+.in-foot{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:14px 28px 22px; flex-wrap:wrap}
+.in-dots{display:flex; gap:6px}
+.in-dots i{width:8px; height:8px; border-radius:50%; background:var(--line)}
+.in-dots i.on{background:var(--accent)}
+.in-acts{display:flex; gap:8px; flex-wrap:wrap}
+.in-warn{border:1px solid #B7791F; background:rgba(183,121,31,.13); border-radius:10px; padding:12px 14px; font-size:.9rem; color:var(--ink); margin:14px 0}
+.in-choices{display:grid; gap:10px; margin-top:12px}
+.in-skip{position:absolute; top:12px; right:14px}
+.nm{background:none; border:0; padding:0; font:inherit; font-weight:700; color:inherit; cursor:pointer; text-align:left}
+.nm:hover{text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:3px; color:var(--accent)}
+.pf{--pc:var(--accent)}
+.pf-top{padding:26px 28px 18px; background:linear-gradient(135deg,color-mix(in srgb,var(--pc) 34%,var(--surface)),color-mix(in srgb,var(--pc) 8%,var(--surface))); border-bottom:1px solid color-mix(in srgb,var(--pc) 40%,var(--line))}
+.pf-name{font-family:var(--font-display); font-size:1.7rem; font-weight:800; margin:0 0 8px; word-break:break-word}
+.pf-pos{font-family:var(--font-mono); font-size:.9rem; color:var(--muted); margin-top:8px}
+.pf-pos b{color:var(--pc)}
+.pf-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; padding:18px 28px 6px}
+.pf-stat{border:1px solid color-mix(in srgb,var(--pc) 30%,var(--line)); border-radius:10px; padding:12px 14px; background:color-mix(in srgb,var(--pc) 6%,transparent)}
+.pf-stat small{display:block; color:var(--muted); font-size:.76rem; margin-bottom:2px}
+.pf-stat b{font-family:var(--font-mono); font-size:1.25rem; color:var(--ink)}
+.pf-prog{padding:8px 28px 4px}
+.pf-bar{height:8px; border-radius:999px; background:var(--line); overflow:hidden; margin:8px 0}
+.pf-bar i{display:block; height:100%; background:var(--pc); border-radius:999px}
+.pf-theme{padding:12px 28px 4px; border-top:1px solid var(--line); margin-top:14px}
+.pf-sw{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+.pf-sw button.sw{width:28px; height:28px; border-radius:50%; border:2px solid transparent; cursor:pointer}
+.pf-sw button[aria-pressed="true"]{border-color:var(--ink)}
+@media (max-width:520px){.in-body{padding:22px 20px 6px}.in-foot{padding:12px 20px 18px}.pf-grid,.pf-top,.pf-prog,.pf-theme{padding-left:20px;padding-right:20px}}
 .subnav{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px}
 .pill.lg{height:34px; padding:0 14px; font-size:.85rem}
 .pill.lg b{font-family:var(--font-mono); font-weight:700; margin-right:4px}
@@ -683,6 +720,16 @@ html[data-glass="on"] .lk{background:color-mix(in srgb,var(--input-bg) 55%,trans
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
+<div class="ov" id="introOv" role="dialog" aria-modal="true" aria-labelledby="inTitle" hidden>
+  <div class="ov-card">
+    <button type="button" class="btn sm in-skip" id="inSkip">Skip tour</button>
+    <div class="in-body" id="inBody"></div>
+    <div class="in-foot"><div class="in-dots" id="inDots"></div><div class="in-acts" id="inActs"></div></div>
+  </div>
+</div>
+<div class="ov" id="profOv" role="dialog" aria-modal="true" aria-label="Player profile" hidden>
+  <div class="ov-card pf" id="profCard"></div>
+</div>
 <script>
 (function(){
 'use strict';
@@ -1697,6 +1744,7 @@ async function flush(){
       SY.lastPush=ts;
       await SY.fs.doc('users/'+SY.uid).set({ts:ts,blob:JSON.stringify(S)});
       if(S.me.claimed&&S.me.username)await SY.fs.doc('players/'+SY.uid).set(pubDoc());
+      if(S.me.claimed&&S.me.username){try{await SY.fs.doc('players/'+SY.uid).set({pth:S.me.pth||'rank'},{merge:true})}catch(e){}}
     }while(SY.dirty);
     SY.state='saved';SY.err='';
   }catch(e){
@@ -1729,6 +1777,7 @@ async function onUser(u){
     SY.uid=null;SY.me=null;SY.players=[];SY.state='local';SY.busy=false;
     renderAccount();renderBoard();return;
   }
+  introHide('signin');
   SY.uid=u.uid;SY.me={id:u.uid,name:u.displayName||'',email:u.email||'',avatarUrl:u.photoURL||''};
   SY.state='syncing';SY.busy=false;renderAccount();
   try{
@@ -1850,7 +1899,7 @@ function renderFriends(){
   $('frEmpty').hidden=L.length>0;
   $('frList').innerHTML=L.map(function(f){
     var p=playerById(f.id);
-    return '<li><div style="min-width:0"><div class="t">'+esc(p?p.username:f.u)+(p?' '+rankBadge(p.pts):'')+'</div><div class="when">'+(p?(p.pts||0)+' pts · '+effStreak(p)+' day streak':'Not loaded yet')+'</div></div><button type="button" class="x" data-delfriend="'+esc(f.id)+'" aria-label="Remove friend">×</button></li>';
+    return '<li><div style="min-width:0"><div class="t">'+(p?'<button type="button" class="nm" data-prof="'+esc(p.id)+'">'+esc(p.username)+'</button>':esc(f.u))+(p?' '+rankBadge(p.pts):'')+'</div><div class="when">'+(p?(p.pts||0)+' pts · '+effStreak(p)+' day streak':'Not loaded yet')+'</div></div><button type="button" class="x" data-delfriend="'+esc(f.id)+'" aria-label="Remove friend">×</button></li>';
   }).join('');
 }
 $('acSave').addEventListener('click',function(){claimUsername($('acName').value.trim(),false)});
@@ -1891,7 +1940,7 @@ function renderBoard(){
   $('lbCount').textContent=list.length+(list.length===1?' player':' players');
   $('lbList').innerHTML=list.slice(0,50).map(function(p,i){
     var me=p.id===SY.uid;
-    return '<li class="'+(me?'me':'')+'"><span class="rk">'+(i+1)+'</span><div style="min-width:0"><div class="t">'+esc(p.username)+' '+rankBadge(p.pts)+(me?' <span class="pill run">You</span>':'')+'</div><div class="when">'+(p.pts||0)+' pts · '+effStreak(p)+' day streak · '+fmtMin(p.focus||0)+' focus'+(p.avg!=null?' · '+Math.round(p.avg)+'% papers':'')+'</div></div><span class="val">'+metricVal(p)+' <small>'+label+'</small></span></li>';
+    return '<li class="'+(me?'me':'')+'"><span class="rk">'+(i+1)+'</span><div style="min-width:0"><div class="t"><button type="button" class="nm" data-prof="'+esc(p.id)+'">'+esc(p.username)+'</button> '+rankBadge(p.pts)+(me?' <span class="pill run">You</span>':'')+'</div><div class="when">'+(p.pts||0)+' pts · '+effStreak(p)+' day streak · '+fmtMin(p.focus||0)+' focus'+(p.avg!=null?' · '+Math.round(p.avg)+'% papers':'')+'</div></div><span class="val">'+metricVal(p)+' <small>'+label+'</small></span></li>';
   }).join('');
   var e=$('lbEmpty');e.hidden=list.length>0;
   e.textContent=!signed?'Sign in with Google in Settings, under Account to join the leaderboards. Until then your points are saved on this device only.':BOARD.scope==='friends'?'No friends here yet. Add friends by username in Settings, under Account.':'No players yet. Save a username in Settings, under Account to be the first.';
@@ -2186,6 +2235,102 @@ $('plPapers').addEventListener('click',function(e){
 });
 $('plYear').addEventListener('change',function(e){PLS.year=e.target.value;renderLinks()});
 
+/* ---------- intro tour ---------- */
+var INTRO_KEY='studystudio.intro';
+var TOUR=[
+ {e:'Welcome',t:'Welcome to Study Studio',p:'A study space built for IGCSE and A Level students. Focus with a timer, track your exams and past papers, earn points and climb the leaderboard. This quick tour shows you everything it can do.',l:['Free to use, no setup needed','Works on your phone and computer','Your progress is saved on this device']},
+ {e:'Focus',t:'Timer, noise and tones',p:'Pick a study mode like Physics Paper 4 or Maths Edexcel, or make your own, then start the timer.',l:['Exam modes with the real paper lengths, or custom times','White, pink, brown and rain noise, plus tones like 432 Hz, 528 Hz or your own frequency','A stopwatch tab when you just want to count up']},
+ {e:'Plan',t:'Exam countdown and your subjects',p:'Add the subjects you take and the dates of your exams.',l:['A countdown to each exam','Grade boundaries for every subject, which you can edit','Each subject gets its own color']},
+ {e:'Practice',t:'Past papers and links',p:'Log the marks you get and Study Studio works out your average and expected grade.',l:['Log papers and see your averages per subject','Past paper links by subject, year and paper for IGCSE and A Level','Direct links to question papers and mark schemes']},
+ {e:'Progress',t:'Points, streaks and ranks',p:'Studying earns points, and so does every paper you log.',l:['Points for focus time and for paper marks','Daily streaks, kept alive by 10 minutes of focus or a paper','Ranks from Starter up to da7ee7']},
+ {e:'Compete',t:'Leaderboard and profiles',p:'Sign in to see how you compare.',l:['Website-wide and friends leaderboards','Click anyone\'s name to open their profile','Make your own profile follow your rank or pick a color']},
+ {e:'Get started',t:'How do you want to start?',final:true}
+];
+var IN={i:0};
+function introShow(force){
+  if(!force&&(lsGet(INTRO_KEY)||signedIn()))return;
+  IN.i=0;$('introOv').hidden=false;renderIntro();
+}
+function introHide(done){$('introOv').hidden=true;if(done)lsSet(INTRO_KEY,done)}
+function renderIntro(){
+  var st=TOUR[IN.i],h='<div class="in-eyebrow">'+esc(st.e)+'</div><h2 id="inTitle">'+esc(st.t)+'</h2>',acts='';
+  if(st.final){
+    h+='<p>You can look around right now. Signing in saves your progress to your account and puts you on the leaderboard.</p><div class="in-choices">'+
+      (SY.cfg?'<button type="button" class="btn primary" id="inSign">Sign in with Google</button>':'')+
+      '<button type="button" class="btn" id="inGuest">Continue as a guest</button></div>'+
+      '<div class="in-warn"><b>Guests are not on the leaderboard.</b> You can use everything else, but your points stay on this device and nobody can see or compare them. You can sign in later from Settings, under Account, and keep what you have earned.</div>';
+    acts='<button type="button" class="btn" id="inBack">Back</button>';
+  }else{
+    h+='<p>'+esc(st.p)+'</p><ul class="in-list">'+st.l.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>';
+    acts=(IN.i>0?'<button type="button" class="btn" id="inBack">Back</button>':'')+'<button type="button" class="btn primary" id="inNext">Next</button>';
+  }
+  $('inBody').innerHTML=h;$('inActs').innerHTML=acts;
+  $('inDots').innerHTML=TOUR.map(function(x,i){return '<i class="'+(i===IN.i?'on':'')+'"></i>'}).join('');
+  $('inSkip').hidden=!!st.final;
+}
+$('introOv').addEventListener('click',function(e){
+  var id=e.target.id;
+  if(id==='inNext'){IN.i=Math.min(TOUR.length-1,IN.i+1);renderIntro()}
+  else if(id==='inBack'){IN.i=Math.max(0,IN.i-1);renderIntro()}
+  else if(id==='inSkip'){IN.i=TOUR.length-1;renderIntro()}
+  else if(id==='inGuest')introHide('guest');
+  else if(id==='inSign'){introHide('signin');signIn()}
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('profOv').hidden)$('profOv').hidden=true});
+
+/* ---------- profiles ---------- */
+var RANK_COL={starter:'#64748B',amateur:'#16A34A',popping:'#2F7BF5',hard:'#D92D20',gamed:'#E5221B',achiever:'#8E9AB0',da7ee7:'#D99A00'};
+var PF={id:null};
+function pfColor(pth,pts){
+  if(typeof pth==='string'&&pth.indexOf('h:')===0){var h=+pth.slice(2);if(!isNaN(h))return 'hsl('+h+' 72% 48%)'}
+  return RANK_COL[RANKS[rankIdx(pts)].id];
+}
+function pfData(id){
+  if(signedIn()&&id===SY.uid&&S.me.claimed&&S.me.username){var m=pubDoc();m.id=SY.uid;m.pth=S.me.pth||'rank';return m}
+  return playerById(id);
+}
+function openProfile(id){PF.id=id;renderProfile();$('profOv').hidden=false}
+function renderProfile(){
+  var p=pfData(PF.id),el=$('profCard');
+  if(!p){el.innerHTML='<div class="in-body"><h2>Profile not found</h2><p>This player is not loaded yet. Try again in a moment.</p></div><div class="in-foot"><span></span><button type="button" class="btn" data-pfclose>Close</button></div>';return}
+  var me=signedIn()&&p.id===SY.uid,pts=p.pts||0,i=rankIdx(pts),cur=RANKS[i],nx=RANKS[i+1];
+  var all=SY.players.slice();if(me&&!all.some(function(x){return x.id===p.id}))all.push(p);
+  all.sort(function(a,b){return (b.pts||0)-(a.pts||0)||String(a.username).localeCompare(String(b.username))});
+  var pos=0;all.forEach(function(x,k){if(x.id===p.id)pos=k+1});
+  var pth=me?(S.me.pth||'rank'):(p.pth||'rank'),col=pfColor(pth,pts);
+  el.style.setProperty('--pc',col);
+  var done=nx?Math.min(100,Math.max(0,(pts-cur.min)/(nx.min-cur.min)*100)):100;
+  var h='<div class="pf-top"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><h2 class="pf-name">'+esc(p.username)+(me?' <span class="pill run">You</span>':'')+'</h2>'+rankBadge(pts,true)+'</div><button type="button" class="btn sm" data-pfclose>Close</button></div>'+
+    '<div class="pf-pos">Position <b>#'+(pos||'-')+'</b> of '+all.length+' on the leaderboard</div></div>'+
+    '<div class="pf-grid">'+
+    '<div class="pf-stat"><small>Points</small><b>'+pts+'</b></div>'+
+    '<div class="pf-stat"><small>Time focused</small><b>'+fmtMin(p.focus||0)+'</b></div>'+
+    '<div class="pf-stat"><small>Streak</small><b>'+effStreak(p)+' days</b></div>'+
+    '<div class="pf-stat"><small>Best streak</small><b>'+(p.best||0)+' days</b></div>'+
+    '<div class="pf-stat"><small>Points this week</small><b>'+wkVal(p)+'</b></div>'+
+    '<div class="pf-stat"><small>Papers logged</small><b>'+(p.papers||0)+(p.avg!=null?' · '+Math.round(p.avg)+'%':'')+'</b></div></div>'+
+    '<div class="pf-prog"><small class="muted">Progress to next rank</small><div class="pf-bar"><i style="width:'+done.toFixed(1)+'%"></i></div>'+
+    '<small class="muted">'+(nx?'<b style="color:var(--ink)">'+(nx.min-pts)+' pts</b> to '+esc(nx.name):'Top rank reached')+'</small></div>';
+  if(me){
+    h+='<div class="pf-theme"><b>Profile theme</b><div class="pf-sw"><button type="button" class="btn sm" data-pth="rank" aria-pressed="'+(pth==='rank')+'">Follow my rank</button></div><div class="pf-sw">'+
+      HUES.map(function(hu,k){return '<button type="button" class="sw" data-pth="h:'+hu+'" title="'+HUE_NAMES[k]+'" aria-label="'+HUE_NAMES[k]+'" aria-pressed="'+(pth==='h:'+hu)+'" style="background:hsl('+hu+' 72% 48%)"></button>'}).join('')+'</div>'+
+      '<p class="muted" style="font-size:.8rem;margin:8px 0 0">Other players see this theme on your profile.</p></div>';
+  }else if(signedIn()&&!S.friends.some(function(f){return f.id===p.id})){
+    h+='<div class="pf-theme"><button type="button" class="btn sm" data-pfadd="'+esc(p.id)+'">Add friend</button></div>';
+  }
+  h+='<div class="in-foot"><span></span></div>';
+  el.innerHTML=h;
+}
+$('profOv').addEventListener('click',function(e){
+  if(e.target===$('profOv')||e.target.closest('[data-pfclose]')){$('profOv').hidden=true;return}
+  var t=e.target.closest('[data-pth]');
+  if(t){S.me.pth=t.dataset.pth;save();renderProfile();return}
+  var a=e.target.closest('[data-pfadd]');
+  if(a){var p=playerById(a.dataset.pfadd);if(p){S.friends.push({id:p.id,u:p.username});save();renderFriends();renderBoard();renderProfile()}}
+});
+$('lbList').addEventListener('click',function(e){var b=e.target.closest('[data-prof]');if(b)openProfile(b.dataset.prof)});
+$('frList').addEventListener('click',function(e){var b=e.target.closest('[data-prof]');if(b)openProfile(b.dataset.prof)});
+
 /* ---------- keyboard + loop ---------- */
 document.addEventListener('keydown',function(e){
   if(e.code!=='Space'||e.target.closest('button,input,select,textarea,a'))return;
@@ -2212,6 +2357,7 @@ applyTheme();renderSubjectSelect();applyHue();renderNoiseControls();renderLook()
 setMode(modeById(S.mode)||modeById('phys-p4'));
 renderExams();renderGrades();renderSubjects();renderLaps();swPaint();swUi();
 renderPapers();renderProgress();renderBoard();renderAccount();updateChips();initSync();
+setTimeout(function(){introShow(false)},900);
 })();
 </script>
 </body></html>
