@@ -292,6 +292,51 @@ img{max-width:100%}
 .rk-list li:first-child{border-top-color:transparent}
 .rk-list li.cur{background:var(--accent-soft); border-top-color:transparent}
 .rk-list small{color:var(--muted); font-family:var(--font-mono)}
+
+/* simple color controls */
+.sw-grid{display:flex; flex-wrap:wrap; gap:12px; margin-top:8px}
+.swb{width:38px; height:38px; border-radius:50%; border:0; cursor:pointer; padding:0; position:relative; flex:none; box-shadow:inset 0 0 0 1px rgba(0,0,0,.2),0 2px 6px rgba(0,0,0,.18)}
+.swb[aria-pressed="true"],.swc.sel{outline:3px solid var(--ink); outline-offset:3px}
+.swc{display:inline-flex; align-items:center; justify-content:center; overflow:hidden}
+.swc input{position:absolute; inset:-6px; width:60px; height:60px; opacity:0; cursor:pointer; border:0; padding:0}
+.swc span{font-weight:700; font-size:1.2rem; pointer-events:none; line-height:1}
+.cap{font-size:.82rem; color:var(--muted); margin-top:10px}
+details.card>summary{cursor:pointer; font-family:var(--font-display); font-weight:700; font-size:1.05rem; list-style:none; display:flex; align-items:center; justify-content:space-between; gap:10px}
+details.card>summary::-webkit-details-marker{display:none}
+details.card>summary::after{content:'+'; font-size:1.4rem; color:var(--muted)}
+details.card[open]>summary::after{content:'\2212'}
+
+/* frosted liquid glass */
+:root{--glass-a:62%; --glass-blur:18px; --glass-edge:rgba(255,255,255,.62); --glass-hi:rgba(255,255,255,.34); --blob-o:.85}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--glass-edge:rgba(255,255,255,.15); --glass-hi:rgba(255,255,255,.09); --blob-o:.55}}
+:root[data-theme="dark"]{--glass-edge:rgba(255,255,255,.15); --glass-hi:rgba(255,255,255,.09); --blob-o:.55}
+html[data-glass="on"] body::before{content:''; position:fixed; inset:-10%; z-index:-1; pointer-events:none; opacity:var(--blob-o);
+  background:
+   radial-gradient(40% 36% at 14% 12%, color-mix(in srgb,var(--accent) 75%,transparent), transparent 72%),
+   radial-gradient(36% 34% at 86% 20%, color-mix(in srgb,color-mix(in srgb,var(--accent) 45%,#ff5fd2) 70%,transparent), transparent 72%),
+   radial-gradient(44% 40% at 62% 92%, color-mix(in srgb,color-mix(in srgb,var(--accent) 45%,#22d3ee) 65%,transparent), transparent 72%);
+  animation:drift 32s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translate3d(3%,2%,0) scale(1.08)}}
+html[data-glass="on"] .card,html[data-glass="on"] .stat{
+  position:relative;
+  background:color-mix(in srgb,var(--surface) var(--glass-a),transparent);
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.7); backdrop-filter:blur(var(--glass-blur)) saturate(1.7);
+  border-color:var(--glass-edge);
+  box-shadow:inset 0 1px 0 var(--glass-edge),inset 0 -1px 0 rgba(0,0,0,.06),0 14px 34px -16px rgba(0,0,0,.4)}
+html[data-glass="on"] .card::before,html[data-glass="on"] .stat::before{content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(135deg,var(--glass-hi) 0%,rgba(255,255,255,0) 36%,rgba(255,255,255,0) 70%,var(--glass-hi) 100%)}
+html[data-glass="on"] .pick,html[data-glass="on"] .top-ctrl .btn{
+  background:color-mix(in srgb,var(--surface) var(--glass-a),transparent);
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.7); backdrop-filter:blur(var(--glass-blur)) saturate(1.7);
+  border-color:var(--glass-edge); box-shadow:inset 0 1px 0 var(--glass-edge)}
+html[data-glass="on"] .btn:not(.primary),html[data-glass="on"] .chip:not([aria-pressed="true"]),html[data-glass="on"] .mode:not([aria-pressed="true"]),
+html[data-glass="on"] input[type=text],html[data-glass="on"] input[type=number],html[data-glass="on"] input[type=date],html[data-glass="on"] input[type=datetime-local],html[data-glass="on"] select.sel,html[data-glass="on"] .cc-item{
+  background:color-mix(in srgb,var(--input-bg) 55%,transparent); border-color:color-mix(in srgb,var(--glass-edge) 70%,var(--line))}
+html[data-glass="on"] .btn:not(.primary){background:color-mix(in srgb,var(--btn-bg) 60%,transparent)}
+html[data-glass="on"] .tabs-wrap{border-bottom-color:var(--glass-edge)}
+html[data-glass="on"] .pl-paper{position:relative; background:color-mix(in srgb,var(--surface) var(--glass-a),transparent); -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.7); backdrop-filter:blur(var(--glass-blur)) saturate(1.7); border-color:var(--glass-edge); box-shadow:inset 0 1px 0 var(--glass-edge),inset 0 -1px 0 rgba(0,0,0,.06),0 14px 34px -16px rgba(0,0,0,.4)}
+html[data-glass="on"] .pl-paper::before{content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit; pointer-events:none; background:linear-gradient(135deg,var(--glass-hi) 0%,rgba(255,255,255,0) 36%,rgba(255,255,255,0) 70%,var(--glass-hi) 100%)}
+html[data-glass="on"] .lk{background:color-mix(in srgb,var(--input-bg) 55%,transparent); border-color:color-mix(in srgb,var(--glass-edge) 70%,var(--line))}
 </style>
 </head><body>
 
@@ -473,6 +518,7 @@ img{max-width:100%}
             <div class="card">
               <div class="card-head"><h2>Find a paper</h2></div>
               <div class="stack">
+                <div class="chip-row" id="plLevel" role="group" aria-label="Level"></div>
                 <label class="field" for="plSubj">Subject<select class="sel" id="plSubj"></select></label>
                 <div class="group" id="plPapersWrap"><div class="eyebrow">Papers</div><div class="chip-row" id="plPapers" role="group" aria-label="Papers"></div></div>
                 <label class="field" for="plYear" id="plYearWrap">Year<select class="sel" id="plYear"></select></label>
@@ -595,31 +641,39 @@ img{max-width:100%}
       <div class="split">
         <div class="col">
           <div class="card">
-            <div class="card-head"><h2>Accent color</h2></div>
-            <div class="look-stack">
-              <div class="chip-row" id="lookModes" role="group" aria-label="Accent color source"></div>
-              <div class="look-stack" id="lookHues"></div>
-            </div>
-          </div>
-          <div class="card">
             <div class="card-head"><h2>Light or dark</h2></div>
             <div class="chip-row" id="themeChips" role="group" aria-label="Light or dark"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Accent color</h2></div>
+            <p class="muted" style="font-size:.88rem">Buttons, highlights and the timer ring.</p>
+            <div class="sw-grid" id="accSw"></div>
+            <p class="cap" id="accCap"></p>
           </div>
         </div>
         <div class="col">
           <div class="card">
-            <div class="card-head"><h2>Starting points</h2></div>
-            <p class="muted" style="font-size:.85rem;margin-bottom:10px">Pick a set of page colors, then change anything you like below.</p>
-            <div class="mode-grid" id="bgChips"></div>
+            <div class="card-head"><h2>Background</h2></div>
+            <p class="muted" style="font-size:.88rem">Pick a color and the cards and text adjust to match. Each circle shows light and dark.</p>
+            <div class="sw-grid" id="bgSw"></div>
+            <p class="cap" id="bgCap"></p>
           </div>
-          <div><button class="btn" id="lookReset" type="button">Reset all colors</button></div>
+          <div class="card">
+            <div class="card-head"><h2>Frosted glass</h2></div>
+            <div class="chip-row" id="glassOn" role="group" aria-label="Frosted glass"></div>
+            <label class="field" for="glassAmt" style="margin-top:14px"><span>How frosted</span><input type="range" id="glassAmt" min="0" max="100" value="60"></label>
+          </div>
         </div>
       </div>
-      <div class="card" style="margin-top:20px">
-        <div class="card-head"><h2>Every color</h2><button class="btn sm" id="ccFlip" type="button"></button></div>
-        <p class="muted" style="font-size:.88rem">You are editing the <b id="ccWhich">light</b> colors. Light and dark each keep their own set. Tap a swatch to change it. The arrow puts one back to normal.</p>
+      <details class="card" id="advBox" style="margin-top:20px">
+        <summary>Fine-tune every color (optional)</summary>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px">
+          <p class="muted" style="font-size:.88rem;margin:0">You are editing the <b id="ccWhich">light</b> colors. Tap a swatch to change it. The arrow puts one back.</p>
+          <button class="btn sm" id="ccFlip" type="button"></button>
+        </div>
         <div id="ccGroups"></div>
-      </div>
+      </details>
+      <div style="margin-top:16px"><button class="btn" id="lookReset" type="button">Reset all colors</button></div>
       </div>
     </section>
   </main>
@@ -650,10 +704,12 @@ var PAL={
  forest:{n:'Forest',l:['#E8F0EA','#FFFFFF','#DAE6DD','#BFD0C4'],d:['#0C1511','#131E19','#1B2A23','#2A3B32']},
  plum:{n:'Plum',l:['#F1EAF2','#FFFFFF','#E6DAE8','#D2C2D5'],d:['#160E19','#1F1524','#2B1D31','#3B2A43']},
  paper:{n:'Paper',l:['#F1EEE8','#FFFFFF','#E7E2D8','#D3CCBE'],d:['#14120E','#1D1A15','#27231C','#383228']},
+ rose:{n:'Rose',l:['#F8EAEE','#FFFFFF','#F1DCE2','#E0C3CC'],d:['#190E12','#22151A','#2F1D24','#432B34']},
+ ocean:{n:'Ocean',l:['#E6F1F6','#FFFFFF','#D6E8F0','#B9D3DF'],d:['#0A1519','#102027','#183039','#264653']},
  mono:{n:'Mono',l:['#EFEFEF','#FFFFFF','#E2E2E2','#CFCFCF'],d:['#0B0B0B','#151515','#1F1F1F','#2D2D2D']}
 };
 function mergeCustom(c){c=c||{};return {light:Object.assign({},c.light),dark:Object.assign({},c.dark)}}
-function defaultLook(){return {mode:'subject',fixed:215,tools:{timer:215,stopwatch:175,exams:28,papers:330,board:45,subjects:150,settings:255},bg:'slate',custom:{light:{},dark:{}}}}
+function defaultLook(){return {mode:'subject',fixed:215,tools:{timer:215,stopwatch:175,exams:28,papers:330,board:45,subjects:150,settings:255},bg:'slate',custom:{light:{},dark:{}},glass:{on:true,amt:60}}}
 var CC_BG=['bg','surface','surface-2','line'];
 var CC=[
  ['Page',[['bg','Page background'],['surface','Cards and panels'],['surface-2','Raised areas and pills'],['line','Borders and dividers'],['ink','Main text'],['heading','Headings'],['muted','Secondary text']]],
@@ -790,7 +846,7 @@ function freshState(){var s=seedState();s.v=2;s.look=defaultLook();s.subjects.fo
 var S=freshState();
 try{var raw=localStorage.getItem(KEY); if(raw){var L=JSON.parse(raw); if(L&&L.subjects&&L.subjects.length){
   S=Object.assign(freshState(),L); S.noise=Object.assign({type:'brown',vol:.5,link:true},L.noise||{});
-  var dl=defaultLook(),ll=L.look||{};S.look=Object.assign(dl,ll);S.look.tools=Object.assign(defaultLook().tools,ll.tools||{});S.look.custom=mergeCustom(ll.custom);
+  var dl=defaultLook(),ll=L.look||{};S.look=Object.assign(dl,ll);S.look.tools=Object.assign(defaultLook().tools,ll.tools||{});S.look.custom=mergeCustom(ll.custom);S.look.glass=Object.assign({on:true,amt:60},ll.glass);
   if(L.v!==2){S.subjects.forEach(function(x){var mk=x.mark;applyBounds(x,x.bounds&&x.bounds.max);x.mark=mk});S.v=2}
 }}}catch(e){}
 var LOAD_TS=S.ts||0,TOUCHED=false;
@@ -798,7 +854,7 @@ function save(){S.ts=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}
 function normalizeRemote(r){
   var n=Object.assign(freshState(),r),rl=r.look||{};
   n.noise=Object.assign({type:'brown',vol:.5,link:true},r.noise||{});
-  n.look=Object.assign(defaultLook(),rl);n.look.tools=Object.assign(defaultLook().tools,rl.tools||{});n.look.custom=mergeCustom(rl.custom);
+  n.look=Object.assign(defaultLook(),rl);n.look.tools=Object.assign(defaultLook().tools,rl.tools||{});n.look.custom=mergeCustom(rl.custom);n.look.glass=Object.assign({on:true,amt:60},rl.glass);
   n.me=Object.assign({username:'',claimed:false},r.me||{});
   return n;
 }
@@ -819,7 +875,14 @@ function applyTheme(){
   var r=document.documentElement;
   if(S.theme==='auto')r.removeAttribute('data-theme'); else r.setAttribute('data-theme',S.theme);
   $('themeBtn').textContent='Theme: '+(S.theme==='auto'?'Auto':S.theme==='light'?'Light':'Dark');
-  applyPalette();
+  applyPalette();applyGlass();
+}
+function applyGlass(){
+  var r=document.documentElement,g=(S.look&&S.look.glass)||{on:true,amt:60},ok=false;
+  try{ok=!!(window.CSS&&CSS.supports&&(CSS.supports('backdrop-filter','blur(1px)')||CSS.supports('-webkit-backdrop-filter','blur(1px)')))&&!(window.matchMedia&&matchMedia('(prefers-reduced-transparency: reduce)').matches)}catch(e){}
+  r.setAttribute('data-glass',g.on&&ok?'on':'off');
+  r.style.setProperty('--glass-a',Math.round(92-0.4*g.amt)+'%');
+  r.style.setProperty('--glass-blur',Math.round(8+0.3*g.amt)+'px');
 }
 var curTab='timer';
 function effHue(){
@@ -862,30 +925,44 @@ function curHex(tok){
   var p=document.createElement('i');p.style.cssText='position:absolute;width:0;height:0;background:var(--'+tok+')';
   document.body.appendChild(p);var c=getComputedStyle(p).backgroundColor;document.body.removeChild(p);return toHex(c);
 }
-function hueRow(id,label,val){
-  return '<label class="field" for="'+id+'"><span style="display:flex;justify-content:space-between;gap:8px"><span>'+label+'</span><span class="mono" id="'+id+'-v">'+val+'°</span></span><input type="range" class="hue" id="'+id+'" min="0" max="360" value="'+val+'"></label>';
+function hex2rgb(h){return [1,3,5].map(function(i){return parseInt(h.substr(i,2),16)})}
+function rgb2hex(a){return '#'+a.map(function(x){return ('0'+Math.round(Math.max(0,Math.min(255,x))).toString(16)).slice(-2)}).join('')}
+function mixHex(a,b,t){var A=hex2rgb(a),B=hex2rgb(b);return rgb2hex(A.map(function(x,i){return x+(B[i]-x)*t}))}
+function lumOf(h){var c=hex2rgb(h).map(function(v){v/=255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2]}
+function deriveFromBg(bg){
+  if(lumOf(bg)>0.4)return {bg:bg,surface:mixHex(bg,'#ffffff',.72),'surface-2':mixHex(bg,'#000000',.06),line:mixHex(bg,'#000000',.16),ink:'#10151C',muted:mixHex(bg,'#10151C',.62)};
+  return {bg:bg,surface:mixHex(bg,'#ffffff',.07),'surface-2':mixHex(bg,'#ffffff',.13),line:mixHex(bg,'#ffffff',.22),ink:'#E7EBF0',muted:mixHex(bg,'#E7EBF0',.62)};
 }
-function renderPresets(){
-  $('bgChips').innerHTML=Object.keys(PAL).map(function(k){
-    var p=PAL[k],l=p.l||['#ECEFF3','#FFFFFF'],d=p.d||['#0E1217','#161B22'];
-    function sq(c){return '<i style="width:20px;height:20px;border-radius:4px;background:'+c+';border:1px solid rgba(128,128,128,.5);display:inline-block"></i>'}
-    return '<button type="button" class="mode" data-bg="'+k+'" aria-pressed="'+(S.look.bg===k)+'"><b>'+p.n+'</b><small style="display:flex;gap:4px;margin-top:4px">'+sq(l[0])+sq(l[1])+sq(d[0])+sq(d[1])+'</small></button>'}).join('');
+function swb(attrs,bg,label,sel){return '<button type="button" class="swb" '+attrs+' aria-label="'+label+'" aria-pressed="'+sel+'" title="'+label+'" style="background:'+bg+'"></button>'}
+function swCustom(id,val,isSet,label){
+  return '<label class="swb swc'+(isSet?' sel':'')+'" title="'+label+'" style="background:'+(isSet?val:'var(--surface-2)')+'"><input type="color" id="'+id+'" value="'+val+'" aria-label="'+label+'"><span style="color:'+(isSet?(lumOf(val)>.45?'#10151C':'#fff'):'var(--ink)')+'">+</span></label>';
 }
 function renderLook(){
-  var L=S.look,h='';
-  $('lookModes').innerHTML=[['subject','Follow my subject'],['fixed','One color'],['tool','Color per tool']].map(function(m){
-    return '<button type="button" class="chip" data-lm="'+m[0]+'" aria-pressed="'+(L.mode===m[0])+'">'+m[1]+'</button>'}).join('');
-  if(L.mode==='subject')h='<p class="muted">The accent changes with the subject you pick at the top. Set each subject\'s color in My subjects. Setting "Accent" under Every color overrides this.</p>';
-  else if(L.mode==='fixed')h=hueRow('hue-fixed','Accent color',L.fixed)+'<div class="sw-row">'+HUES.map(function(x,i){
-    return '<button type="button" class="sw" data-fh="'+x+'" aria-label="'+HUE_NAMES[i]+'" aria-pressed="'+(L.fixed===x)+'" style="background:hsl('+x+' 70% 45%)"></button>'}).join('')+'</div>';
-  else h=TOOLS.map(function(t){return hueRow('hue-'+t[0],t[1],L.tools[t[0]])}).join('');
-  $('lookHues').innerHTML=h;
+  var L=S.look,dark=isDark(),md=dark?'dark':'light',mm=L.custom[md];
   $('themeChips').innerHTML=[['auto','Auto'],['light','Light'],['dark','Dark']].map(function(m){
     return '<button type="button" class="chip" data-th="'+m[0]+'" aria-pressed="'+(S.theme===m[0])+'">'+m[1]+'</button>'}).join('');
-  renderPresets();
-  var dark=isDark(),mm=L.custom[dark?'dark':'light'];
-  $('ccWhich').textContent=dark?'dark':'light';
+  /* accent */
+  var cAcc=mm.accent||L.custom.light.accent||L.custom.dark.accent||'';
+  $('accSw').innerHTML=swb('data-acc="auto"','conic-gradient(#f43f5e,#f59e0b,#22c55e,#06b6d4,#6366f1,#d946ef,#f43f5e)','Match my subject',L.mode==='subject'&&!cAcc)+
+    HUES.map(function(x,i){return swb('data-acc="'+x+'"','hsl('+x+' 70% 45%)',HUE_NAMES[i],L.mode==='fixed'&&L.fixed===x&&!cAcc)}).join('')+
+    swCustom('accCustom',cAcc||curHex('accent'),!!cAcc,'Pick any color');
+  $('accCap').textContent=cAcc?'Custom color':L.mode==='subject'?'Matches the subject you pick at the top':L.mode==='fixed'?(HUE_NAMES[HUES.indexOf(L.fixed)]||'Custom'):'Color per tool';
+  /* background */
+  var cBg=L.bg==='custom';
+  $('bgSw').innerHTML=Object.keys(PAL).map(function(k){
+    var p=PAL[k],lc=(p.l||['#ECEFF3'])[0],dc=(p.d||['#0E1217'])[0];
+    return swb('data-bg="'+k+'"','linear-gradient(135deg,'+lc+' 50%,'+dc+' 50%)',p.n,L.bg===k)}).join('')+swCustom('bgCustom',mm.bg||curHex('bg'),cBg,'Pick any background color');
+  $('bgCap').textContent=cBg?'Custom color for '+md+' mode':(PAL[L.bg]?PAL[L.bg].n:'Slate');
+  /* glass */
+  $('glassOn').innerHTML=[['on','On'],['off','Off']].map(function(m){return '<button type="button" class="chip" data-gl="'+m[0]+'" aria-pressed="'+((L.glass.on?'on':'off')===m[0])+'">'+m[1]+'</button>'}).join('');
+  $('glassAmt').value=L.glass.amt;$('glassAmt').disabled=!L.glass.on;
+  /* fine tune */
+  $('ccWhich').textContent=md;
   $('ccFlip').textContent='Edit '+(dark?'light':'dark')+' colors';
+  if($('advBox').open)renderCC();else $('ccGroups').innerHTML='';
+}
+function renderCC(){
+  var mm=S.look.custom[isDark()?'dark':'light'];
   $('ccGroups').innerHTML=CC.map(function(g){
     return '<div class="cc-group"><div class="eyebrow">'+g[0]+'</div><div class="cc-grid">'+g[1].map(function(t){
       var k=t[0];
@@ -893,40 +970,55 @@ function renderLook(){
     }).join('')+'</div></div>';
   }).join('');
 }
-$('lookModes').addEventListener('click',function(e){var b=e.target.closest('[data-lm]');if(!b)return;S.look.mode=b.dataset.lm;applyHue();save();renderLook()});
-$('lookHues').addEventListener('input',function(e){
-  var id=e.target.id;if(id.indexOf('hue-')!==0)return;
-  var v=parseInt(e.target.value,10),k=id.slice(4);
-  if(k==='fixed')S.look.fixed=v;else S.look.tools[k]=v;
-  $(id+'-v').textContent=v+'°';applyHue();
-});
-$('lookHues').addEventListener('change',save);
-$('lookHues').addEventListener('click',function(e){var b=e.target.closest('[data-fh]');if(!b)return;S.look.fixed=parseInt(b.dataset.fh,10);applyHue();save();renderLook()});
+$('advBox').addEventListener('toggle',function(){if($('advBox').open)renderCC();else $('ccGroups').innerHTML=''});
 $('themeChips').addEventListener('click',function(e){var b=e.target.closest('[data-th]');if(!b)return;S.theme=b.dataset.th;applyTheme();save();renderLook()});
-$('bgChips').addEventListener('click',function(e){
+$('accSw').addEventListener('click',function(e){
+  var b=e.target.closest('[data-acc]');if(!b)return;
+  ['light','dark'].forEach(function(m){var c=S.look.custom[m];delete c.accent;delete c['on-accent'];delete c['accent-soft']});
+  if(b.dataset.acc==='auto')S.look.mode='subject';else{S.look.mode='fixed';S.look.fixed=parseInt(b.dataset.acc,10)}
+  applyPalette();applyHue();save();renderLook();
+});
+$('accSw').addEventListener('input',function(e){
+  if(e.target.id!=='accCustom')return;
+  var v=e.target.value,on=lumOf(v)>.45?'#0B0F14':'#FFFFFF';
+  ['light','dark'].forEach(function(m){var c=S.look.custom[m];c.accent=v;c['on-accent']=on;delete c['accent-soft']});
+  applyPalette();
+});
+$('accSw').addEventListener('change',function(e){if(e.target.id==='accCustom'){save();renderLook()}});
+$('bgSw').addEventListener('click',function(e){
   var b=e.target.closest('[data-bg]');if(!b)return;
   var k=b.dataset.bg,p=PAL[k];
   ['light','dark'].forEach(function(md){
-    var arr=md==='light'?p.l:p.d;
-    CC_BG.forEach(function(t,i){if(arr)S.look.custom[md][t]=arr[i];else delete S.look.custom[md][t]});
+    var arr=md==='light'?p.l:p.d,c=S.look.custom[md];
+    CC_BG.forEach(function(t,i){if(arr)c[t]=arr[i];else delete c[t]});
+    delete c.ink;delete c.muted;
   });
   S.look.bg=k;applyPalette();save();renderLook();
 });
+$('bgSw').addEventListener('input',function(e){
+  if(e.target.id!=='bgCustom')return;
+  Object.assign(S.look.custom[isDark()?'dark':'light'],deriveFromBg(e.target.value));
+  S.look.bg='custom';applyPalette();
+});
+$('bgSw').addEventListener('change',function(e){if(e.target.id==='bgCustom'){save();renderLook()}});
+$('glassOn').addEventListener('click',function(e){var b=e.target.closest('[data-gl]');if(!b)return;S.look.glass.on=b.dataset.gl==='on';applyGlass();save();renderLook()});
+$('glassAmt').addEventListener('input',function(e){S.look.glass.amt=parseInt(e.target.value,10);applyGlass()});
+$('glassAmt').addEventListener('change',save);
 $('ccGroups').addEventListener('input',function(e){
   var k=e.target.dataset&&e.target.dataset.cc;if(!k)return;
   S.look.custom[isDark()?'dark':'light'][k]=e.target.value;
-  if(CC_BG.indexOf(k)>-1)S.look.bg='';
+  if(CC_BG.indexOf(k)>-1)S.look.bg='custom';
   applyPalette();
   var it=e.target.closest('.cc-item');it.querySelector('small').textContent='Custom';it.querySelector('[data-ccr]').hidden=false;
 });
-$('ccGroups').addEventListener('change',function(e){if(e.target.dataset&&e.target.dataset.cc){save();renderPresets()}});
+$('ccGroups').addEventListener('change',function(e){if(e.target.dataset&&e.target.dataset.cc){save();renderLook()}});
 $('ccGroups').addEventListener('click',function(e){
   var b=e.target.closest('[data-ccr]');if(!b)return;
   delete S.look.custom[isDark()?'dark':'light'][b.dataset.ccr];
   applyPalette();save();renderLook();
 });
 $('ccFlip').addEventListener('click',function(){S.theme=isDark()?'light':'dark';applyTheme();save();renderLook()});
-$('lookReset').addEventListener('click',function(){S.look=defaultLook();applyHue();applyPalette();save();renderLook()});
+$('lookReset').addEventListener('click',function(){S.look=defaultLook();applyHue();applyTheme();save();renderLook()});
 function renderSubjectSelect(){
   var sel=$('activeSubject');
   sel.innerHTML=S.subjects.map(function(s){return '<option value="'+s.id+'">'+esc(s.name)+'</option>'}).join('');
@@ -1823,6 +1915,9 @@ function lk(href,txt,cls){return '<a class="lk'+(cls?' '+cls:'')+'" href="'+esc(
 var SCI=[{n:'1',l:'Paper 1',t:'Multiple choice (Core)'},{n:'2',l:'Paper 2',t:'Multiple choice (Extended)'},{n:'3',l:'Paper 3',t:'Theory (Core)'},{n:'4',l:'Paper 4',t:'Theory (Extended)'},{n:'5',l:'Paper 5',t:'Practical test'},{n:'6',l:'Paper 6',t:'Alternative to practical'}];
 function esci(a,b){return [{n:'1',l:'Paper 1',t:'Paper '+a},{n:'2',l:'Paper 2',t:'Paper '+b}]}
 function idx(id,grp,name,links,keys){return {id:id,grp:grp,name:name,kind:'idx',keys:keys||[],src:links}}
+var SME='https://www.savemyexams.com/';
+function plSlug(t){return t.toLowerCase().replace(/[^a-z0-9]+/g,'-')}
+function AL(grp,name,links,keys,note){var o=idx('al-'+plSlug(grp)+'-'+plSlug(name),grp,name,links,keys);o.level='alevel';if(note)o.note=note;return o}
 var PL=[
  {id:'c-phys',grp:'Cambridge IGCSE',name:'Physics',code:'0625',keys:['physics'],kind:'caie',papers:SCI,def:['2','4','6'],pmt:'gcse-physics',
   src:[['PapaCambridge',PAPA+'igcse-physics-0625'],['Dynamic Papers',DYN_C+'subjects-f-z/physics/'],['Demerdash','https://demerdash.uk/physics/igcse-cambridge-past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'gcse-physics/']]},
@@ -1833,6 +1928,15 @@ var PL=[
  {id:'c-math',grp:'Cambridge IGCSE',name:'Mathematics',code:'0580',keys:['mathematics','maths'],kind:'caie',
   papers:[{n:'1',l:'Paper 1',t:'Core'},{n:'2',l:'Paper 2',t:'Extended'},{n:'3',l:'Paper 3',t:'Core'},{n:'4',l:'Paper 4',t:'Extended'}],def:['2','4'],pmt:'gcse-maths',
   src:[['PapaCambridge',PAPA+'igcse-mathematics-0580'],['Dynamic Papers',DYN_C+'subjects-f-z/maths/'],['Demerdash (may ask for a password)','https://demerdash.uk/math/igcse-cambridge/past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'gcse-maths/']]},
+ {id:'c-bus',grp:'Cambridge IGCSE',name:'Business Studies',code:'0450',keys:['business studies','business'],kind:'caie',
+  papers:[{n:'1',l:'Paper 1',t:'Short answer and data response'},{n:'2',l:'Paper 2',t:'Case study'}],def:['1','2'],
+  src:[['PapaCambridge',PAPA+'igcse-business-studies-0450']]},
+ {id:'c-ict',grp:'Cambridge IGCSE',name:'ICT',code:'0417',keys:['ict','information and communication technology'],kind:'caie',
+  papers:[{n:'1',l:'Paper 1',t:'Theory'},{n:'2',l:'Paper 2',t:'Document production, databases and presentations'},{n:'3',l:'Paper 3',t:'Spreadsheets and website authoring'}],def:['1','2','3'],
+  src:[['PapaCambridge',PAPA+'igcse-ict0417']]},
+ {id:'c-cs',grp:'Cambridge IGCSE',name:'Computer Science',code:'0478',keys:['computer science'],kind:'caie',
+  papers:[{n:'1',l:'Paper 1',t:'Computer systems'},{n:'2',l:'Paper 2',t:'Algorithms, programming and logic'}],def:['1','2'],
+  src:[['PapaCambridge',PAPA+'igcse-computer-science-0478']]},
  {id:'e-math',grp:'Edexcel International GCSE',name:'Mathematics A',code:'4MA1',keys:['mathematics','maths','mathematics a'],kind:'em',
   papers:[{n:'1H',l:'Paper 1H',t:'Higher tier'},{n:'2H',l:'Paper 2H',t:'Higher tier'},{n:'1F',l:'Paper 1F',t:'Foundation tier'},{n:'2F',l:'Paper 2F',t:'Foundation tier'}],def:['1H','2H'],
   src:[['Physics & Maths Tutor, Paper 1',PMT_PAGES+'gcse-maths/edexcel-igcse-a-paper-1/'],['Physics & Maths Tutor, Paper 2',PMT_PAGES+'gcse-maths/edexcel-igcse-a-paper-2/'],['Dynamic Papers',DYN_E+'maths-2/'],['Demerdash (may ask for a password)','https://demerdash.uk/math/igcse-edexcel/past-papers/'],['Save My Exams','https://www.savemyexams.com/igcse/maths/edexcel/a/past-papers/'],['ExamPapersPractice','https://www.exampaperspractice.co.uk/igcse-maths-edexcel']]},
@@ -1842,49 +1946,54 @@ var PL=[
   src:[['Physics & Maths Tutor, Paper 1',PMT_PAGES+'gcse-chemistry/edexcel-igcse-paper-1/'],['Physics & Maths Tutor, Paper 2',PMT_PAGES+'gcse-chemistry/edexcel-igcse-paper-2/'],['Dynamic Papers',DYN_E+'chemistry/'],['Demerdash','https://demerdash.uk/chemistry/igcse-edexcel-past-papers/']]},
  {id:'e-bio',grp:'Edexcel International GCSE',name:'Biology',code:'4BI1',keys:['biology'],kind:'es',dir:'Biology',nov20:true,papers:esci('1B','2B'),def:['1','2'],pmt:'gcse-biology',
   src:[['Physics & Maths Tutor, Paper 1',PMT_PAGES+'gcse-biology/edexcel-igcse-paper-1/'],['Physics & Maths Tutor, Paper 2',PMT_PAGES+'gcse-biology/edexcel-igcse-paper-2/'],['Dynamic Papers',DYN_E+'biology/'],['Demerdash','https://demerdash.uk/biology/igcse-edexcel-past-papers/']]},
+ idx('e-bus','Edexcel International GCSE','Business 4BS1',[['Save My Exams, Paper 1','https://www.savemyexams.com/igcse/business/edexcel/past-papers/paper-1/'],['Save My Exams, Paper 2','https://www.savemyexams.com/igcse/business/edexcel/past-papers/paper-2/'],['ExamPapersPractice','https://www.exampaperspractice.co.uk/edexcel-igcse-business-studies-past-papers-4bs1/']],['business studies','business']),
+ idx('e-ict','Edexcel International GCSE','ICT 4IT1',[['Save My Exams, Paper 1','https://www.savemyexams.com/igcse/ict/edexcel/past-papers/paper-1'],['Save My Exams, Paper 2','https://www.savemyexams.com/igcse/ict/edexcel/past-papers/paper-2/'],['Maths Genie','https://mathsgenie.co.uk/igcse/ict/edexcel']],['ict','information and communication technology']),
+ idx('e-cs','Edexcel International GCSE','Computer Science 4CP0',[['Save My Exams, Paper 1','https://www.savemyexams.com/igcse/computer-science/edexcel/past-papers/paper-1/'],['Save My Exams, Paper 2','https://www.savemyexams.com/igcse/computer-science/edexcel/past-papers/paper-2/'],['Physics & Maths Tutor, Paper 2',PMT_PAGES+'gcse-computer-science/edexcel-igcse-paper-2/'],['ExamPapersPractice','https://www.exampaperspractice.co.uk/igcse-2/sciences/computer-science/edexcel-igcse-computer-science-4pc0-past-papers/']],['computer science']),
  idx('i-addm','More Cambridge subjects (index pages)','Additional Mathematics 0606',[['PapaCambridge',PAPA+'igcse-mathematics-0606']],['additional mathematics']),
  idx('i-eng','More Cambridge subjects (index pages)','English First Language 0500',[['PapaCambridge',PAPA+'igcse-english-0500']],['english language','english']),
- idx('i-bus','More Cambridge subjects (index pages)','Business Studies 0450',[['PapaCambridge',PAPA+'igcse-business-studies-0450']],['business studies']),
  idx('i-eco','More Cambridge subjects (index pages)','Economics 0455',[['PapaCambridge',PAPA+'igcse-economics-0455']],['economics']),
- idx('i-cs','More Cambridge subjects (index pages)','Computer Science 0478',[['PapaCambridge',PAPA+'igcse-computer-science-0478']],['computer science']),
- idx('i-ict','More Cambridge subjects (index pages)','ICT 0417',[['PapaCambridge',PAPA+'igcse-ict0417']],['ict']),
  idx('i-geo','More Cambridge subjects (index pages)','Geography 0460',[['PapaCambridge',PAPA+'igcse-geography-0460']],['geography']),
  idx('i-his','More Cambridge subjects (index pages)','History 0470',[['PapaCambridge',PAPA+'igcse-history-0470']],['history']),
  idx('i-acc','More Cambridge subjects (index pages)','Accounting 0452',[['PapaCambridge',PAPA+'igcse-accounting-0452']],['accounting']),
  idx('i-isl','More Cambridge subjects (index pages)','Islamiyat 0493',[['PapaCambridge',PAPA+'igcse-islamiyat-0493']],['islamic studies']),
  idx('i-ara','More Cambridge subjects (index pages)','Arabic',[['PapaCambridge, 0508',PAPA+'igcse-arabic-0508'],['PapaCambridge, 0527',PAPA+'igcse-arabic-0527'],['PapaCambridge, 0544',PAPA+'igcse-arabic-0544']],['arabic']),
  idx('i-sci','More Cambridge subjects (index pages)','Combined and Co-ordinated Sciences',[['PapaCambridge, Science 0653',PAPA+'igcse-science-0653'],['PapaCambridge, Sciences 0654',PAPA+'igcse-sciences-0654']],['combined science']),
- {id:'a-esl',grp:'Oxford AQA International GCSE',name:'English as a Second Language',code:'9280',kind:'esl',keys:['english as a second language','esl'],src:[['Your Drive folder of ESL papers','https://drive.google.com/drive/folders/1U1x3tCEaZBEaRALoVlufMpYkXzCBvXFo'],['Save My Exams, past papers','https://www.savemyexams.com/igcse/english/oxford-aqa/english-as-a-second-language/past-papers/'],['Oxford AQA Exams (official site)','https://www.oxfordaqaexams.org.uk/']]},
- {id:'al-phys',grp:'Cambridge AS & A Level',name:'Physics',code:'9702',keys:['physics'],kind:'caie',papers:[{n:'1',l:'Paper 1',t:'AS multiple choice'},{n:'2',l:'Paper 2',t:'AS structured questions'},{n:'3',l:'Paper 3',t:'Advanced practical skills'},{n:'4',l:'Paper 4',t:'A level structured questions'},{n:'5',l:'Paper 5',t:'Planning, analysis and evaluation'}],def:['2','4'],src:[['PapaCambridge',PAPA+'as-and-a-level-physics-9702']]},
- {id:'al-chem',grp:'Cambridge AS & A Level',name:'Chemistry',code:'9701',keys:['chemistry'],kind:'caie',papers:[{n:'1',l:'Paper 1',t:'AS multiple choice'},{n:'2',l:'Paper 2',t:'AS structured questions'},{n:'3',l:'Paper 3',t:'Advanced practical skills'},{n:'4',l:'Paper 4',t:'A level structured questions'},{n:'5',l:'Paper 5',t:'Planning, analysis and evaluation'}],def:['2','4'],src:[['PapaCambridge',PAPA+'as-and-a-level-chemistry-9701']]},
- {id:'al-bio',grp:'Cambridge AS & A Level',name:'Biology',code:'9700',keys:['biology'],kind:'caie',papers:[{n:'1',l:'Paper 1',t:'AS multiple choice'},{n:'2',l:'Paper 2',t:'AS structured questions'},{n:'3',l:'Paper 3',t:'Advanced practical skills'},{n:'4',l:'Paper 4',t:'A level structured questions'},{n:'5',l:'Paper 5',t:'Planning, analysis and evaluation'}],def:['2','4'],src:[['PapaCambridge',PAPA+'as-and-a-level-biology-9700']]},
- {id:'al-math',grp:'Cambridge AS & A Level',name:'Mathematics',code:'9709',keys:['mathematics','maths'],kind:'caie',papers:[{n:'1',l:'Paper 1',t:'Pure Mathematics 1'},{n:'2',l:'Paper 2',t:'Pure Mathematics 2'},{n:'3',l:'Paper 3',t:'Pure Mathematics 3'},{n:'4',l:'Paper 4',t:'Mechanics'},{n:'5',l:'Paper 5',t:'Probability & Statistics 1'},{n:'6',l:'Paper 6',t:'Probability & Statistics 2'}],def:['1','3'],src:[['PapaCambridge',PAPA+'as-and-a-level-mathematics-9709']]},
- {id:'al-fm',grp:'Cambridge AS & A Level',name:'Further Mathematics',code:'9231',keys:['further mathematics'],kind:'caie',papers:[{n:'1',l:'Paper 1',t:'Further Pure Mathematics 1'},{n:'2',l:'Paper 2',t:'Further Pure Mathematics 2'},{n:'3',l:'Paper 3',t:'Further Mechanics'},{n:'4',l:'Paper 4',t:'Further Probability & Statistics'}],def:['1','2'],src:[['PapaCambridge',PAPA+'as-and-a-level-further-mathematics-9231']]},
- {id:'al-cs',grp:'Cambridge AS & A Level',name:'Computer Science',code:'9618',keys:['computer science'],kind:'caie',papers:[{n:'1',l:'Paper 1',t:'Theory Fundamentals'},{n:'2',l:'Paper 2',t:'Fundamental Problem-solving and Programming'},{n:'3',l:'Paper 3',t:'Advanced Theory'},{n:'4',l:'Paper 4',t:'Practical Programming'}],def:['1','2'],src:[['PapaCambridge',PAPA+'as-and-a-level-computer-science-9618']]},
- {id:'al-bus',grp:'Cambridge AS & A Level',name:'Business',code:'9609',keys:['business studies'],kind:'caie',papers:[{n:'1',l:'Paper 1',t:'Business concepts'},{n:'2',l:'Paper 2',t:'Data response'},{n:'3',l:'Paper 3',t:'Business analysis'},{n:'4',l:'Paper 4',t:'Business strategy'}],def:['1','2'],src:[['PapaCambridge',PAPA+'as-and-a-level-business-9609']]},
- {id:'al-eco',grp:'Cambridge AS & A Level',name:'Economics',code:'9708',keys:['economics'],kind:'caie',papers:[{n:'1',l:'Paper 1',t:'AS multiple choice'},{n:'2',l:'Paper 2',t:'AS data response and essay'},{n:'3',l:'Paper 3',t:'A level multiple choice'},{n:'4',l:'Paper 4',t:'A level data response and essay'}],def:['1','2'],src:[['PapaCambridge',PAPA+'as-and-a-level-economics-9708']]},
- idx('ai-psy','More Cambridge AS & A Level (index pages)','Psychology 9990',[['PapaCambridge',PAPA+'as-and-a-level-psychology-9990']],['psychology']),
- idx('ai-acc','More Cambridge AS & A Level (index pages)','Accounting 9706',[['PapaCambridge',PAPA+'as-and-a-level-accounting-9706']],[]),
- idx('ai-geo','More Cambridge AS & A Level (index pages)','Geography 9696',[['PapaCambridge',PAPA+'as-and-a-level-geography-9696']],[]),
- idx('ai-his','More Cambridge AS & A Level (index pages)','History 9489',[['PapaCambridge',PAPA+'as-and-a-level-history-9489']],[]),
- idx('ai-soc','More Cambridge AS & A Level (index pages)','Sociology 9699',[['PapaCambridge',PAPA+'as-and-a-level-sociology-9699']],['sociology']),
- idx('ai-law','More Cambridge AS & A Level (index pages)','Law 9084',[['PapaCambridge',PAPA+'as-and-a-level-law-9084']],[]),
- idx('ai-eng','More Cambridge AS & A Level (index pages)','English Language 9093',[['PapaCambridge',PAPA+'as-and-a-level-english-language-9093']],[]),
- idx('ai-it','More Cambridge AS & A Level (index pages)','Information Technology 9626',[['PapaCambridge',PAPA+'as-and-a-level-information-technology-9626']],[]),
- idx('ai-oth','More Cambridge AS & A Level (index pages)','All other AS & A Level subjects',[['PapaCambridge, all subjects','https://pastpapers.papacambridge.com/papers/caie'],['Dynamic Papers, A Level','https://dynamicpapers.com/past-papers/cambridge-past-papers/a-level/']],[]),
- idx('i-fr','More Cambridge subjects (index pages)','French 0520',[['PapaCambridge',PAPA+'igcse-french-0520']],['french']),
- idx('i-sp','More Cambridge subjects (index pages)','Spanish 0530',[['PapaCambridge',PAPA+'igcse-spanish-0530']],['spanish']),
- idx('i-ge','More Cambridge subjects (index pages)','German 0525',[['PapaCambridge',PAPA+'igcse-german-0525']],['german']),
- idx('i-lit','More Cambridge subjects (index pages)','Literature in English 0475',[['PapaCambridge',PAPA+'igcse-literature-english-0475']],['english literature']),
- idx('i-esl2','More Cambridge subjects (index pages)','English Second Language 0510',[['PapaCambridge',PAPA+'igcse-english-second-language-0510']],[]),
- idx('i-soc','More Cambridge subjects (index pages)','Sociology 0495',[['PapaCambridge',PAPA+'igcse-sociology-0495']],[]),
- idx('i-art','More Cambridge subjects (index pages)','Art & Design 0400',[['PapaCambridge',PAPA+'igcse-art-and-design-0400']],['art and design']),
- idx('i-mus','More Cambridge subjects (index pages)','Music 0410',[['PapaCambridge',PAPA+'igcse-music-0410']],['music']),
- idx('i-pe','More Cambridge subjects (index pages)','Physical Education 0413',[['PapaCambridge',PAPA+'igcse-physical-education-0413']],[]),
- idx('i-intm','More Cambridge subjects (index pages)','International Mathematics 0607',[['PapaCambridge',PAPA+'igcse-mathematics-international-0607']],[]),
- idx('i-all','More Cambridge subjects (index pages)','Any other Cambridge IGCSE subject',[['PapaCambridge, all subjects','https://pastpapers.papacambridge.com/papers/caie'],['Dynamic Papers, IGCSE','https://dynamicpapers.com/past-papers/cambridge-past-papers/o-level/']],[]),
- idx('ei-al','Edexcel International A Level (index pages)','Edexcel IAL, all subjects',[['Dynamic Papers, Edexcel International A Level','https://dynamicpapers.com/past-papers/edexcel-past-papers/'],['Physics & Maths Tutor, A Level',PMT_PAGES+'a-level-physics/'],['Save My Exams, Edexcel IAL','https://www.savemyexams.com/international-a-level/']],[]),
- idx('i-edx','More Edexcel subjects (index pages)','Other Edexcel subjects',[['Dynamic Papers, all Edexcel IGCSE subjects',DYN_E],['Save My Exams, Edexcel IGCSE','https://www.savemyexams.com/igcse/boards/edexcel/past-papers/']],[])
+ {id:'a-esl',grp:'Oxford AQA International GCSE',name:'English as a Second Language',code:'9280',kind:'esl',keys:['english as a second language','esl'],src:[['Your ESL folder (Google Drive)','https://drive.google.com/drive/folders/1U1x3tCEaZBEaRALoVlufMpYkXzCBvXFo'],['Save My Exams, past papers','https://www.savemyexams.com/igcse/english/oxford-aqa/english-as-a-second-language/past-papers/'],['Oxford AQA Exams (official site)','https://www.oxfordaqaexams.org.uk/']]},
+ idx('i-edx','More Edexcel subjects (index pages)','Other Edexcel subjects',[['Dynamic Papers, all Edexcel IGCSE subjects',DYN_E],['Save My Exams, Edexcel IGCSE','https://www.savemyexams.com/igcse/boards/edexcel/past-papers/']],[]),
+ AL('Cambridge International AS & A Level','Physics 9702',[['PapaCambridge',PAPA+'as-and-a-level-physics-9702'],['Save My Exams',SME+'a-level/physics/cie/past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'a-level-physics/']],['physics']),
+ AL('Cambridge International AS & A Level','Chemistry 9701',[['PapaCambridge',PAPA+'as-and-a-level-chemistry-9701'],['Physics & Maths Tutor',PMT_PAGES+'a-level-chemistry/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['chemistry']),
+ AL('Cambridge International AS & A Level','Biology 9700',[['PapaCambridge',PAPA+'as-and-a-level-biology-9700'],['Physics & Maths Tutor',PMT_PAGES+'a-level-biology/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['biology']),
+ AL('Cambridge International AS & A Level','Mathematics 9709',[['PapaCambridge',PAPA+'as-and-a-level-mathematics-9709'],['Physics & Maths Tutor','https://www.physicsandmathstutor.com/a-level-maths-papers/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['mathematics','maths']),
+ AL('Cambridge International AS & A Level','Further Mathematics 9231',[['PapaCambridge',PAPA+'as-and-a-level-mathematics-9231'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['further mathematics','further maths']),
+ AL('Cambridge International AS & A Level','Computer Science 9618',[['PapaCambridge',PAPA+'as-and-a-level-computer-science-for-first-examination-in-2021-9618'],['Physics & Maths Tutor',PMT_PAGES+'a-level-computer-science/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['computer science']),
+ AL('Cambridge International AS & A Level','Business 9609',[['PapaCambridge',PAPA+'as-and-a-level-business9609'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['business studies','business']),
+ AL('Cambridge International AS & A Level','Economics 9708',[['PapaCambridge',PAPA+'as-and-a-level-economics-9708'],['Physics & Maths Tutor',PMT_PAGES+'a-level-economics/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['economics']),
+ AL('Cambridge International AS & A Level','Accounting 9706',[['PapaCambridge',PAPA+'as-and-a-level-accounting-9706'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['accounting']),
+ AL('Cambridge International AS & A Level','Psychology 9990',[['PapaCambridge',PAPA+'as-and-a-level-psychology-9990'],['Physics & Maths Tutor',PMT_PAGES+'a-level-psychology/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['psychology']),
+ AL('Cambridge International AS & A Level','Sociology 9699',[['PapaCambridge',PAPA+'as-and-a-level-sociology-9699'],['Save My Exams',SME+'a-level/sociology/cie/past-papers']],['sociology']),
+ AL('Cambridge International AS & A Level','Geography 9696',[['PapaCambridge',PAPA+'as-and-a-level-geography-9696'],['Physics & Maths Tutor',PMT_PAGES+'a-level-geography/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['geography']),
+ AL('Cambridge International AS & A Level','History 9489',[['PapaCambridge',PAPA+'as-and-a-level-history-9489'],['Physics & Maths Tutor',PMT_PAGES+'a-level-history/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['history']),
+ AL('Cambridge International AS & A Level','English Language 9093',[['PapaCambridge',PAPA+'as-and-a-level-english-9093'],['Physics & Maths Tutor',PMT_PAGES+'a-level-english-language/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['english language','english']),
+ AL('Cambridge International AS & A Level','English Literature 9695',[['PapaCambridge',PAPA+'as-and-a-level-english-literature-9695'],['Physics & Maths Tutor',PMT_PAGES+'a-level-english-literature/'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/']],['english literature']),
+ AL('Cambridge International AS & A Level','English General Paper 8021',[['PapaCambridge',PAPA+'as-and-a-level-english-general-paper-8021']],['english general paper']),
+ AL('Cambridge International AS & A Level','Law 9084',[['PapaCambridge',PAPA+'as-and-a-level-law-9084']],['law']),
+ AL('Cambridge International AS & A Level','Art and Design 9479',[['PapaCambridge',PAPA+'as-and-a-level-art-and-design-9479']],['art and design']),
+ AL('Cambridge International AS & A Level','Drama 9482',[['Save My Exams',SME+'a-level/drama/cie/past-papers/'],['PapaCambridge, all AS and A Level subjects',PAPA+'as-and-a-level']],['drama']),
+ AL('Cambridge International AS & A Level','Every other Cambridge subject',[['PapaCambridge, all AS and A Level subjects',PAPA+'as-and-a-level'],['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/'],['PapaCambridge, folder view','https://pastpapers.papacambridge.com/index.php?dir=Cambridge+International+Examinations+%28CIE%29%2FAS+and+A+Level']],[],'Information Technology, Music, Media Studies, languages, Global Perspectives and the rest are on these index pages. Pick your subject there, then the year.'),
+ AL('Pearson Edexcel International A Level','Physics',[['Save My Exams',SME+'international-a-level/physics/edexcel/past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'a-level-physics/']],['physics']),
+ AL('Pearson Edexcel International A Level','Chemistry',[['Physics & Maths Tutor',PMT_PAGES+'a-level-chemistry/'],['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/']],['chemistry']),
+ AL('Pearson Edexcel International A Level','Biology',[['Save My Exams',SME+'international-a-level/biology/edexcel/past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'a-level-biology/']],['biology']),
+ AL('Pearson Edexcel International A Level','Mathematics',[['Physics & Maths Tutor','https://www.physicsandmathstutor.com/a-level-maths-papers/'],['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/']],['mathematics','maths']),
+ AL('Pearson Edexcel International A Level','Further Mathematics',[['Save My Exams',SME+'international-a-level/further-maths/edexcel/past-papers/']],['further mathematics','further maths']),
+ AL('Pearson Edexcel International A Level','Economics',[['Save My Exams',SME+'international-a-level/economics/edexcel/past-papers/'],['Physics & Maths Tutor',PMT_PAGES+'a-level-economics/']],['economics']),
+ AL('Pearson Edexcel International A Level','Geography',[['Physics & Maths Tutor',PMT_PAGES+'a-level-geography/'],['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/']],['geography']),
+ AL('Pearson Edexcel International A Level','History',[['Physics & Maths Tutor',PMT_PAGES+'a-level-history/'],['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/']],['history']),
+ AL('Pearson Edexcel International A Level','Psychology',[['Physics & Maths Tutor',PMT_PAGES+'a-level-psychology/'],['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/']],['psychology']),
+ AL('Pearson Edexcel International A Level','English Language',[['Physics & Maths Tutor',PMT_PAGES+'a-level-english-language/'],['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/']],['english language']),
+ AL('Pearson Edexcel International A Level','English Literature',[['Physics & Maths Tutor',PMT_PAGES+'a-level-english-literature/'],['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/']],['english literature']),
+ AL('Pearson Edexcel International A Level','Every other IAL subject',[['Save My Exams, all IAL subjects',SME+'international-a-level/boards/edexcel/past-papers/'],['Save My Exams, International AS subjects',SME+'international-as/boards/edexcel/past-papers/']],[],'Business, Accounting, Information Technology, Law and the rest are on these index pages. Pick your subject there, then the unit.'),
+ AL('UK A Level (Edexcel, AQA, OCR)','Computer Science',[['Physics & Maths Tutor',PMT_PAGES+'a-level-computer-science/'],['Save My Exams, all UK A Level subjects',SME+'a-level/']],[]),
+ AL('UK A Level (Edexcel, AQA, OCR)','Other UK A Level subjects',[['Save My Exams, all UK A Level subjects',SME+'a-level/']],[],'Edexcel, AQA and OCR papers for every subject are on Save My Exams. Pick your subject, then your exam board.')
 ];
 var DR='https://drive.google.com/drive/folders/',DF='https://drive.google.com/file/d/';
 var ESL=[
@@ -1918,7 +2027,21 @@ function eslHtml(){
   });
   return h;
 }
-var PLS={sid:null,papers:[],year:'all'};
+var PLS={sid:null,papers:[],year:'all',level:'igcse'};
+(function(){
+ var P5=[{n:'1',l:'Paper 1',t:'AS multiple choice'},{n:'2',l:'Paper 2',t:'AS structured questions'},{n:'3',l:'Paper 3',t:'Advanced practical skills'},{n:'4',l:'Paper 4',t:'A level structured questions'},{n:'5',l:'Paper 5',t:'Planning, analysis and evaluation'}];
+ var D={'Physics 9702':['9702',P5,['2','4']],'Chemistry 9701':['9701',P5,['2','4']],'Biology 9700':['9700',P5,['2','4']],
+  'Mathematics 9709':['9709',[{n:'1',l:'Paper 1',t:'Pure Mathematics 1'},{n:'2',l:'Paper 2',t:'Pure Mathematics 2'},{n:'3',l:'Paper 3',t:'Pure Mathematics 3'},{n:'4',l:'Paper 4',t:'Mechanics'},{n:'5',l:'Paper 5',t:'Probability & Statistics 1'},{n:'6',l:'Paper 6',t:'Probability & Statistics 2'}],['1','3']],
+  'Further Mathematics 9231':['9231',[{n:'1',l:'Paper 1',t:'Further Pure Mathematics 1'},{n:'2',l:'Paper 2',t:'Further Pure Mathematics 2'},{n:'3',l:'Paper 3',t:'Further Mechanics'},{n:'4',l:'Paper 4',t:'Further Probability & Statistics'}],['1','2']],
+  'Computer Science 9618':['9618',[{n:'1',l:'Paper 1',t:'Theory Fundamentals'},{n:'2',l:'Paper 2',t:'Fundamental Problem-solving and Programming'},{n:'3',l:'Paper 3',t:'Advanced Theory'},{n:'4',l:'Paper 4',t:'Practical Programming'}],['1','2']],
+  'Business 9609':['9609',[{n:'1',l:'Paper 1',t:'Business concepts'},{n:'2',l:'Paper 2',t:'Data response'},{n:'3',l:'Paper 3',t:'Business analysis'},{n:'4',l:'Paper 4',t:'Business strategy'}],['1','2']],
+  'Economics 9708':['9708',[{n:'1',l:'Paper 1',t:'AS multiple choice'},{n:'2',l:'Paper 2',t:'AS data response and essay'},{n:'3',l:'Paper 3',t:'A level multiple choice'},{n:'4',l:'Paper 4',t:'A level data response and essay'}],['1','2']]};
+ PL.forEach(function(s){
+  if(s.level!=='alevel'||s.grp.indexOf('Cambridge')<0||!D[s.name])return;
+  var d=D[s.name];s.name=s.name.replace(/ \d{4}$/,'');s.kind='caie';s.code=d[0];s.papers=d[1];s.def=d[2].slice();delete s.note;
+ });
+})();
+(function(){var e=PL.filter(function(x){return x.id==='a-esl'})[0];if(e)e.note='Your ESL past papers folder is the first button. The other sites are backups.'})();
 function plSubject(){return PL.filter(function(s){return s.id===PLS.sid})[0]||PL[0]}
 function plSelect(id){var s=PL.filter(function(x){return x.id===id})[0]||PL[0];PLS.sid=s.id;PLS.papers=(s.def||[]).slice();PLS.year='all';$('plSubj').value=s.id}
 function plGroups(sj){
@@ -1980,25 +2103,34 @@ function plPageUrl(sj,p){
   if(sj.kind==='em')return PMT_PAGES+'gcse-maths/edexcel-igcse-a-paper-'+p.n.charAt(0)+'/';
   return PMT_PAGES+sj.pmt+'/edexcel-igcse-paper-'+p.n+'/';
 }
+function plList(){return PL.filter(function(s){return (s.level||'igcse')===PLS.level})}
 function renderLinks(){
   var sel=$('plSubj');
-  if(!sel.options.length){
-    var gs=[],h='';
-    PL.forEach(function(s){if(gs.indexOf(s.grp)<0)gs.push(s.grp)});
-    gs.forEach(function(g){h+='<optgroup label="'+esc(g)+'">'+PL.filter(function(s){return s.grp===g}).map(function(s){return '<option value="'+s.id+'">'+esc(s.name+(s.code?' · '+s.code:''))+'</option>'}).join('')+'</optgroup>'});
-    sel.innerHTML=h;
+  $('plLevel').innerHTML=[['igcse','IGCSE'],['alevel','A Level']].map(function(m){return '<button type="button" class="chip" data-lv="'+m[0]+'" aria-pressed="'+(PLS.level===m[0])+'">'+m[1]+'</button>'}).join('');
+  if(sel.dataset.lv!==PLS.level){
+    var list=plList(),gs=[],h='';
+    list.forEach(function(s){if(gs.indexOf(s.grp)<0)gs.push(s.grp)});
+    gs.forEach(function(g){h+='<optgroup label="'+esc(g)+'">'+list.filter(function(s){return s.grp===g}).map(function(s){return '<option value="'+s.id+'">'+esc(s.name+(s.code?' · '+s.code:''))+'</option>'}).join('')+'</optgroup>'});
+    sel.innerHTML=h;sel.dataset.lv=PLS.level;
     var a=activeSubj(),pre=(a&&a.board==='edexcel')?'e-':'i-',nm=a?a.name.toLowerCase():'';
-    var m=PL.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0&&(s.id.indexOf(pre)===0||s.id.indexOf('c-')===0&&pre==='i-')})[0]||PL.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0})[0];
-    plSelect(m?m.id:'c-phys');
+    var m;
+    if(PLS.level==='igcse'){
+      m=list.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0&&(s.id.indexOf(pre)===0||s.id.indexOf('c-')===0&&pre==='i-')})[0]||list.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0})[0];
+      plSelect(m?m.id:'c-phys');
+    }else{
+      m=list.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0&&(pre==='e-'?s.grp.indexOf('Edexcel')>=0:s.grp.indexOf('Cambridge')>=0)})[0]||list.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0})[0]||list[0];
+      plSelect(m.id);
+    }
   }
-  var sj=plSubject(),isEsl=sj.kind==='esl',isIdx=sj.kind==='idx'||isEsl;
-  $('plPapersWrap').hidden=isIdx;$('plYearWrap').hidden=isIdx;
+  var sj=plSubject(),isEsl=sj.kind==='esl',isIdx=sj.kind==='idx';
+  $('plPapersWrap').hidden=isIdx||isEsl;$('plYearWrap').hidden=isIdx||isEsl;$('plSources').parentNode.hidden=isIdx;
   $('plSources').innerHTML=sj.src.map(function(s){return lk(s[1],'<span>'+esc(s[0])+'</span><span aria-hidden="true">↗</span>','src')}).join('');
   var res=$('plResults'),h2='';
-  if(isEsl){$('plNote').textContent='Links open Google Drive. Papers are in your shared folder.';res.innerHTML=eslHtml();return}
+  if(isEsl){$('plNote').textContent=sj.note||'';res.innerHTML=eslHtml();return}
   if(isIdx){
-    $('plNote').textContent='These subjects open on the site\'s own index page, where you can pick a year.';
-    res.innerHTML='<div class="pl-paper"><div class="pl-head"><div><h2>'+esc(sj.name)+'</h2><small>'+esc(sj.grp)+'</small></div></div><p class="muted">Use the buttons on the left to open the past paper index for this subject.</p></div>';
+    res.innerHTML='<div class="pl-paper"><div class="pl-head"><div><h2>'+esc(sj.name)+'</h2><small>'+esc(sj.grp)+'</small></div></div>'+
+      '<p class="muted" style="font-size:.88rem;margin-bottom:12px">'+esc(sj.note||'Each button opens the site\'s own past paper page for this subject, where you pick the year and paper.')+'</p>'+
+      '<div class="src-list">'+sj.src.map(function(x){return lk(x[1],'<span>'+esc(x[0])+'</span><span aria-hidden="true">↗</span>','src')}).join('')+'</div></div>';
     return;
   }
   $('plPapers').innerHTML=sj.papers.map(function(p){return '<button type="button" class="chip" data-pp="'+p.n+'" aria-pressed="'+(PLS.papers.indexOf(p.n)>=0)+'" title="'+esc(p.t)+'">'+esc(p.l)+'</button>'}).join('');
@@ -2012,7 +2144,7 @@ function renderLinks(){
     ?'Each number is the paper and variant, so 42 is Paper 4, variant 2. QP is the question paper and MS is the mark scheme. Feb/March series only have variant 2, and not every variant exists in every series.'
     :'QP is the question paper, MS the mark scheme'+(sj.kind==='em'?' and MA the model answers':'')+'. Std is the standard paper and R is the regional version some countries sit.')+' If a link does not open, try the sites on the left.</p>';
   sj.papers.filter(function(p){return PLS.papers.indexOf(p.n)>=0}).forEach(function(p){
-    h2+='<div class="pl-paper"><div class="pl-head"><div><h2>'+esc(p.l)+'</h2><small>'+esc(p.t)+' · '+esc(sj.name)+' '+esc(sj.code)+'</small></div>'+lk(plPageUrl(sj,p),'Paper page on PMT ↗')+'</div>';
+    h2+='<div class="pl-paper"><div class="pl-head"><div><h2>'+esc(p.l)+'</h2><small>'+esc(p.t)+' · '+esc(sj.name)+' '+esc(sj.code)+'</small></div>'+((sj.kind==='caie'&&!sj.pmt)?'':lk(plPageUrl(sj,p),'Paper page on PMT ↗'))+'</div>';
     shown.forEach(function(gr,i){
       h2+='<details class="pl-year"'+((PLS.year!=='all'||i<2)?' open':'')+'><summary>'+esc(gr.y)+'</summary>'+gr.rows.map(function(r){return plRow(sj,p,gr,r)}).join('')+'</details>';
     });
@@ -2020,6 +2152,7 @@ function renderLinks(){
   });
   res.innerHTML=h2;
 }
+$('plLevel').addEventListener('click',function(e){var b=e.target.closest('[data-lv]');if(!b||PLS.level===b.dataset.lv)return;PLS.level=b.dataset.lv;renderLinks()});
 $('plSubj').addEventListener('change',function(e){plSelect(e.target.value);renderLinks()});
 $('plPapers').addEventListener('click',function(e){
   var b=e.target.closest('[data-pp]');if(!b)return;
