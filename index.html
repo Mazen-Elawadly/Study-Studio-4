@@ -665,6 +665,20 @@ html[data-glass="on"] .lk{background:color-mix(in srgb,var(--input-bg) 55%,trans
     <!-- SETTINGS -->
     <section id="tab-schedule" hidden>
       <div class="card" id="scNotif" style="margin-bottom:16px"></div>
+      <div class="card" id="scSound" style="margin-bottom:16px">
+        <div class="card-head"><h2>Reminder sound</h2></div>
+        <div class="row" style="align-items:flex-end;gap:12px;flex-wrap:wrap">
+          <label class="field" for="scSnd" style="flex:1;min-width:180px">Sound<select class="sel" id="scSnd"></select></label>
+          <label class="field" for="scVol" style="flex:1;min-width:180px">Volume <span class="muted" id="scVolOut"></span><input type="range" id="scVol" min="0" max="100" step="5" aria-label="Reminder volume"></label>
+          <button type="button" class="btn" id="scPrev">Preview</button>
+        </div>
+        <div class="row" style="align-items:flex-end;gap:12px;flex-wrap:wrap;margin-top:12px">
+          <div style="flex:1;min-width:220px" id="scUploadWrap"><div class="field"><span>Add your own sound (optional)</span><label class="fpick" for="scUpload"><input type="file" id="scUpload" accept="audio/*,.mp3,.wav,.ogg,.m4a"><span class="fp-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="fp-name" data-for="scUpload">Choose an audio file</span></label></div></div>
+          <button type="button" class="btn danger" id="scSndRm" hidden>Remove this sound</button>
+        </div>
+        <p class="muted" id="scSndMsg" style="font-size:.82rem;margin:8px 0 0" aria-live="polite"></p>
+        <p class="muted" style="font-size:.8rem;margin:10px 0 0">Plays with each reminder. Custom sounds can be MP3, WAV or OGG up to 3 MB and are kept on this device only. Choose No sound for silent reminders. Your browser only allows sound once you have clicked or tapped on the page.</p>
+      </div>
       <div class="split">
         <div class="col">
           <div class="card cal">
@@ -2519,7 +2533,7 @@ function renderSchedule(){
   sel.innerHTML='<option value="">No subject</option>'+S.subjects.map(function(s){return '<option value="'+s.id+'">'+esc(s.name)+'</option>'}).join('');
   sel.value=subj(cur)?cur:'';
   if(!$('scRem').options.length)$('scRem').innerHTML=REM_OPTS.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>'}).join('');
-  renderNotifCard();
+  renderNotifCard();renderSoundCard();
   renderCalendar();renderDay();
   if(!$('scFormCard').dataset.init){$('scFormCard').dataset.init='1';scResetForm()}
 }
@@ -2602,12 +2616,13 @@ function showReminder(it,k,mins){
   var shown=false;
   if(notifState()==='granted'){
     try{
-      var n=new Notification(it.title,{body:body,tag:it.id+'|'+k,requireInteraction:false});
+      var n=new Notification(it.title,{body:body,tag:it.id+'|'+k,requireInteraction:false,silent:true});
       n.onclick=function(){try{window.focus()}catch(e){}if(link)window.open(link,'_blank','noopener');n.close()};
       shown=true;
     }catch(e){}
   }
   if(!shown||document.visibilityState==='visible')toast(it.title+' · '+body,link);
+  playRemSound();
 }
 function scCheck(){
   if(!S.sched||!Array.isArray(S.sched.items))return;
@@ -2651,12 +2666,98 @@ document.addEventListener('click',async function(e){
   var t=e.target;if(!t.closest)return;
   if(t.closest('#scAllow')){await notifAsk();renderNotifCard();return}
   if(t.closest('#scTest')){
-    if(notifState()==='granted'){try{var n=new Notification('Study Studio',{body:'Reminders are working.'});n.onclick=function(){window.focus();n.close()}}catch(err){toast('Your browser would not show a notification, so reminders will pop up inside the page.')}}
+    if(notifState()==='granted'){try{playRemSound();var n=new Notification('Study Studio',{body:'Reminders are working.',silent:true});n.onclick=function(){window.focus();n.close()}}catch(err){toast('Your browser would not show a notification, so reminders will pop up inside the page.')}}
   }
 });
 setInterval(scCheck,20000);
 document.addEventListener('visibilitychange',function(){if(!document.hidden)scCheck()});
 setTimeout(scCheck,1500);
+
+/* ---------- reminder sounds ---------- */
+var REM_SOUNDS=[['none','No sound'],['chime','Chime'],['bell','Bell'],['ping','Ping'],['soft','Soft melody'],['pop','Pop'],['beep','Double beep'],['digital','Digital'],['alarm','Alarm']];
+function sndCustom(t){return typeof t==='string'&&t.indexOf('c:')===0?(S.sched.customs||[]).filter(function(x){return 'c:'+x.id===t})[0]:null}
+var SND_MAX=5,SND_BYTES=3*1024*1024,_sndUrl={},_sndAudio=null;
+function sndCfg(){
+  if(!S.sched)S.sched={items:[]};
+  var c=S.sched.snd;
+  if(!c||typeof c!=='object')c=S.sched.snd={t:'chime',v:60};
+  if(!Array.isArray(S.sched.customs))S.sched.customs=[];
+  if(!REM_SOUNDS.some(function(x){return x[0]===c.t})&&!sndCustom(c.t))c.t='chime';
+  c.v=Math.max(0,Math.min(100,+c.v||0));
+  return c;
+}
+function sndTone(c,t,freq,dur,type,peak,freq2){
+  var o=c.createOscillator(),g=c.createGain();
+  o.type=type;o.frequency.setValueAtTime(freq,t);
+  if(freq2)o.frequency.exponentialRampToValueAtTime(freq2,t+dur);
+  g.gain.setValueAtTime(0.0001,t);g.gain.linearRampToValueAtTime(peak,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+dur+.03);
+}
+function playRemSound(type,vol){
+  var cfg=sndCfg();type=type||cfg.t;vol=vol==null?cfg.v:vol;
+  if(type==='none'||vol<=0)return;
+  if(sndCustom(type)){playCustom(type.slice(2),vol);return}
+  var c=ctxGet();if(!c)return;
+  var k=Math.pow(vol/100,1.6)*.6,t=c.currentTime+.02,i;
+  if(type==='chime'){sndTone(c,t,880,1.1,'sine',k);sndTone(c,t+.18,1318.5,1.4,'sine',k*.8)}
+  else if(type==='bell'){[1,2.76,5.4].forEach(function(m,j){sndTone(c,t,660*m,2.2/(1+j*.7),'sine',k*(j?.35:1))})}
+  else if(type==='ping'){sndTone(c,t,1175,.7,'sine',k)}
+  else if(type==='soft'){[523.25,659.25,783.99].forEach(function(f,j){sndTone(c,t+j*.2,f,.9,'triangle',k*.9)})}
+  else if(type==='pop'){sndTone(c,t,720,.16,'sine',k,180)}
+  else if(type==='beep'){for(i=0;i<2;i++)sndTone(c,t+i*.28,880,.16,'square',k*.45)}
+  else if(type==='digital'){for(i=0;i<3;i++)sndTone(c,t+i*.16,1046.5,.09,'square',k*.4)}
+  else if(type==='alarm'){for(i=0;i<6;i++)sndTone(c,t+i*.24,i%2?900:700,.2,'sawtooth',k*.4)}
+}
+/* browsers only allow sound after the person has touched the page once */
+['pointerdown','keydown','touchstart'].forEach(function(ev){window.addEventListener(ev,function once(){ctxGet();window.removeEventListener(ev,once,true)},true)});
+
+async function playCustom(id,vol){
+  try{
+    if(!_sndUrl[id]){var r=await fileGet('snd:'+id);if(!r||!r.blob)throw 0;_sndUrl[id]=URL.createObjectURL(r.blob)}
+    if(_sndAudio){try{_sndAudio.pause()}catch(e){}}
+    var a=new Audio(_sndUrl[id]);a.volume=Math.max(0,Math.min(1,Math.pow(vol/100,1.6)));_sndAudio=a;
+    var pr=a.play();if(pr&&pr.catch)pr.catch(function(){});
+    setTimeout(function(){if(_sndAudio===a){try{a.pause()}catch(e){}}},12000);
+  }catch(e){
+    toast('Your custom sound is not on this device, so a chime played instead. Upload it again in Reminder sound.');
+    playRemSound('chime',vol);
+  }
+}
+async function sndAdd(file){
+  var msg=$('scSndMsg');msg.textContent='';
+  if(!file)return;
+  if(!/^audio\//.test(file.type)&&!/\.(mp3|wav|ogg|m4a|aac|flac|opus|weba)$/i.test(file.name)){msg.textContent='Choose an audio file such as MP3, WAV or OGG.';return}
+  if(file.size>SND_BYTES){msg.textContent='That file is over 3 MB. Choose a shorter sound.';return}
+  sndCfg();
+  if(S.sched.customs.length>=SND_MAX){msg.textContent='You can keep up to '+SND_MAX+' custom sounds. Remove one first.';return}
+  var id=uid();
+  try{
+    await fileSave('snd:'+id,file);
+    S.sched.customs.push({id:id,name:file.name.replace(/\.[^.]+$/,'').slice(0,30)||'My sound'});
+    S.sched.snd.t='c:'+id;save();renderSoundCard();playRemSound();
+    msg.textContent='Added. It is stored on this device only.';
+  }catch(e){msg.textContent=(e&&e.message)||'Could not save that sound.'}
+}
+async function sndRemove(){
+  var c=sndCfg(),cu=sndCustom(c.t);if(!cu)return;
+  try{await fileDel('snd:'+cu.id)}catch(e){}
+  if(_sndUrl[cu.id]){URL.revokeObjectURL(_sndUrl[cu.id]);delete _sndUrl[cu.id]}
+  S.sched.customs=S.sched.customs.filter(function(x){return x.id!==cu.id});c.t='chime';save();renderSoundCard();
+  $('scSndMsg').textContent='Removed.';
+}
+function renderSoundCard(){
+  var c=sndCfg();
+  $('scSnd').innerHTML=REM_SOUNDS.map(function(o){return '<option value="'+o[0]+'"'+(o[0]===c.t?' selected':'')+'>'+o[1]+'</option>'}).join('')+(S.sched.customs.length?'<optgroup label="Your sounds">'+S.sched.customs.map(function(x){return '<option value="c:'+x.id+'"'+('c:'+x.id===c.t?' selected':'')+'>'+esc(x.name)+'</option>'}).join('')+'</optgroup>':'');
+  $('scSndRm').hidden=!sndCustom(c.t);$('scUploadWrap').hidden=S.sched.customs.length>=SND_MAX;
+  $('scVol').value=c.v;$('scVolOut').textContent=c.t==='none'?'':c.v+'%';
+  $('scVol').disabled=c.t==='none';$('scPrev').disabled=c.t==='none'||c.v<=0;
+}
+$('scSnd').addEventListener('change',function(){sndCfg().t=$('scSnd').value;save();renderSoundCard();playRemSound()});
+$('scVol').addEventListener('input',function(){sndCfg().v=+$('scVol').value;$('scVolOut').textContent=$('scVol').value+'%';$('scPrev').disabled=sndCfg().v<=0});
+$('scVol').addEventListener('change',function(){save();playRemSound()});
+$('scPrev').addEventListener('click',function(){playRemSound()});
+$('scUpload').addEventListener('change',async function(){var f=$('scUpload').files[0];await sndAdd(f);$('scUpload').value='';fpSync($('scUpload'))});
+$('scSndRm').addEventListener('click',sndRemove);
 
 /* ---------- intro tour ---------- */
 var INTRO_KEY='studystudio.intro';
