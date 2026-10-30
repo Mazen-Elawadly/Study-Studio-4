@@ -88,7 +88,7 @@ button,input,select{font:inherit; color:inherit}
 .pill.bad{background:color-mix(in srgb,var(--bad) 16%,transparent); color:var(--bad)}
 .pill.good{background:color-mix(in srgb,var(--good) 16%,transparent); color:var(--good)}
 .field{display:flex; flex-direction:column; gap:4px; font-size:.8rem; color:var(--muted); font-weight:500; min-width:0}
-input[type=text],input[type=password],input[type=number],input[type=datetime-local],input[type=date],select.sel{height:40px; border:1px solid var(--input-line); border-radius:8px; background:var(--input-bg); padding:0 10px; color:var(--ink); min-width:0; width:100%}
+input[type=text],input[type=password],input[type=time],input[type=number],input[type=datetime-local],input[type=date],select.sel{height:40px; border:1px solid var(--input-line); border-radius:8px; background:var(--input-bg); padding:0 10px; color:var(--ink); min-width:0; width:100%}
 input[type=range]{width:100%; accent-color:var(--accent)}
 .row{display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end}
 .row>.field{flex:1 1 120px}
@@ -254,6 +254,46 @@ input[type=range].hue::-moz-range-thumb{width:16px; height:16px; border-radius:5
 .fp-x:hover{color:var(--bad)}
 html[data-glass="on"] .fpick{background:color-mix(in srgb,var(--input-bg) 45%,transparent); border-color:color-mix(in srgb,var(--glass-edge) 80%,var(--line)); -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.7); backdrop-filter:blur(var(--glass-blur)) saturate(1.7); box-shadow:inset 0 1px 0 var(--glass-edge)}
 html[data-glass="on"] .fpick:hover,html[data-glass="on"] .fpick:focus-within{border-color:var(--accent)}
+.cal-head{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:14px}
+.cal-head h2{margin:0; font-size:1.15rem; text-align:center; flex:1}
+.cal-nav{display:flex; gap:6px}
+.cal-wd,.cal-grid{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:6px}
+.cal-wd{margin-bottom:6px}
+.cal-wd span{text-align:center; font-size:.7rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.06em}
+.cal-d{min-height:48px; padding:4px 0; border:1px solid var(--line); border-radius:10px; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; font:inherit; font-weight:600; font-size:.92rem; color:var(--ink); cursor:pointer; transition:border-color .12s,background .12s,transform .12s}
+.cal-d:hover{border-color:var(--accent)}
+.cal-d.out{opacity:.4}
+.cal-d.today{border-color:var(--accent); color:var(--accent)}
+.cal-d.sel{background:var(--accent); border-color:var(--accent); color:var(--on-accent); transform:translateY(-1px)}
+.cal-dots{display:flex; gap:3px; height:6px}
+.cal-dots i,.cal-legend i{display:inline-block; width:6px; height:6px; border-radius:50%}
+.dot-s{background:var(--accent)}.dot-e{background:#E5484D}.dot-p{background:#30A46C}
+.cal-d.sel .dot-s{background:#fff}
+.cal-legend{display:flex; gap:14px; flex-wrap:wrap; margin-top:14px; font-size:.78rem; color:var(--muted)}
+.cal-legend span{display:inline-flex; align-items:center; gap:6px}
+html[data-glass="on"] .cal-d:not(.sel){background:color-mix(in srgb,var(--input-bg) 45%,transparent); border-color:color-mix(in srgb,var(--glass-edge) 70%,var(--line)); -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.7); backdrop-filter:blur(var(--glass-blur)) saturate(1.7)}
+html[data-glass="on"] .cal-d.today:not(.sel){border-color:var(--accent)}
+.sc-list{list-style:none; padding:0; margin:0 0 4px; display:grid; gap:8px}
+.sc-list:empty{display:none}
+.sc-item{border:1px solid var(--line); border-left:4px solid hsl(var(--sh,215) 70% 50%); border-radius:10px; padding:10px 12px; background:var(--bg); min-width:0}
+.sc-item.sc-exam{border-left-color:#E5484D}.sc-item.sc-paper{border-left-color:#30A46C}
+html[data-glass="on"] .sc-item{background:color-mix(in srgb,var(--input-bg) 45%,transparent); border-color:color-mix(in srgb,var(--glass-edge) 70%,var(--line)); border-left-color:hsl(var(--sh,215) 70% 50%)}
+html[data-glass="on"] .sc-item.sc-exam{border-left-color:#E5484D}html[data-glass="on"] .sc-item.sc-paper{border-left-color:#30A46C}
+.sc-top{display:flex; justify-content:space-between; gap:8px; align-items:flex-start}
+.sc-item .t{font-weight:700; overflow-wrap:anywhere}
+.sc-item .when{font-size:.82rem; color:var(--muted)}
+.sc-act{display:flex; gap:6px; align-items:center; flex:none}
+.sc-note{font-size:.85rem; margin:6px 0 0}
+.sc-links{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px}
+.sc-links-edit{display:grid; gap:8px; margin-bottom:8px}
+.sc-lrow{display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr) auto; gap:6px; align-items:center}
+.sc-lrow:not(:has(.x)){grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr)}
+@media (max-width:520px){.cal-d{min-height:42px;font-size:.85rem}.sc-lrow,.sc-lrow:not(:has(.x)){grid-template-columns:minmax(0,1fr)}}
+.toasts,#toasts{position:fixed; right:16px; bottom:16px; z-index:300; display:flex; flex-direction:column; gap:8px; max-width:min(380px,calc(100vw - 32px))}
+.toast{display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:12px; background:color-mix(in srgb,var(--surface) 88%,transparent); border:1px solid var(--glass-edge,var(--line)); border-left:4px solid var(--accent); box-shadow:0 14px 34px -12px rgba(0,0,0,.45); -webkit-backdrop-filter:blur(14px) saturate(1.7); backdrop-filter:blur(14px) saturate(1.7); color:var(--ink)}
+.toast-t{flex:1; min-width:0; font-size:.9rem; font-weight:600; overflow-wrap:anywhere}
+.sc-nrow{display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+.sc-nrow p{flex:1; min-width:220px; font-size:.88rem}
 .subnav{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px}
 .pill.lg{height:34px; padding:0 14px; font-size:.85rem}
 .pill.lg b{font-family:var(--font-mono); font-weight:700; margin-right:4px}
@@ -378,7 +418,7 @@ html[data-glass="on"] .pick,html[data-glass="on"] .top-ctrl .btn{
   -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.7); backdrop-filter:blur(var(--glass-blur)) saturate(1.7);
   border-color:var(--glass-edge); box-shadow:inset 0 1px 0 var(--glass-edge)}
 html[data-glass="on"] .btn:not(.primary),html[data-glass="on"] .chip:not([aria-pressed="true"]),html[data-glass="on"] .mode:not([aria-pressed="true"]),
-html[data-glass="on"] input[type=text],html[data-glass="on"] input[type=password],html[data-glass="on"] input[type=number],html[data-glass="on"] input[type=date],html[data-glass="on"] input[type=datetime-local],html[data-glass="on"] select.sel,html[data-glass="on"] .cc-item{
+html[data-glass="on"] input[type=text],html[data-glass="on"] input[type=time],html[data-glass="on"] input[type=password],html[data-glass="on"] input[type=number],html[data-glass="on"] input[type=date],html[data-glass="on"] input[type=datetime-local],html[data-glass="on"] select.sel,html[data-glass="on"] .cc-item{
   background:color-mix(in srgb,var(--input-bg) 55%,transparent); border-color:color-mix(in srgb,var(--glass-edge) 70%,var(--line))}
 html[data-glass="on"] .btn:not(.primary){background:color-mix(in srgb,var(--btn-bg) 60%,transparent)}
 html[data-glass="on"] .tabs-wrap{border-bottom-color:var(--glass-edge)}
@@ -411,6 +451,7 @@ html[data-glass="on"] .lk{background:color-mix(in srgb,var(--input-bg) 55%,trans
     <button class="tab" role="tab" data-tab="papers" aria-selected="false">Past papers</button>
     <button class="tab" role="tab" data-tab="board" aria-selected="false">Leaderboard</button>
     <button class="tab" role="tab" data-tab="subjects" aria-selected="false">My subjects</button>
+    <button class="tab" role="tab" data-tab="schedule" aria-selected="false">Schedule</button>
     <button class="tab" role="tab" data-tab="settings" aria-selected="false">Settings</button>
   </div></div>
 
@@ -622,6 +663,58 @@ html[data-glass="on"] .lk{background:color-mix(in srgb,var(--input-bg) 55%,trans
     </section>
     <!-- COLOURS -->
     <!-- SETTINGS -->
+    <section id="tab-schedule" hidden>
+      <div class="card" id="scNotif" style="margin-bottom:16px"></div>
+      <div class="split">
+        <div class="col">
+          <div class="card cal">
+            <div class="cal-head">
+              <button type="button" class="btn sm" id="calPrev" aria-label="Previous month">‹</button>
+              <h2 id="calTitle" aria-live="polite"></h2>
+              <div class="cal-nav"><button type="button" class="btn sm" id="calToday">Today</button><button type="button" class="btn sm" id="calNext" aria-label="Next month">›</button></div>
+            </div>
+            <div class="cal-wd" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+            <div class="cal-grid" id="calGrid"></div>
+            <div class="cal-legend"><span><i class="dot-s"></i>Session</span><span><i class="dot-e"></i>Exam</span><span><i class="dot-p"></i>Paper logged</span></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Coming up</h2></div>
+            <ul class="sc-list" id="scUpList"></ul>
+            <p class="muted" id="scUpEmpty" style="margin:0">No sessions in the next 30 days.</p>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <div class="card-head"><h2 id="scDayTitle"></h2></div>
+            <ul class="sc-list" id="scDayList"></ul>
+            <p class="muted" id="scDayEmpty" style="margin:0">Nothing planned for this day.</p>
+          </div>
+          <div class="card" id="scFormCard">
+            <div class="card-head"><h2 id="scFormTitle">Add a session</h2></div>
+            <div class="stack">
+              <label class="field" for="scTitle">Name<input type="text" id="scTitle" maxlength="80" placeholder="Physics revision"></label>
+              <div class="row">
+                <label class="field" for="scSubj">Subject<select class="sel" id="scSubj"></select></label>
+                <label class="field" for="scDate">Date<input type="date" id="scDate"></label>
+              </div>
+              <div class="row">
+                <label class="field" for="scStart">Starts<input type="time" id="scStart"></label>
+                <label class="field" for="scEnd">Ends<input type="time" id="scEnd"></label>
+              </div>
+              <div class="row">
+                <label class="field" for="scRep">Repeats<select class="sel" id="scRep"><option value="once">Does not repeat</option><option value="weekly">Every week</option><option value="daily">Every day</option></select></label>
+                <label class="field" for="scUntil" id="scUntilWrap" hidden>Repeat until (optional)<input type="date" id="scUntil"></label>
+              </div>
+              <label class="field" for="scRem">Remind me<select class="sel" id="scRem"></select></label>
+              <div class="field"><span>Links (optional)</span><div class="sc-links-edit" id="scLinks"></div><div><button type="button" class="btn sm" id="scAddLink">+ Add a link</button></div></div>
+              <label class="field" for="scNote">Note (optional)<input type="text" id="scNote" maxlength="300" placeholder="Chapter 5 questions"></label>
+              <div class="row" style="align-items:center;gap:8px;flex-wrap:wrap"><button type="button" class="btn primary" id="scSave">Add session</button><button type="button" class="btn" id="scCancel" hidden>Cancel</button><span class="hint" id="scMsg" aria-live="polite"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="tab-settings" hidden>
       <div class="subnav" role="group" aria-label="Settings sections"><button type="button" class="chip" data-sub="st-account" aria-pressed="true">Account</button><button type="button" class="chip" data-sub="st-progress" aria-pressed="false">Progress</button><button type="button" class="chip" data-sub="st-colors" aria-pressed="false">Colors</button></div>
       <div class="subpanel" id="st-account">
@@ -745,6 +838,7 @@ html[data-glass="on"] .lk{background:color-mix(in srgb,var(--input-bg) 55%,trans
 <div class="ov" id="fileOv" role="dialog" aria-modal="true" aria-labelledby="feTitle" hidden>
   <div class="ov-card" id="fileCard"></div>
 </div>
+<div id="toasts" aria-live="polite"></div>
 <script>
 (function(){
 'use strict';
@@ -759,7 +853,7 @@ var SCALE={cambridge:['A*','A','B','C','D','E','F','G'],edexcel:NINE,oxford:NINE
 var PCT={cambridge:[78,66,54,42,32,22,12,6],edexcel:[80,70,60,51,42,33,24,15,6],oxford:[80,70,60,51,42,33,24,15,6]};
 var BOARD_NAME={cambridge:'Cambridge · A* to G',edexcel:'Edexcel · 9 to 1',oxford:'OxfordAQA · 9 to 1'};
 var SRC_NAME={cambridge:'Cambridge',edexcel:'Pearson Edexcel',oxford:'OxfordAQA'};
-var TOOLS=[['timer','Timer'],['stopwatch','Stopwatch'],['exams','Exam countdown'],['papers','Past papers'],['board','Leaderboard'],['subjects','My subjects'],['settings','Settings']];
+var TOOLS=[['timer','Timer'],['stopwatch','Stopwatch'],['exams','Exam countdown'],['papers','Past papers'],['board','Leaderboard'],['subjects','My subjects'],['schedule','Schedule'],['settings','Settings']];
 var PAL={
  slate:{n:'Slate'},
  ink:{n:'Ink',l:['#E9EEF7','#FFFFFF','#DDE5F2','#C3CEE2'],d:['#0A1020','#121B30','#1A2640','#27344F']},
@@ -771,7 +865,7 @@ var PAL={
  mono:{n:'Mono',l:['#EFEFEF','#FFFFFF','#E2E2E2','#CFCFCF'],d:['#0B0B0B','#151515','#1F1F1F','#2D2D2D']}
 };
 function mergeCustom(c){c=c||{};return {light:Object.assign({},c.light),dark:Object.assign({},c.dark)}}
-function defaultLook(){return {mode:'subject',fixed:215,tools:{timer:215,stopwatch:175,exams:28,papers:330,board:45,subjects:150,settings:255},bg:'slate',custom:{light:{},dark:{}},glass:{on:true,amt:60}}}
+function defaultLook(){return {mode:'subject',fixed:215,tools:{timer:215,stopwatch:175,exams:28,papers:330,board:45,subjects:150,schedule:195,settings:255},bg:'slate',custom:{light:{},dark:{}},glass:{on:true,amt:60}}}
 var CC_BG=['bg','surface','surface-2','line'];
 var CC=[
  ['Page',[['bg','Page background'],['surface','Cards and panels'],['surface-2','Raised areas and pills'],['line','Borders and dividers'],['ink','Main text'],['heading','Headings'],['muted','Secondary text']]],
@@ -901,7 +995,7 @@ function seedState(){
       {id:'e3',sid:'phys',subj:'Physics',paper:'Paper 6',when:'2027-05-26T09:00',ex:true}
     ],
     noise:{type:'brown',vol:.5,link:true},
-    me:{username:'',claimed:false},pts:0,wk:{k:'',p:0},log:{},papers:[],feed:[],friends:[],bonusDay:''
+    me:{username:'',claimed:false},pts:0,wk:{k:'',p:0},log:{},papers:[],feed:[],friends:[],bonusDay:'',sched:{items:[]}
   };
 }
 function freshState(){var s=seedState();s.v=2;s.look=defaultLook();s.subjects.forEach(function(x){applyBounds(x)});return s}
@@ -1108,11 +1202,12 @@ function showSub(top,id){
 }
 function switchTab(name){
   curTab=name;applyHue();
-  ['timer','stopwatch','exams','papers','board','subjects','settings'].forEach(function(t){$('tab-'+t).hidden=t!==name});
+  ['timer','stopwatch','exams','papers','board','subjects','schedule','settings'].forEach(function(t){$('tab-'+t).hidden=t!==name});
   [].forEach.call(document.querySelectorAll('.tab'),function(b){b.setAttribute('aria-selected',b.dataset.tab===name?'true':'false')});
   if(name==='exams')tickCountdown(true);
   if(name==='papers'||name==='settings')showSub(name,SUB[name]);
   if(name==='board')renderBoard();
+  if(name==='schedule')renderSchedule();
 }
 [].forEach.call(document.querySelectorAll('.subnav'),function(n){
   n.addEventListener('click',function(e){var b=e.target.closest('[data-sub]');if(!b)return;showSub(n.parentNode.id.replace('tab-',''),b.dataset.sub)});
@@ -2339,6 +2434,230 @@ document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-fpclear]');if(!b)return;
   e.preventDefault();var i=$(b.dataset.fpclear);i.value='';fpSync(i);i.dispatchEvent(new Event('change',{bubbles:true}));
 });
+/* ---------- schedule ---------- */
+var SC={y:0,m:0,sel:'',edit:null,links:[{l:'',u:''}]};
+var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function scParse(k){var p=k.split('-');return new Date(+p[0],+p[1]-1,+p[2])}
+function scOccurs(it,k){
+  if(!it.date||k<it.date)return false;
+  if(it.until&&k>it.until)return false;
+  if(it.rep==='daily')return true;
+  if(it.rep==='weekly')return scParse(k).getDay()===scParse(it.date).getDay();
+  return k===it.date;
+}
+function scOn(k){return S.sched.items.filter(function(it){return scOccurs(it,k)}).sort(function(a,b){return (a.start||'').localeCompare(b.start||'')||a.title.localeCompare(b.title)})}
+function scExamsOn(k){return S.exams.filter(function(e){return e.when&&e.when.slice(0,10)===k}).sort(function(a,b){return a.when<b.when?-1:1})}
+function scPapersOn(k){return S.papers.filter(function(p){return p.date===k})}
+function scTime(it){return it.start?(it.start+(it.end?' – '+it.end:'')):'All day'}
+function scHue(it){var s=it.sid?subj(it.sid):null;return s?s.hue:null}
+function scUrl(u){
+  u=String(u||'').trim();if(!u)return '';
+  if(!/^[a-z][a-z0-9+.-]*:/i.test(u))u='https://'+u;
+  try{var x=new URL(u);return /^https?:$/.test(x.protocol)&&x.hostname.indexOf('.')>0?x.href:''}catch(e){return ''}
+}
+function scLinkHtml(it){
+  return (it.links||[]).map(function(l){var h=scUrl(l.u);if(!h)return '';var t=l.l||new URL(h).hostname.replace(/^www\./,'');return lk(h,esc(t)+' ↗')}).join('');
+}
+function scInit(){if(!SC.sel){var n=new Date();SC.y=n.getFullYear();SC.m=n.getMonth();SC.sel=dKey(n)}}
+function renderCalendar(){
+  scInit();
+  $('calTitle').textContent=MONTHS[SC.m]+' '+SC.y;
+  var first=new Date(SC.y,SC.m,1),off=(first.getDay()+6)%7,start=new Date(SC.y,SC.m,1-off),today=dKey(),h='';
+  for(var i=0;i<42;i++){
+    var d=new Date(start.getFullYear(),start.getMonth(),start.getDate()+i),k=dKey(d),out=d.getMonth()!==SC.m;
+    if(i>=35&&out&&i%7===0)break;
+    var dots='';
+    if(scOn(k).length)dots+='<i class="dot-s"></i>';
+    if(scExamsOn(k).length)dots+='<i class="dot-e"></i>';
+    if(scPapersOn(k).length)dots+='<i class="dot-p"></i>';
+    h+='<button type="button" class="cal-d'+(out?' out':'')+(k===today?' today':'')+(k===SC.sel?' sel':'')+'" data-day="'+k+'" aria-label="'+d.toDateString()+'" aria-pressed="'+(k===SC.sel)+'"><span>'+d.getDate()+'</span><span class="cal-dots">'+dots+'</span></button>';
+  }
+  $('calGrid').innerHTML=h;
+}
+function scItemHtml(it,k){
+  var hue=scHue(it),s=it.sid?subj(it.sid):null;
+  return '<li class="sc-item" style="--sh:'+(hue!=null?hue:'var(--h,215)')+'"><div class="sc-top"><div style="min-width:0"><div class="t">'+esc(it.title)+(it.rep!=='once'?' <span class="pill">'+(it.rep==='weekly'?'Weekly':'Daily')+'</span>':'')+'</div>'+
+    '<div class="when">'+esc(scTime(it))+(s?' · '+esc(s.name):'')+'</div>'+(it.start&&it.rem!==''&&it.rem!=null?'<div class="when">Reminder '+esc(remLabel(it.rem))+'</div>':'')+'</div>'+
+    '<div class="sc-act"><button type="button" class="btn sm" data-scedit="'+it.id+'">Edit</button><button type="button" class="x" data-scdel="'+it.id+'" aria-label="Delete session">×</button></div></div>'+
+    (it.note?'<p class="muted sc-note">'+esc(it.note)+'</p>':'')+
+    ((it.links||[]).length?'<div class="sc-links">'+scLinkHtml(it)+'</div>':'')+'</li>';
+}
+function renderDay(){
+  scInit();
+  var k=SC.sel,d=scParse(k),ses=scOn(k),ex=scExamsOn(k),pp=scPapersOn(k);
+  $('scDayTitle').textContent=d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  var h='';
+  ex.forEach(function(e){h+='<li class="sc-item sc-exam"><div class="t">Exam · '+esc(e.subj)+' · '+esc(e.paper)+'</div><div class="when">'+esc(e.when.slice(11,16)||'')+'</div></li>'});
+  h+=ses.map(function(it){return scItemHtml(it,k)}).join('');
+  pp.forEach(function(p){h+='<li class="sc-item sc-paper"><div class="t">Paper logged · '+esc(p.subj)+' · '+esc(p.name)+'</div><div class="when">'+p.mark+'/'+p.total+' · '+Math.round(paperPct(p))+'%</div></li>'});
+  $('scDayList').innerHTML=h;
+  $('scDayEmpty').hidden=!!h;
+  renderUpcoming();
+}
+function renderUpcoming(){
+  var out=[],t=new Date(),i;
+  for(i=0;i<30&&out.length<8;i++){
+    var k=dKey(new Date(t.getFullYear(),t.getMonth(),t.getDate()+i));
+    scOn(k).forEach(function(it){if(out.length<8)out.push({k:k,it:it})});
+  }
+  $('scUpList').innerHTML=out.map(function(o){
+    var d=scParse(o.k),lbl=o.k===dKey()?'Today':d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+    return '<li class="sc-item" style="--sh:'+(scHue(o.it)!=null?scHue(o.it):'var(--h,215)')+'"><div class="t">'+esc(o.it.title)+'</div><div class="when">'+esc(lbl)+' · '+esc(scTime(o.it))+'</div>'+((o.it.links||[]).length?'<div class="sc-links">'+scLinkHtml(o.it)+'</div>':'')+'</li>';
+  }).join('');
+  $('scUpEmpty').hidden=out.length>0;
+}
+function renderLinkRows(){
+  $('scLinks').innerHTML=SC.links.map(function(l,i){
+    return '<div class="sc-lrow"><input type="text" data-lli="'+i+'" data-lf="l" value="'+esc(l.l)+'" placeholder="Name (optional)" maxlength="40" aria-label="Link name"><input type="text" data-lli="'+i+'" data-lf="u" value="'+esc(l.u)+'" placeholder="https://..." maxlength="500" aria-label="Link address" inputmode="url" autocapitalize="off" spellcheck="false">'+
+      (SC.links.length>1?'<button type="button" class="x" data-lldel="'+i+'" aria-label="Remove link">×</button>':'')+'</div>';
+  }).join('');
+}
+function renderSchedule(){
+  if(!S.sched||!Array.isArray(S.sched.items))S.sched={items:[]};
+  scInit();
+  var sel=$('scSubj'),cur=sel.value;
+  sel.innerHTML='<option value="">No subject</option>'+S.subjects.map(function(s){return '<option value="'+s.id+'">'+esc(s.name)+'</option>'}).join('');
+  sel.value=subj(cur)?cur:'';
+  if(!$('scRem').options.length)$('scRem').innerHTML=REM_OPTS.map(function(o){return '<option value="'+o[0]+'">'+o[1]+'</option>'}).join('');
+  renderNotifCard();
+  renderCalendar();renderDay();
+  if(!$('scFormCard').dataset.init){$('scFormCard').dataset.init='1';scResetForm()}
+}
+function scResetForm(date){
+  SC.edit=null;SC.links=[{l:'',u:''}];
+  $('scTitle').value='';$('scSubj').value=S.active&&subj(S.active)?S.active:'';$('scDate').value=date||SC.sel||dKey();
+  $('scStart').value='16:00';$('scEnd').value='17:00';$('scRep').value='once';$('scUntil').value='';$('scNote').value='';$('scRem').value='10';
+  $('scMsg').textContent='';$('scFormTitle').textContent='Add a session';$('scSave').textContent='Add session';$('scCancel').hidden=true;
+  $('scUntilWrap').hidden=true;renderLinkRows();
+}
+function scFill(it){
+  SC.edit=it.id;SC.links=(it.links&&it.links.length?it.links:[{l:'',u:''}]).map(function(l){return {l:l.l||'',u:l.u||''}});
+  $('scTitle').value=it.title;$('scSubj').value=it.sid||'';$('scDate').value=it.date;$('scStart').value=it.start||'';$('scEnd').value=it.end||'';
+  $('scRep').value=it.rep;$('scRem').value=it.rem==null?'':String(it.rem);$('scUntil').value=it.until||'';$('scNote').value=it.note||'';
+  $('scUntilWrap').hidden=it.rep==='once';
+  $('scMsg').textContent='';$('scFormTitle').textContent='Edit session';$('scSave').textContent='Save changes';$('scCancel').hidden=false;
+  renderLinkRows();$('scFormCard').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function scSave(){
+  var msg=$('scMsg'),title=$('scTitle').value.trim(),date=$('scDate').value,st=$('scStart').value,en=$('scEnd').value,rep=$('scRep').value,until=$('scUntil').value;
+  if(!title){msg.textContent='Give the session a name.';return}
+  if(!date){msg.textContent='Pick a date.';return}
+  if($('scRem').value!==''&&!st){msg.textContent='Add a start time to use a reminder, or choose No reminder.';return}
+  if(en&&!st){msg.textContent='Add a start time too, or clear the end time.';return}
+  if(st&&en&&en<=st){msg.textContent='The end time must be after the start time.';return}
+  if(rep!=='once'&&until&&until<date){msg.textContent='"Repeat until" must be after the first date.';return}
+  var links=[],bad=false;
+  SC.links.forEach(function(l){
+    if(!l.u.trim()&&!l.l.trim())return;
+    var h=scUrl(l.u);if(!h){bad=true;return}
+    links.push({l:l.l.trim().slice(0,40),u:h});
+  });
+  if(bad){msg.textContent='One of the links is not a valid web address.';return}
+  var it={id:SC.edit||'s-'+uid(),title:title.slice(0,80),sid:$('scSubj').value||'',date:date,start:st,end:en,rep:rep,until:rep==='once'?'':until,note:$('scNote').value.trim().slice(0,300),links:links,rem:$('scRem').value};
+  if(SC.edit){S.sched.items=S.sched.items.map(function(x){return x.id===SC.edit?it:x})}else S.sched.items.push(it);
+  SC.sel=date;var d=scParse(date);SC.y=d.getFullYear();SC.m=d.getMonth();
+  save();scResetForm(date);renderCalendar();renderDay();
+  $('scMsg').textContent='Saved.';scCheck();
+}
+document.addEventListener('click',function(e){
+  var t=e.target;if(!t.closest||!$('tab-schedule').contains(t))return;
+  var day=t.closest('[data-day]');
+  if(day){SC.sel=day.dataset.day;var d=scParse(SC.sel);if(d.getMonth()!==SC.m||d.getFullYear()!==SC.y){SC.m=d.getMonth();SC.y=d.getFullYear()}renderCalendar();renderDay();if(!SC.edit)$('scDate').value=SC.sel;return}
+  var ed=t.closest('[data-scedit]');if(ed){var it=S.sched.items.filter(function(x){return x.id===ed.dataset.scedit})[0];if(it)scFill(it);return}
+  var del=t.closest('[data-scdel]');
+  if(del){
+    var it2=S.sched.items.filter(function(x){return x.id===del.dataset.scdel})[0];if(!it2)return;
+    if(it2.rep!=='once'&&!confirm('This session repeats. Delete all of its repeats?'))return;
+    S.sched.items=S.sched.items.filter(function(x){return x!==it2});if(SC.edit===it2.id)scResetForm();
+    save();renderCalendar();renderDay();return;
+  }
+  var ld=t.closest('[data-lldel]');if(ld){SC.links.splice(+ld.dataset.lldel,1);renderLinkRows();return}
+});
+$('calPrev').addEventListener('click',function(){SC.m--;if(SC.m<0){SC.m=11;SC.y--}renderCalendar()});
+$('calNext').addEventListener('click',function(){SC.m++;if(SC.m>11){SC.m=0;SC.y++}renderCalendar()});
+$('calToday').addEventListener('click',function(){var n=new Date();SC.y=n.getFullYear();SC.m=n.getMonth();SC.sel=dKey(n);if(!SC.edit)$('scDate').value=SC.sel;renderCalendar();renderDay()});
+$('scAddLink').addEventListener('click',function(){if(SC.links.length<6){SC.links.push({l:'',u:''});renderLinkRows()}});
+$('scLinks').addEventListener('input',function(e){var i=e.target.dataset.lli;if(i==null)return;SC.links[+i][e.target.dataset.lf]=e.target.value});
+$('scRep').addEventListener('change',function(){$('scUntilWrap').hidden=$('scRep').value==='once'});
+$('scSave').addEventListener('click',scSave);
+$('scCancel').addEventListener('click',function(){scResetForm()});
+$('scTitle').addEventListener('keydown',function(e){if(e.key==='Enter')scSave()});
+
+/* ---------- reminders ---------- */
+var FIRED_KEY='studystudio.fired';
+var REM_OPTS=[['','No reminder'],['0','At the start'],['5','5 minutes before'],['10','10 minutes before'],['15','15 minutes before'],['30','30 minutes before'],['60','1 hour before'],['1440','1 day before']];
+function remLabel(v){var o=REM_OPTS.filter(function(x){return x[0]===String(v)})[0];return o&&o[0]!==''?o[1].toLowerCase():''}
+function notifState(){return window.Notification?Notification.permission:'unsupported'}
+function toast(msg,link){
+  var box=$('toasts');if(!box)return;
+  var d=document.createElement('div');d.className='toast';d.setAttribute('role','status');
+  d.innerHTML='<div class="toast-t">'+esc(msg)+'</div>'+(link?'<a class="lk" href="'+esc(link)+'" target="_blank" rel="noopener noreferrer">Open link ↗</a>':'')+'<button type="button" class="x" aria-label="Dismiss">×</button>';
+  d.querySelector('.x').addEventListener('click',function(){d.remove()});
+  box.appendChild(d);setTimeout(function(){d.remove()},30000);
+}
+function showReminder(it,k,mins){
+  var when=mins>0?'starts in '+mins+' min':mins===0?'starts now':'started '+(-mins)+' min ago';
+  var body=it.start+(it.end?' – '+it.end:'')+' · '+when+(it.note?' · '+it.note:'');
+  var link=(it.links||[]).map(function(l){return scUrl(l.u)}).filter(Boolean)[0]||'';
+  var shown=false;
+  if(notifState()==='granted'){
+    try{
+      var n=new Notification(it.title,{body:body,tag:it.id+'|'+k,requireInteraction:false});
+      n.onclick=function(){try{window.focus()}catch(e){}if(link)window.open(link,'_blank','noopener');n.close()};
+      shown=true;
+    }catch(e){}
+  }
+  if(!shown||document.visibilityState==='visible')toast(it.title+' · '+body,link);
+}
+function scCheck(){
+  if(!S.sched||!Array.isArray(S.sched.items))return;
+  var fired={},now=Date.now(),changed=false,i;
+  try{fired=JSON.parse(localStorage.getItem(FIRED_KEY)||'{}')}catch(e){}
+  Object.keys(fired).forEach(function(k){if(now-fired[k]>3*86400000){delete fired[k];changed=true}});
+  var t=new Date();
+  for(i=-1;i<=2;i++){
+    var k=dKey(new Date(t.getFullYear(),t.getMonth(),t.getDate()+i));
+    scOn(k).forEach(function(it){
+      if(it.rem===''||it.rem==null||!it.start)return;
+      var p=k.split('-'),hm=it.start.split(':'),st=new Date(+p[0],+p[1]-1,+p[2],+hm[0],+hm[1]).getTime(),
+          fire=st-(+it.rem)*60000,endT=it.end?(function(){var e=it.end.split(':');return new Date(+p[0],+p[1]-1,+p[2],+e[0],+e[1]).getTime()})():st+30*60000,
+          key=it.id+'|'+k+'|'+it.start+'|'+it.rem;
+      if(now>=fire&&now<=endT&&!fired[key]){
+        fired[key]=now;changed=true;
+        showReminder(it,k,Math.round((st-now)/60000));
+      }
+    });
+  }
+  if(changed)try{localStorage.setItem(FIRED_KEY,JSON.stringify(fired))}catch(e){}
+}
+async function notifAsk(){
+  if(!window.Notification)return 'unsupported';
+  try{
+    var r=Notification.requestPermission();
+    if(r&&r.then)r=await r;
+    lsSet('studystudio.notifAsked','1');
+    return Notification.permission;
+  }catch(e){return notifState()}
+}
+function renderNotifCard(){
+  var st=notifState(),el=$('scNotif'),h;
+  if(st==='unsupported')h='<p class="muted" style="margin:0">This browser cannot show notifications. Reminders will pop up inside Study Studio while it is open.</p>';
+  else if(st==='granted')h='<div class="sc-nrow"><p class="muted" style="margin:0"><b style="color:var(--ink)">Notifications are on.</b> Your browser remembers this, so you will not be asked again. Reminders appear while Study Studio is open in a tab or window, even in the background.</p><button type="button" class="btn sm" id="scTest">Send a test</button></div>';
+  else if(st==='denied')h='<p class="muted" style="margin:0"><b style="color:var(--ink)">Notifications are blocked for this site.</b> Click the lock icon next to the address, allow Notifications, then reload. Until then reminders show inside the page.</p>';
+  else h='<div class="sc-nrow"><p class="muted" style="margin:0"><b style="color:var(--ink)">Get reminders as notifications.</b> Allow them once and your browser remembers it. You can still use reminders without allowing them, but they only show inside the page.</p><button type="button" class="btn primary sm" id="scAllow">Allow notifications</button></div>';
+  el.innerHTML=h;
+}
+document.addEventListener('click',async function(e){
+  var t=e.target;if(!t.closest)return;
+  if(t.closest('#scAllow')){await notifAsk();renderNotifCard();return}
+  if(t.closest('#scTest')){
+    if(notifState()==='granted'){try{var n=new Notification('Study Studio',{body:'Reminders are working.'});n.onclick=function(){window.focus();n.close()}}catch(err){toast('Your browser would not show a notification, so reminders will pop up inside the page.')}}
+  }
+});
+setInterval(scCheck,20000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)scCheck()});
+setTimeout(scCheck,1500);
+
 /* ---------- intro tour ---------- */
 var INTRO_KEY='studystudio.intro';
 var TOUR=[
@@ -2346,6 +2665,7 @@ var TOUR=[
  {e:'Focus',t:'Timer, noise and tones',p:'Pick a study mode like Physics Paper 4 or Maths Edexcel, or make your own, then start the timer.',l:['Exam modes with the real paper lengths, or custom times','White, pink, brown and rain noise, plus tones like 432 Hz, 528 Hz or your own frequency','A stopwatch tab when you just want to count up']},
  {e:'Plan',t:'Exam countdown and your subjects',p:'Add the subjects you take and the dates of your exams.',l:['A countdown to each exam','Grade boundaries for every subject, which you can edit','Each subject gets its own color']},
  {e:'Practice',t:'Past papers and links',p:'Log the marks you get and Study Studio works out your average and expected grade.',l:['Log papers and see your averages per subject','Past paper links by subject, year and paper for IGCSE and A Level','Direct links to question papers and mark schemes']},
+ {e:'Schedule',t:'Calendar and session schedule',p:'Plan your study time and never miss a session.',l:['A calendar showing your sessions, exams and logged papers','Add session times, with repeats and any links you want','Reminders that pop up as notifications before a session starts'],notif:true},
  {e:'Progress',t:'Points, streaks and ranks',p:'Studying earns points, and so does every paper you log.',l:['Points for focus time and for paper marks','Daily streaks, kept alive by 10 minutes of focus or a paper','Ranks from Starter up to da7ee7']},
  {e:'Compete',t:'Leaderboard and profiles',p:'Sign in to see how you compare.',l:['Website-wide and friends leaderboards','Click anyone\'s name to open their profile','Make your own profile follow your rank or pick a color']},
  {e:'Get started',t:'How do you want to start?',final:true}
@@ -2366,6 +2686,8 @@ function renderIntro(){
     acts='<button type="button" class="btn" id="inBack">Back</button>';
   }else{
     h+='<p>'+esc(st.p)+'</p><ul class="in-list">'+st.l.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>';
+    if(st.notif&&notifState()==='default')h+='<button type="button" class="btn sm" id="inNotif">Allow reminder notifications</button><p class="muted" style="font-size:.8rem;margin:8px 0 0">Optional. You choose once and your browser remembers it.</p>';
+    if(st.notif&&notifState()==='granted')h+='<p class="muted" style="font-size:.85rem"><b style="color:var(--ink)">Notifications are on.</b></p>';
     acts=(IN.i>0?'<button type="button" class="btn" id="inBack">Back</button>':'')+'<button type="button" class="btn primary" id="inNext">Next</button>';
   }
   $('inBody').innerHTML=h;$('inActs').innerHTML=acts;
@@ -2377,6 +2699,7 @@ $('introOv').addEventListener('click',function(e){
   if(id==='inNext'){IN.i=Math.min(TOUR.length-1,IN.i+1);renderIntro()}
   else if(id==='inBack'){IN.i=Math.max(0,IN.i-1);renderIntro()}
   else if(id==='inSkip'){IN.i=TOUR.length-1;renderIntro()}
+  else if(id==='inNotif'){notifAsk().then(function(){renderIntro()})}
   else if(id==='inGuest')introHide('guest');
   else if(id==='inSign'){introHide('signin');signIn()}
 });
