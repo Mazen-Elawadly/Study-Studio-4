@@ -477,6 +477,21 @@ html[data-glass="on"] #chatPanel{border-color:var(--glass-edge,var(--line)); box
 .trk-over{color:var(--bad)}
 .trk-ok{border-left-color:#30A46C !important}
 .trk-no{opacity:.75}
+
+/* achievements */
+.ach-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:10px}
+.ach{display:flex; gap:12px; align-items:center; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:var(--bg); min-width:0}
+html[data-glass="on"] .ach{background:color-mix(in srgb,var(--input-bg) 45%,transparent); border-color:color-mix(in srgb,var(--glass-edge) 70%,var(--line))}
+.ach.on{border-color:color-mix(in srgb,var(--accent) 55%,var(--line))}
+.ach-b{flex:none; filter:drop-shadow(0 2px 4px rgba(0,0,0,.25))}
+.ach-b.off{filter:grayscale(1) opacity(.5)}
+.ach .an{font-weight:700; font-size:.92rem}
+.ach .ad{font-size:.8rem; color:var(--muted); margin:2px 0 6px}
+.ach .ap{font-size:.74rem; color:var(--muted); font-family:var(--font-mono)}
+.ach.on .ap{color:var(--accent)}
+.ach.secret .an{color:var(--muted)}
+.rk-bar.sm{height:6px}
+#achBody{display:grid; gap:16px}
 </style>
 </head><body>
 
@@ -823,7 +838,7 @@ html[data-glass="on"] #chatPanel{border-color:var(--glass-edge,var(--line)); box
     </section>
 
     <section id="tab-settings" hidden>
-      <div class="subnav" role="group" aria-label="Settings sections"><button type="button" class="chip" data-sub="st-account" aria-pressed="true">Account</button><button type="button" class="chip" data-sub="st-progress" aria-pressed="false">Progress</button><button type="button" class="chip" data-sub="st-colors" aria-pressed="false">Colors</button></div>
+      <div class="subnav" role="group" aria-label="Settings sections"><button type="button" class="chip" data-sub="st-account" aria-pressed="true">Account</button><button type="button" class="chip" data-sub="st-progress" aria-pressed="false">Progress</button><button type="button" class="chip" data-sub="st-ach" aria-pressed="false">Achievements</button><button type="button" class="chip" data-sub="st-colors" aria-pressed="false">Colors</button></div>
       <div class="subpanel" id="st-account">
       <div class="split">
         <div class="col">
@@ -887,6 +902,7 @@ html[data-glass="on"] #chatPanel{border-color:var(--glass-edge,var(--line)); box
         </div>
       </div>
       </div>
+      <div class="subpanel" id="st-ach" hidden><div id="achBody"></div></div>
       <div class="subpanel" id="st-colors" hidden>
       <div class="split">
         <div class="col">
@@ -1103,7 +1119,7 @@ function seedState(){
       {id:'e3',sid:'phys',subj:'Physics',paper:'Paper 6',when:'2027-05-26T09:00',ex:true}
     ],
     noise:{type:'brown',vol:.5,link:true},
-    me:{username:'',claimed:false},pts:0,wk:{k:'',p:0},log:{},papers:[],feed:[],friends:[],bonusDay:'',goals:[],trkDay:{k:'',n:0},sched:{items:[]}
+    me:{username:'',claimed:false},pts:0,wk:{k:'',p:0},log:{},papers:[],feed:[],friends:[],bonusDay:'',ach:{},goals:[],trkDay:{k:'',n:0},sched:{items:[]}
   };
 }
 function freshState(){var s=seedState();s.v=2;s.look=defaultLook();s.subjects.forEach(function(x){applyBounds(x)});return s}
@@ -1306,6 +1322,7 @@ function showSub(top,id){
   if(id==='pp-links')renderLinks();
   if(id==='st-account')renderAccount();
   if(id==='st-progress')renderProgress();
+  if(id==='st-ach')renderAch();
   if(id==='st-colors')renderLook();
 }
 function switchTab(name){
@@ -1822,6 +1839,7 @@ function updateChips(){
   $('chipPts').innerHTML='<b>'+(S.pts||0)+'</b> pts';
   c.innerHTML='<b>'+st.cur+'</b> day streak';
   c.className='pill lg'+(st.cur>0?(st.today?' good':' warn'):'');
+  achCheck();
   c.title=st.today?'You have studied enough today.':'Study 10 minutes or log a paper today to '+(st.cur>0?'keep':'start')+' your streak.';
 }
 
@@ -2869,7 +2887,7 @@ var TOUR=[
  {e:'Practice',t:'Past papers and links',p:'Log the marks you get and Study Studio works out your average and expected grade.',l:['Log papers and see your averages per subject','Past paper links by subject, year and paper for IGCSE and A Level','Direct links to question papers and mark schemes']},
  {e:'Tracker',t:'Goals and deadlines',p:'Pick a subject, say what you want to get done and by when.',l:['Tell it when you are done, or that you did not finish','Finishing earlier than your deadline earns bonus points','Need longer? Add extra time, but each extra time takes a little off your points']},
  {e:'Schedule',t:'Calendar and session schedule',p:'Plan your study time and never miss a session.',l:['A calendar showing your sessions, exams and logged papers','Add session times, with repeats and any links you want','Reminders that pop up as notifications before a session starts'],notif:true},
- {e:'Progress',t:'Points, streaks and ranks',p:'Studying earns points, and so does every paper you log.',l:['Points for focus time and for paper marks','Daily streaks, kept alive by 10 minutes of focus or a paper','Ranks from Starter up to the golden da7ee7, and the very best players find there is more beyond it']},
+ {e:'Progress',t:'Points, streaks and ranks',p:'Studying earns points, and so does every paper you log.',l:['Points for focus time and for paper marks','Daily streaks, kept alive by 10 minutes of focus or a paper','Ranks from Starter up to the golden da7ee7, and the very best players find there is more beyond it','Achievements with badges for focus hours, streaks, papers and goals']},
  {e:'Compete',t:'Leaderboard and profiles',p:'Sign in to see how you compare.',l:['Website-wide and friends leaderboards','Click anyone\'s name to open their profile','Make your own profile follow your rank or pick a color']},
  {e:'Help',t:'Ask, or tap the question mark',p:'You are never stuck. Help is always one click away.',l:['The chat button next to your points answers questions like "How do I get to past paper links?" with the steps, and can take you there','The question mark beside the Theme button explains the top bar','The question mark at the end of the tabs gives a short guide to the page you are on, in bullet points']},
  {e:'Get started',t:'How do you want to start?',final:true}
@@ -2985,7 +3003,7 @@ $('tab-tracker').addEventListener('click',function(e){
     var p=trkCapLeft()>0?trkPts(g,now):0;
     g.status='done';g.doneAt=now;g.late=now>g.due;g.pts=p;
     if(p>0){S.trkDay.n++;award(p,'Goal · '+g.text,'goal')}
-    save();renderTracker();
+    achCheck();save();renderTracker();
   }else if(t.dataset.trext){
     var sel=document.querySelector('[data-trsel="'+id+'"]'),h=+(sel&&sel.value)||24;
     g.due=Math.max(g.due,now)+h*3600000;g.ext=(g.ext||0)+1;save();renderTracker();
@@ -2997,6 +3015,115 @@ $('tab-tracker').addEventListener('click',function(e){
   }
 });
 setInterval(function(){if(!$('tab-tracker').hidden&&!document.activeElement.closest('#tab-tracker'))renderTracker()},30000);
+
+/* ---------- achievements ---------- */
+var ACH_IC={
+  clock:'<circle cx="12" cy="12" r="7"/><path d="M12 8v4l3 2"/>',
+  star:'<path d="M12 4l2.4 5 5.4.7-4 3.8 1 5.4-4.8-2.7-4.8 2.7 1-5.4-4-3.8 5.4-.7z"/>',
+  flame:'<path d="M12 4c1 3 4 4.5 4 8.5a4 4 0 0 1-8 0c0-2 1-3 2-4 0 1.5 1 2 1.5 2C11 8.5 11 6 12 4z"/>',
+  doc:'<path d="M8 4h6l4 4v12H8z"/><path d="M14 4v4h4M10.5 13h5M10.5 16h5"/>',
+  target:'<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="3"/>',
+  check:'<path d="M6 12.5l4 4 8-9"/>',
+  crown:'<path d="M5 17l-1.5-9 5 3.5L12 6l3.5 5.5 5-3.5L19 17z"/><path d="M5 20h14"/>',
+  bolt:'<path d="M13 3L6 13h5l-1 8 7-10h-5z"/>',
+  pct:'<path d="M7 17L17 7"/><circle cx="8" cy="8" r="2"/><circle cx="16" cy="16" r="2"/>',
+  trophy:'<path d="M8 5h8v5a4 4 0 0 1-8 0z"/><path d="M8 7H5a3 3 0 0 0 3 4M16 7h3a3 3 0 0 1-3 4M12 14v4M9 20h6"/>',
+  hourglass:'<path d="M7 4h10M7 20h10M8 4c0 5 8 5 8 8s-8 3-8 8M16 4c0 5-8 5-8 8"/>'
+};
+var ACH_TIER={
+  bronze:{a:'#E0A06A',b:'#8A4F1E',i:'#fff'},
+  silver:{a:'#EEF1F6',b:'#8590A4',i:'#334155'},
+  gold:{a:'#FFE27A',b:'#B8860B',i:'#5A3A00'},
+  diamond:{a:'#B6F0FF',b:'#5B8CFF',i:'#fff'},
+  sov:{a:'#2a0008',b:'#000',i:'#FF2A3E'}
+};
+function achCtx(){
+  var min=0,k;for(k in S.log)min+=S.log[k]||0;
+  var ps=S.papers||[],pcts=ps.map(paperPct),avg=ps.length>=3?pcts.reduce(function(a,b){return a+b},0)/pcts.length:0,top=pcts.length?Math.max.apply(null,pcts):0;
+  var gl=(S.goals||[]).filter(function(g){return g.status==='done'});
+  var early=gl.some(function(g){return !g.late&&g.due-g.created>0&&(g.due-g.doneAt)/(g.due-g.created)>=.5});
+  var tight=gl.some(function(g){return !g.late&&g.due-g.doneAt>=0&&g.due-g.doneAt<=3600000});
+  var wind=gl.some(function(g){return (g.ext||0)>0&&!g.late});
+  var clean=gl.filter(function(g){return !(g.ext>0)}).length;
+  return {hrs:min/60,pts:S.pts||0,best:calcStreak().best,papers:ps.length,avg:avg,top:top,goals:gl.length,early:early?1:0,tight:tight?1:0,wind:wind?1:0,clean:clean};
+}
+function A(id,cat,name,desc,tier,icon,key,target,o){return Object.assign({id:id,cat:cat,name:name,desc:desc,tier:tier,icon:icon,key:key,t:target},o||{})}
+var ACH=[
+  A('f5','Focus time','First Spark','Focus for 5 hours in total','bronze','clock','hrs',5),
+  A('f10','Focus time','Double Digits','Focus for 10 hours in total','bronze','clock','hrs',10),
+  A('f24','Focus time','A Full Day','Focus for 24 hours in total','silver','hourglass','hrs',24),
+  A('f48','Focus time','Two-Day Marathon','Focus for 48 hours in total','silver','hourglass','hrs',48),
+  A('f100','Focus time','Century Club','Focus for 100 hours in total','gold','bolt','hrs',100),
+  A('f200','Focus time','Double Century','Focus for 200 hours in total','gold','bolt','hrs',200),
+  A('f500','Focus time','Time Lord','Focus for 500 hours in total','diamond','crown','hrs',500),
+  A('p500','Points','Getting Warm','Reach 500 points','bronze','star','pts',500),
+  A('p1000','Points','Four Digits','Reach 1,000 points','silver','star','pts',1000),
+  A('p2000','Points','Golden Standard','Reach 2,000 points','gold','star','pts',2000),
+  A('p3000','Points','Beyond Gold','Reach 3,000 points','gold','trophy','pts',3000),
+  A('p5000','Points','Crowned','Reach 5,000 points','sov','crown','pts',5000,{secret:1}),
+  A('p10000','Points','Beyond Compare','Reach 10,000 points','diamond','crown','pts',10000,{secret:1}),
+  A('s3','Streaks','On a Roll','Study 3 days in a row','bronze','flame','best',3),
+  A('s7','Streaks','Week Warrior','Study 7 days in a row','silver','flame','best',7),
+  A('s14','Streaks','Fortnight Fighter','Study 14 days in a row','silver','flame','best',14),
+  A('s30','Streaks','Habit Machine','Study 30 days in a row','gold','flame','best',30),
+  A('s100','Streaks','Unbreakable','Study 100 days in a row','diamond','flame','best',100),
+  A('n1','Papers logged','Paper Trail','Log your first past paper','bronze','doc','papers',1),
+  A('n5','Papers logged','Paper Chaser','Log 5 past papers','bronze','doc','papers',5),
+  A('n10','Papers logged','Past Master','Log 10 past papers','silver','doc','papers',10),
+  A('n25','Papers logged','Paper Hoarder','Log 25 past papers','gold','doc','papers',25),
+  A('n50','Papers logged','Archive Raider','Log 50 past papers','diamond','doc','papers',50),
+  A('a60','Paper scores','Solid Ground','Average 60% or more across at least 3 papers','bronze','pct','avg',60),
+  A('a75','Paper scores','Sharp Mind','Average 75% or more across at least 3 papers','silver','pct','avg',75),
+  A('a90','Paper scores','Examiner\'s Nightmare','Average 90% or more across at least 3 papers','gold','pct','avg',90),
+  A('t90','Paper scores','Ace','Score 90% or more on a single paper','gold','target','top',90),
+  A('t100','Paper scores','Flawless','Score 100% on a paper','diamond','target','top',100),
+  A('g1','Tracker','Goal Getter','Finish your first Tracker goal','bronze','check','goals',1),
+  A('g5','Tracker','Plan Executor','Finish 5 Tracker goals','silver','check','goals',5),
+  A('g10','Tracker','Deadline Dancer','Finish 10 Tracker goals','gold','check','goals',10),
+  A('g25','Tracker','Finisher','Finish 25 Tracker goals','diamond','check','goals',25),
+  A('gearly','Tracker','Ahead of Schedule','Finish a goal with at least half of its time still left','silver','bolt','early',1),
+  A('gtight','Tracker','Cutting It Fine','Finish a goal in the last hour before the deadline','silver','hourglass','tight',1),
+  A('gwind','Tracker','Second Wind','Add extra time to a goal, then finish it on time','bronze','clock','wind',1),
+  A('gclean','Tracker','No Excuses','Finish 5 goals without ever adding extra time','gold','target','clean',5)
+];
+function achVal(a,c){return c[a.key]||0}
+function achOk(a,c){return achVal(a,c)>=a.t}
+function achBadge(a,on){
+  var t=ACH_TIER[a.tier]||ACH_TIER.bronze,id='ab'+a.id;
+  return '<svg class="ach-b'+(on?'':' off')+'" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true"><defs><linearGradient id="'+id+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+t.a+'"/><stop offset="1" stop-color="'+t.b+'"/></linearGradient></defs>'+
+    '<path d="M32 3l24 13v32L32 61 8 48V16z" fill="url(#'+id+')" stroke="'+(a.tier==='sov'?'#E8B923':'rgba(255,255,255,.55)')+'" stroke-width="'+(a.tier==='sov'?3:2)+'"/>'+
+    '<path d="M32 9l19 10.5v25L32 55 13 44.5v-25z" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>'+
+    '<g transform="translate(16 16) scale(1.33)" fill="none" stroke="'+t.i+'" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+(ACH_IC[a.icon]||'')+'</g></svg>';
+}
+function achCheck(){
+  if(!S.ach||typeof S.ach!=='object'||Array.isArray(S.ach))S.ach={};
+  var c=achCtx(),now=Date.now(),fresh=[];
+  ACH.forEach(function(a){if(!S.ach[a.id]&&achOk(a,c)){S.ach[a.id]=now;fresh.push(a)}});
+  if(!fresh.length)return;
+  if(!S.achInit){S.achInit=1;if(fresh.length)toast(fresh.length+' achievement'+(fresh.length>1?'s':'')+' unlocked from your progress so far. See Settings, then Achievements.')}
+  else if(fresh.length<=2)fresh.forEach(function(a){toast('Achievement unlocked: '+a.name+'. '+a.desc+'.')});
+  else toast(fresh.length+' achievements unlocked! See Settings, then Achievements.');
+  if(TOUCHED)save();
+  if($('st-ach')&&!$('st-ach').hidden)renderAch();
+}
+function achFmt(a,c){var v=achVal(a,c);if(a.key==='avg'||a.key==='top')return Math.round(v)+'%';if(a.key==='hrs')return (Math.floor(v*10)/10)+' h';return String(Math.floor(v))}
+function achTgt(a){return a.key==='avg'||a.key==='top'?a.t+'%':a.key==='hrs'?a.t+' h':String(a.t)}
+function renderAch(){
+  if(!S.ach||typeof S.ach!=='object')S.ach={};
+  var c=achCtx(),h='',cats=[],done=ACH.filter(function(a){return S.ach[a.id]}).length;
+  ACH.forEach(function(a){if(cats.indexOf(a.cat)<0)cats.push(a.cat)});
+  h+='<div class="card"><div class="card-head"><h2>Achievements</h2><span class="pill run">'+done+' of '+ACH.length+'</span></div><div class="rk-bar"><i style="width:'+(done/ACH.length*100).toFixed(1)+'%"></i></div></div>';
+  cats.forEach(function(cat){
+    h+='<div class="card"><div class="card-head"><h2>'+esc(cat)+'</h2></div><div class="ach-grid">'+ACH.filter(function(a){return a.cat===cat}).map(function(a){
+      var on=!!S.ach[a.id];
+      if(a.secret&&!on)return '<div class="ach secret"><svg class="ach-b off" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true"><path d="M32 3l24 13v32L32 61 8 48V16z" fill="#64748B" stroke="rgba(255,255,255,.4)" stroke-width="2"/><text x="32" y="42" text-anchor="middle" font-size="26" font-weight="700" fill="#fff">?</text></svg><div><div class="an">Secret achievement</div><div class="ad">Keep going to find out.</div></div></div>';
+      var pr=achVal(a,c),pc=Math.max(0,Math.min(100,pr/a.t*100));
+      return '<div class="ach'+(on?' on':'')+'">'+achBadge(a,on)+'<div style="min-width:0"><div class="an">'+esc(a.name)+'</div><div class="ad">'+esc(a.desc)+'</div>'+
+        (on?'<div class="ap">Unlocked '+new Date(S.ach[a.id]).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+'</div>':'<div class="rk-bar sm"><i style="width:'+pc.toFixed(1)+'%"></i></div><div class="ap">'+achFmt(a,c)+' of '+achTgt(a)+'</div>')+'</div></div>';
+    }).join('')+'</div></div>';
+  });
+  $('achBody').innerHTML=h;
+}
 
 /* ---------- profiles ---------- */
 var RANK_COL={starter:'#64748B',amateur:'#16A34A',popping:'#2F7BF5',hard:'#D92D20',gamed:'#E5221B',achiever:'#8E9AB0',da7ee7:'#D99A00',sovereign:'#E0102A',paragon:'#38BDF8'};
@@ -3119,6 +3246,7 @@ setTimeout(function(){introShow(false)},900);
     settings:{t:'Settings',h:g([
       ['Account',['Sign in with Google to save your progress and join the leaderboard.','Choose your username, your public name (3 to 16 letters, numbers or underscores).','See your rank and how far the next one is, how points work, and add friends by username.']],
       ['Progress',['Your focus time over the last 14 days, recent points, and your past paper averages with expected grades.']],
+      ['Achievements',['Badges you unlock for focus hours, points, streaks, papers logged, paper scores and Tracker goals.','Locked ones show how far along you are. A few are secret.']],
       ['Colors',['Light or dark mode, accent color, background and how frosted the cards look.','Fine-tune every color is optional. Reset puts everything back to default.']]])}
   };
   var tip=document.createElement('div');tip.id='hqTip';tip.setAttribute('role','tooltip');tip.hidden=true;document.body.appendChild(tip);
@@ -3196,6 +3324,8 @@ setTimeout(function(){introShow(false)},900);
      s:['Open <b>Settings</b>, then <b>Account</b>.','Sign in with Google to save your progress on every device.','Choose your <b>Username</b>. It is your public name on the leaderboard.'],go:['settings','st-account']},
     {t:'Points, ranks and streaks',k:['point','points','how do points','earn','rank','ranks','streak','streaks','level','next rank','sovereign','paragon','da7ee7','xp','score points'],
      s:['Open <b>Settings</b>, then <b>Account</b>.','<b>Your rank</b> shows where you are and what is next. <b>How points work</b> explains how to earn them.','Short version: focus time, logged past papers and daily streaks all earn points.'],go:['settings','st-account']},
+    {t:'Achievements and badges',k:['achievement','achievements','badge','badges','unlock','unlocked','trophy','trophies','milestone','medal'],
+     s:['Open <b>Settings</b>.','Click <b>Achievements</b>.','Unlocked badges are in color, locked ones show your progress. Some are secret.'],go:['settings','st-ach']},
     {t:'Your progress and averages',k:['progress','average','averages','stats','statistics','focus time','how much have i studied','expected grade','predicted','recent points','history','chart','graph','analytics'],
      s:['Open <b>Settings</b>.','Click <b>Progress</b>.','You will see your focus time for the last 14 days, recent points and past paper averages with expected grades.'],go:['settings','st-progress']}
   ];
