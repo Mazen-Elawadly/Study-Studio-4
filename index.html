@@ -370,12 +370,12 @@ img{max-width:100%}
 .r-achiever{box-shadow:0 0 12px rgba(150,165,195,.45); animation:glowPlat 2.4s ease-in-out infinite alternate}
 .r-da7ee7 .rt{background:linear-gradient(100deg,#9A6200 0%,#D99A00 40%,#A86D00 70%,#E3A700 100%); -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent; filter:drop-shadow(0 0 2px rgba(255,200,40,.95))}
 .r-da7ee7{box-shadow:0 0 14px rgba(255,190,0,.45); animation:glowGold 2s ease-in-out infinite alternate}
-.r-sovereign{background:#000; color:#FF1A2E; border:1px solid #7A0010; text-shadow:0 0 5px rgba(255,20,40,.95),0 0 12px rgba(255,0,30,.8),0 0 24px rgba(220,0,30,.6); box-shadow:0 0 14px rgba(220,0,30,.55),inset 0 0 10px rgba(160,0,20,.5); animation:glowSov 1.8s ease-in-out infinite alternate}
-.r-paragon{background:linear-gradient(115deg,#38BDF8 0%,#7DE3FF 22%,#C4B5FD 45%,#67E8F9 68%,#0EA5E9 100%); background-size:240% 100%; color:#FFFFFF; border:1px solid rgba(255,255,255,.85); text-shadow:0 0 4px rgba(0,60,120,.7),0 0 10px rgba(255,255,255,.95); box-shadow:0 0 14px rgba(125,227,255,.8),0 0 28px rgba(160,200,255,.45),inset 0 0 8px rgba(255,255,255,.7); animation:glowDia 2.4s ease-in-out infinite alternate,shimDia 4s linear infinite}
+.r-sovereign{background:linear-gradient(#000,#000) padding-box,linear-gradient(120deg,#9A6A00,#FFD94A 30%,#C99700 55%,#FFE680 80%,#A87400) border-box; color:#FF1A2E; border:2px solid transparent; text-shadow:0 0 5px rgba(255,20,40,.95),0 0 12px rgba(255,0,30,.8),0 0 24px rgba(220,0,30,.6); box-shadow:0 0 12px rgba(255,200,40,.75),0 0 20px rgba(220,0,30,.55),inset 0 0 10px rgba(160,0,20,.5); animation:glowSov 1.8s ease-in-out infinite alternate}
+.r-paragon{background:linear-gradient(115deg,#38BDF8 0%,#7DE3FF 22%,#C4B5FD 45%,#67E8F9 68%,#0EA5E9 100%) padding-box,linear-gradient(120deg,#FFF6D0,#FFD23F 28%,#FFFFFF 50%,#FFC21A 72%,#FFF1B8) border-box; background-size:240% 100%,100% 100%; color:#FFFFFF; border:3px solid transparent; text-shadow:0 0 4px rgba(0,60,120,.7),0 0 10px rgba(255,255,255,.95); box-shadow:0 0 12px rgba(255,205,60,.95),0 0 26px rgba(255,200,40,.6),0 0 14px rgba(125,227,255,.7),inset 0 0 8px rgba(255,255,255,.7); animation:glowDia 2s ease-in-out infinite alternate,shimDia 4s linear infinite}
 .r-mystery{background:repeating-linear-gradient(135deg,var(--surface-2) 0 6px,transparent 6px 12px); color:var(--muted); border:1px dashed var(--line); letter-spacing:.2em}
-@keyframes glowSov{to{box-shadow:0 0 26px rgba(255,0,30,.95),0 0 44px rgba(200,0,30,.55),inset 0 0 14px rgba(200,0,25,.7)}}
-@keyframes glowDia{to{box-shadow:0 0 22px rgba(160,240,255,1),0 0 44px rgba(190,210,255,.7),inset 0 0 12px rgba(255,255,255,.9)}}
-@keyframes shimDia{to{background-position:240% 0}}
+@keyframes glowSov{to{box-shadow:0 0 22px rgba(255,210,60,1),0 0 40px rgba(255,190,30,.6),0 0 26px rgba(255,0,30,.9),inset 0 0 14px rgba(200,0,25,.7)}}
+@keyframes glowDia{to{box-shadow:0 0 22px rgba(255,220,80,1),0 0 46px rgba(255,205,60,.85),0 0 22px rgba(160,240,255,.9),inset 0 0 12px rgba(255,255,255,.9)}}
+@keyframes shimDia{to{background-position:240% 0,0 0}}
 @keyframes glowRed{to{box-shadow:0 0 18px rgba(255,40,30,.5)}}
 @keyframes glowPlat{to{box-shadow:0 0 18px rgba(150,165,195,.75)}}
 @keyframes glowGold{to{box-shadow:0 0 22px rgba(255,190,0,.8)}}
@@ -431,6 +431,52 @@ html[data-glass="on"] .tabs-wrap{border-bottom-color:var(--glass-edge)}
 html[data-glass="on"] .pl-paper{position:relative; background:color-mix(in srgb,var(--surface) var(--glass-a),transparent); -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(1.7); backdrop-filter:blur(var(--glass-blur)) saturate(1.7); border-color:var(--glass-edge); box-shadow:inset 0 1px 0 var(--glass-edge),inset 0 -1px 0 rgba(0,0,0,.06),0 14px 34px -16px rgba(0,0,0,.4)}
 html[data-glass="on"] .pl-paper::before{content:''; position:absolute; inset:0; z-index:-1; border-radius:inherit; pointer-events:none; background:linear-gradient(135deg,var(--glass-hi) 0%,rgba(255,255,255,0) 36%,rgba(255,255,255,0) 70%,var(--glass-hi) 100%)}
 html[data-glass="on"] .lk{background:color-mix(in srgb,var(--input-bg) 55%,transparent); border-color:color-mix(in srgb,var(--glass-edge) 70%,var(--line))}
+
+/* help guide */
+.tabs-row{display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--line)}
+.tabs-row .tabs-wrap{flex:1; min-width:0; border-bottom:0}
+.hq{display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; min-width:26px; padding:0; margin:0 0 0 8px; border-radius:50%; border:1px solid var(--line); background:var(--surface-2); color:var(--muted); font:700 .82rem/1 var(--font-body); cursor:help; flex:none; transition:background .15s,color .15s,border-color .15s}
+.tabs-row .hq{margin:0 0 4px}
+.hq:hover,.hq:focus-visible,.hq.on{background:var(--accent); color:var(--on-accent); border-color:var(--accent)}
+.hq:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+#hqTip{position:fixed; z-index:10000; width:min(340px,calc(100vw - 16px)); max-height:min(70vh,520px); overflow:auto; padding:14px 16px; border-radius:14px; font-size:.84rem; line-height:1.45; font-weight:500; color:var(--ink); background:var(--surface); border:1px solid var(--line); box-shadow:0 12px 32px rgba(0,0,0,.28); pointer-events:none}
+#hqTip.pin{pointer-events:auto}
+#hqTip .hq-t{font-family:var(--font-display); font-weight:700; font-size:1.02rem; margin-bottom:2px}
+#hqTip h4{margin:12px 0 4px; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:var(--accent)}
+#hqTip ul{margin:0; padding-left:18px; color:var(--ink)}
+#hqTip li{margin:3px 0}
+#hqTip li b{font-weight:700}
+html[data-glass="on"] #hqTip{border-color:var(--glass-edge,var(--line)); box-shadow:0 12px 32px rgba(0,0,0,.28),inset 0 1px 0 var(--glass-hi,transparent)}
+
+/* ask assistant */
+.chat-btn{display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; padding:0; border-radius:50%; border:1px solid var(--line); background:var(--surface); color:var(--accent); cursor:pointer; flex:none; transition:background .15s,color .15s}
+.chat-btn:hover,.chat-btn.on{background:var(--accent); color:var(--on-accent); border-color:var(--accent)}
+.chat-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+#chatPanel{position:fixed; z-index:9990; width:min(380px,calc(100vw - 16px)); max-height:min(76vh,560px); display:flex; flex-direction:column; border-radius:16px; background:var(--surface); border:1px solid var(--line); box-shadow:0 16px 40px rgba(0,0,0,.3); overflow:hidden}
+#chatPanel[hidden]{display:none}
+html[data-glass="on"] #chatPanel{border-color:var(--glass-edge,var(--line)); box-shadow:0 16px 40px rgba(0,0,0,.3),inset 0 1px 0 var(--glass-hi,transparent)}
+.ch-head{display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid var(--line); font-family:var(--font-display)}
+.ch-log{flex:1; min-height:120px; overflow:auto; padding:12px 14px; display:flex; flex-direction:column; gap:10px; font-size:.88rem; line-height:1.45}
+.ch-m{max-width:92%; padding:9px 12px; border-radius:14px}
+.ch-m.me{align-self:flex-end; background:var(--accent); color:var(--on-accent); border-bottom-right-radius:4px}
+.ch-m.bot{align-self:flex-start; background:var(--surface-2); color:var(--ink); border-bottom-left-radius:4px}
+.ch-ans ol{margin:6px 0 10px; padding-left:20px}
+.ch-ans li{margin:3px 0}
+.ch-more{margin-top:10px; display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:.8rem; color:var(--muted)}
+.ch-sug{display:flex; flex-wrap:wrap; gap:6px; padding:0 14px 10px}
+.ch-form{display:flex; gap:8px; padding:10px 14px 14px; border-top:1px solid var(--line)}
+.ch-form input{flex:1; min-width:0; height:36px; padding:0 12px; border-radius:10px; border:1px solid var(--line); background:var(--input-bg,var(--surface-2)); color:var(--ink); font:inherit}
+.ch-pulse{animation:chPulse .7s ease-in-out 3}
+@keyframes chPulse{50%{box-shadow:0 0 0 4px var(--accent),0 0 18px var(--accent)}}
+
+/* tracker */
+.trk-item .trk-pts{font-size:.85rem; margin-top:4px; color:var(--muted)}
+.trk-item .trk-pts b{color:var(--accent)}
+.trk-act{display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:8px}
+.trk-act .sel{width:auto; min-width:0; height:30px; padding:0 8px; font-size:.82rem}
+.trk-over{color:var(--bad)}
+.trk-ok{border-left-color:#30A46C !important}
+.trk-no{opacity:.75}
 </style>
 </head><body>
 
@@ -457,6 +503,7 @@ html[data-glass="on"] .lk{background:color-mix(in srgb,var(--input-bg) 55%,trans
     <button class="tab" role="tab" data-tab="papers" aria-selected="false">Past papers</button>
     <button class="tab" role="tab" data-tab="board" aria-selected="false">Leaderboard</button>
     <button class="tab" role="tab" data-tab="subjects" aria-selected="false">My subjects</button>
+    <button class="tab" role="tab" data-tab="tracker" aria-selected="false">Tracker</button>
     <button class="tab" role="tab" data-tab="schedule" aria-selected="false">Schedule</button>
     <button class="tab" role="tab" data-tab="settings" aria-selected="false">Settings</button>
   </div></div>
@@ -669,6 +716,46 @@ html[data-glass="on"] .lk{background:color-mix(in srgb,var(--input-bg) 55%,trans
     </section>
     <!-- COLOURS -->
     <!-- SETTINGS -->
+    <!-- TRACKER -->
+    <section id="tab-tracker" hidden>
+      <div class="split">
+        <div class="col">
+          <div class="card">
+            <div class="card-head"><h2>Your goals</h2><span class="muted" id="trStats" style="font-size:.85rem"></span></div>
+            <ul class="sc-list" id="trOpen"></ul>
+            <p class="muted" id="trOpenEmpty" style="margin:0">No goals yet. Add one and set a deadline.</p>
+          </div>
+          <div class="card" id="trFinCard" hidden>
+            <div class="card-head"><h2>Finished goals</h2></div>
+            <ul class="sc-list" id="trFin"></ul>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <div class="card-head"><h2>Set a goal</h2></div>
+            <div class="stack">
+              <label class="field" for="trSubj">Subject<select class="sel" id="trSubj"></select></label>
+              <label class="field" for="trGoal">Your goal<input type="text" id="trGoal" maxlength="120" placeholder="Finish chapter 5 past papers"></label>
+              <label class="field" for="trDue">Deadline<input type="datetime-local" id="trDue"></label>
+              <p class="muted" id="trPrev" style="font-size:.85rem;margin:0" aria-live="polite"></p>
+              <div class="row" style="align-items:center;gap:8px;flex-wrap:wrap"><button type="button" class="btn primary" id="trAdd">Add goal</button><span class="muted" id="trMsg" style="font-size:.85rem" aria-live="polite"></span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Goal points</h2></div>
+            <ul class="rules">
+              <li>A longer goal is worth more, up to <b>60 points</b>.</li>
+              <li>Finish <b>before</b> the deadline for up to <b>+50%</b>. The earlier, the bigger.</li>
+              <li>Each <b>extra time</b> you add takes <b>15%</b> off (down to a minimum of 25%).</li>
+              <li>Finish <b>after</b> the deadline and you get <b>half</b>.</li>
+              <li><b>Not done</b> earns nothing.</li>
+            </ul>
+            <p class="muted" id="trCap" style="font-size:.82rem;margin:10px 0 0"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="tab-schedule" hidden>
       <div class="card" id="scNotif" style="margin-bottom:16px"></div>
       <div class="card" id="scSound" style="margin-bottom:16px">
@@ -760,6 +847,7 @@ html[data-glass="on"] .lk{background:color-mix(in srgb,var(--input-bg) 55%,trans
               <li><b>1 point</b> for every minute of focus. Breaks do not count.</li>
               <li><b>+5</b> for finishing a full session, <b>+10</b> for finishing an exam paper timer.</li>
               <li><b>10 points + 1 per 5%</b> for every past paper you log.</li>
+              <li><b>Goals</b> from the Tracker tab: finish on time for up to 60 points, less for each extra time you add.</li>
               <li><b>Streak bonus</b> of up to 10 points the first time you reach 10 focus minutes or log a paper each day.</li>
             </ul>
           </div>
@@ -873,7 +961,7 @@ var SCALE={cambridge:['A*','A','B','C','D','E','F','G'],edexcel:NINE,oxford:NINE
 var PCT={cambridge:[78,66,54,42,32,22,12,6],edexcel:[80,70,60,51,42,33,24,15,6],oxford:[80,70,60,51,42,33,24,15,6]};
 var BOARD_NAME={cambridge:'Cambridge · A* to G',edexcel:'Edexcel · 9 to 1',oxford:'OxfordAQA · 9 to 1'};
 var SRC_NAME={cambridge:'Cambridge',edexcel:'Pearson Edexcel',oxford:'OxfordAQA'};
-var TOOLS=[['timer','Timer'],['stopwatch','Stopwatch'],['exams','Exam countdown'],['papers','Past papers'],['board','Leaderboard'],['subjects','My subjects'],['schedule','Schedule'],['settings','Settings']];
+var TOOLS=[['timer','Timer'],['stopwatch','Stopwatch'],['exams','Exam countdown'],['papers','Past papers'],['board','Leaderboard'],['subjects','My subjects'],['tracker','Tracker'],['schedule','Schedule'],['settings','Settings']];
 var PAL={
  slate:{n:'Slate'},
  ink:{n:'Ink',l:['#E9EEF7','#FFFFFF','#DDE5F2','#C3CEE2'],d:['#0A1020','#121B30','#1A2640','#27344F']},
@@ -885,7 +973,7 @@ var PAL={
  mono:{n:'Mono',l:['#EFEFEF','#FFFFFF','#E2E2E2','#CFCFCF'],d:['#0B0B0B','#151515','#1F1F1F','#2D2D2D']}
 };
 function mergeCustom(c){c=c||{};return {light:Object.assign({},c.light),dark:Object.assign({},c.dark)}}
-function defaultLook(){return {mode:'subject',fixed:215,tools:{timer:215,stopwatch:175,exams:28,papers:330,board:45,subjects:150,schedule:195,settings:255},bg:'slate',custom:{light:{},dark:{}},glass:{on:true,amt:60}}}
+function defaultLook(){return {mode:'subject',fixed:215,tools:{timer:215,stopwatch:175,exams:28,papers:330,board:45,subjects:150,tracker:95,schedule:195,settings:255},bg:'slate',custom:{light:{},dark:{}},glass:{on:true,amt:60}}}
 var CC_BG=['bg','surface','surface-2','line'];
 var CC=[
  ['Page',[['bg','Page background'],['surface','Cards and panels'],['surface-2','Raised areas and pills'],['line','Borders and dividers'],['ink','Main text'],['heading','Headings'],['muted','Secondary text']]],
@@ -1015,7 +1103,7 @@ function seedState(){
       {id:'e3',sid:'phys',subj:'Physics',paper:'Paper 6',when:'2027-05-26T09:00',ex:true}
     ],
     noise:{type:'brown',vol:.5,link:true},
-    me:{username:'',claimed:false},pts:0,wk:{k:'',p:0},log:{},papers:[],feed:[],friends:[],bonusDay:'',sched:{items:[]}
+    me:{username:'',claimed:false},pts:0,wk:{k:'',p:0},log:{},papers:[],feed:[],friends:[],bonusDay:'',goals:[],trkDay:{k:'',n:0},sched:{items:[]}
   };
 }
 function freshState(){var s=seedState();s.v=2;s.look=defaultLook();s.subjects.forEach(function(x){applyBounds(x)});return s}
@@ -1222,12 +1310,13 @@ function showSub(top,id){
 }
 function switchTab(name){
   curTab=name;applyHue();
-  ['timer','stopwatch','exams','papers','board','subjects','schedule','settings'].forEach(function(t){$('tab-'+t).hidden=t!==name});
+  ['timer','stopwatch','exams','papers','board','subjects','tracker','schedule','settings'].forEach(function(t){$('tab-'+t).hidden=t!==name});
   [].forEach.call(document.querySelectorAll('.tab'),function(b){b.setAttribute('aria-selected',b.dataset.tab===name?'true':'false')});
   if(name==='exams')tickCountdown(true);
   if(name==='papers'||name==='settings')showSub(name,SUB[name]);
   if(name==='board')renderBoard();
   if(name==='schedule')renderSchedule();
+  if(name==='tracker')renderTracker();
 }
 [].forEach.call(document.querySelectorAll('.subnav'),function(n){
   n.addEventListener('click',function(e){var b=e.target.closest('[data-sub]');if(!b)return;showSub(n.parentNode.id.replace('tab-',''),b.dataset.sub)});
@@ -2778,9 +2867,11 @@ var TOUR=[
  {e:'Focus',t:'Timer, noise and tones',p:'Pick a study mode like Physics Paper 4 or Maths Edexcel, or make your own, then start the timer.',l:['Exam modes with the real paper lengths, or custom times','White, pink, brown and rain noise, plus tones like 432 Hz, 528 Hz or your own frequency','A stopwatch tab when you just want to count up']},
  {e:'Plan',t:'Exam countdown and your subjects',p:'Add the subjects you take and the dates of your exams.',l:['A countdown to each exam','Grade boundaries for every subject, which you can edit','Each subject gets its own color']},
  {e:'Practice',t:'Past papers and links',p:'Log the marks you get and Study Studio works out your average and expected grade.',l:['Log papers and see your averages per subject','Past paper links by subject, year and paper for IGCSE and A Level','Direct links to question papers and mark schemes']},
+ {e:'Tracker',t:'Goals and deadlines',p:'Pick a subject, say what you want to get done and by when.',l:['Tell it when you are done, or that you did not finish','Finishing earlier than your deadline earns bonus points','Need longer? Add extra time, but each extra time takes a little off your points']},
  {e:'Schedule',t:'Calendar and session schedule',p:'Plan your study time and never miss a session.',l:['A calendar showing your sessions, exams and logged papers','Add session times, with repeats and any links you want','Reminders that pop up as notifications before a session starts'],notif:true},
- {e:'Progress',t:'Points, streaks and ranks',p:'Studying earns points, and so does every paper you log.',l:['Points for focus time and for paper marks','Daily streaks, kept alive by 10 minutes of focus or a paper','Ranks from Starter up to da7ee7']},
+ {e:'Progress',t:'Points, streaks and ranks',p:'Studying earns points, and so does every paper you log.',l:['Points for focus time and for paper marks','Daily streaks, kept alive by 10 minutes of focus or a paper','Ranks from Starter up to the golden da7ee7, and the very best players find there is more beyond it']},
  {e:'Compete',t:'Leaderboard and profiles',p:'Sign in to see how you compare.',l:['Website-wide and friends leaderboards','Click anyone\'s name to open their profile','Make your own profile follow your rank or pick a color']},
+ {e:'Help',t:'Ask, or tap the question mark',p:'You are never stuck. Help is always one click away.',l:['The chat button next to your points answers questions like "How do I get to past paper links?" with the steps, and can take you there','The question mark beside the Theme button explains the top bar','The question mark at the end of the tabs gives a short guide to the page you are on, in bullet points']},
  {e:'Get started',t:'How do you want to start?',final:true}
 ];
 var IN={i:0};
@@ -2817,6 +2908,95 @@ $('introOv').addEventListener('click',function(e){
   else if(id==='inSign'){introHide('signin');signIn()}
 });
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!$('profOv').hidden)$('profOv').hidden=true});
+
+/* ---------- tracker ---------- */
+var TRK_DAY=864e5,TRK_EXT=[['1','1 hour'],['24','1 day'],['72','3 days'],['168','1 week']];
+function trkList(){if(!Array.isArray(S.goals))S.goals=[];return S.goals}
+function trkBase(g){var d=Math.max(1,Math.ceil((g.due0-g.created)/TRK_DAY));return Math.min(60,10+3*d)}
+function trkMult(g){return Math.max(.25,1-.15*(g.ext||0))}
+function trkPts(g,now){
+  var base=trkBase(g)*trkMult(g),p;
+  if(now<=g.due){var tot=Math.max(1,g.due-g.created),early=Math.max(0,Math.min(1,(g.due-now)/tot));p=base*(1+.5*early)}
+  else p=base*.5;
+  return Math.max(5,Math.round(p));
+}
+function trkWhen(ms){return new Date(ms).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}
+function trkLeft(g,now){
+  var d=g.due-now,a=Math.abs(d),m=Math.round(a/60000),txt;
+  if(m<60)txt=m+' min';else if(m<2880)txt=Math.round(m/60)+' h';else txt=Math.round(m/1440)+' days';
+  return d>=0?txt+' left':'Overdue by '+txt;
+}
+function trkCapLeft(){var k=dKey();if(!S.trkDay||S.trkDay.k!==k)S.trkDay={k:k,n:0};return Math.max(0,3-S.trkDay.n)}
+function trkPrev(){
+  var v=$('trDue').value,el=$('trPrev');
+  if(!v){el.textContent='';return}
+  var due=new Date(v).getTime(),now=Date.now();
+  if(isNaN(due)||due<=now){el.textContent='Choose a deadline in the future.';return}
+  var g={created:now,due0:due,due:due,ext:0};
+  el.innerHTML='Finish right away: about <b>'+trkPts(g,now)+'</b> pts. Finish at the deadline: <b>'+Math.round(trkBase(g))+'</b> pts. Each extra time takes 15% off.';
+}
+function trkAdd(){
+  var m=$('trMsg');m.textContent='';
+  var text=$('trGoal').value.trim(),v=$('trDue').value,now=Date.now();
+  if(!text){m.textContent='Write your goal first.';return}
+  var due=new Date(v).getTime();
+  if(!v||isNaN(due)||due<=now){m.textContent='Choose a deadline in the future.';return}
+  trkList().push({id:'g-'+uid(),sid:$('trSubj').value||'',text:text.slice(0,120),created:now,due0:due,due:due,ext:0,status:'open'});
+  $('trGoal').value='';save();renderTracker();m.textContent='Goal added.';
+}
+function renderTracker(){
+  var list=trkList(),now=Date.now();
+  var sel=$('trSubj'),cur=sel.value;
+  sel.innerHTML=S.subjects.map(function(s){return '<option value="'+s.id+'">'+esc(s.name)+'</option>'}).join('');
+  sel.value=subj(cur)?cur:(subj(S.active)?S.active:(S.subjects[0]?S.subjects[0].id:''));
+  if(!$('trDue').value){var d=new Date(now+3*TRK_DAY);d.setHours(18,0,0,0);$('trDue').value=dKey(d)+'T18:00'}
+  trkPrev();
+  var open=list.filter(function(g){return g.status==='open'}).sort(function(a,b){return a.due-b.due});
+  var fin=list.filter(function(g){return g.status!=='open'}).sort(function(a,b){return (b.doneAt||0)-(a.doneAt||0)}).slice(0,20);
+  $('trOpen').innerHTML=open.map(function(g){
+    var s=subj(g.sid),over=now>g.due;
+    return '<li class="sc-item trk-item" style="--sh:'+(s?s.hue:215)+'"><div class="t">'+esc(g.text)+'</div>'+
+      '<div class="when">'+esc(s?s.name:'No subject')+' · due '+trkWhen(g.due)+' · <b class="'+(over?'trk-over':'')+'">'+trkLeft(g,now)+'</b>'+(g.ext?' · extended '+g.ext+'×':'')+'</div>'+
+      '<div class="trk-pts">Finish now for <b>'+trkPts(g,now)+' pts</b></div>'+
+      '<div class="trk-act"><button type="button" class="btn sm primary" data-trdone="'+g.id+'">I\'m done</button>'+
+      '<select class="sel sm" data-trsel="'+g.id+'" aria-label="Extra time">'+TRK_EXT.map(function(o){return '<option value="'+o[0]+'">+ '+o[1]+'</option>'}).join('')+'</select>'+
+      '<button type="button" class="btn sm" data-trext="'+g.id+'">Add time</button>'+
+      '<button type="button" class="btn sm" data-trmiss="'+g.id+'">Not done</button></div></li>'}).join('');
+  $('trOpenEmpty').hidden=open.length>0;
+  $('trFin').innerHTML=fin.map(function(g){
+    var s=subj(g.sid),ok=g.status==='done';
+    return '<li class="sc-item trk-item '+(ok?'trk-ok':'trk-no')+'" style="--sh:'+(s?s.hue:215)+'"><div class="t">'+esc(g.text)+'</div>'+
+      '<div class="when">'+esc(s?s.name:'No subject')+' · '+(ok?'Done '+trkWhen(g.doneAt)+(g.late?' (late)':'')+(g.ext?' · extended '+g.ext+'×':'')+' · <b>+'+(g.pts||0)+' pts</b>':'Not done')+
+      ' <button type="button" class="x" data-trdel="'+g.id+'" aria-label="Remove goal">×</button></div></li>'}).join('');
+  $('trFinCard').hidden=!fin.length;
+  var done=list.filter(function(g){return g.status==='done'}),miss=list.filter(function(g){return g.status==='missed'}).length;
+  $('trStats').textContent=list.length?(done.length+' done · '+miss+' not done · '+done.reduce(function(a,g){return a+(g.pts||0)},0)+' pts earned from goals'):'';
+  var cl=trkCapLeft();$('trCap').textContent=cl>0?cl+' of 3 points-earning goals left today.':'You have finished 3 goals today. More goals can still be marked done, but they earn no points until tomorrow.';
+}
+$('trAdd').addEventListener('click',trkAdd);
+$('trGoal').addEventListener('keydown',function(e){if(e.key==='Enter')trkAdd()});
+$('trDue').addEventListener('input',trkPrev);
+$('tab-tracker').addEventListener('click',function(e){
+  var t=e.target.closest('[data-trdone],[data-trext],[data-trmiss],[data-trdel]');if(!t)return;
+  var id=t.dataset.trdone||t.dataset.trext||t.dataset.trmiss||t.dataset.trdel,g=trkList().filter(function(x){return x.id===id})[0];if(!g)return;
+  var now=Date.now();
+  if(t.dataset.trdone){
+    if(g.status!=='open')return;
+    var p=trkCapLeft()>0?trkPts(g,now):0;
+    g.status='done';g.doneAt=now;g.late=now>g.due;g.pts=p;
+    if(p>0){S.trkDay.n++;award(p,'Goal · '+g.text,'goal')}
+    save();renderTracker();
+  }else if(t.dataset.trext){
+    var sel=document.querySelector('[data-trsel="'+id+'"]'),h=+(sel&&sel.value)||24;
+    g.due=Math.max(g.due,now)+h*3600000;g.ext=(g.ext||0)+1;save();renderTracker();
+  }else if(t.dataset.trmiss){
+    if(!confirm('Mark this goal as not done? It earns no points.'))return;
+    g.status='missed';g.doneAt=now;g.pts=0;save();renderTracker();
+  }else if(t.dataset.trdel){
+    S.goals=trkList().filter(function(x){return x!==g});save();renderTracker();
+  }
+});
+setInterval(function(){if(!$('tab-tracker').hidden&&!document.activeElement.closest('#tab-tracker'))renderTracker()},30000);
 
 /* ---------- profiles ---------- */
 var RANK_COL={starter:'#64748B',amateur:'#16A34A',popping:'#2F7BF5',hard:'#D92D20',gamed:'#E5221B',achiever:'#8E9AB0',da7ee7:'#D99A00',sovereign:'#E0102A',paragon:'#38BDF8'};
@@ -2898,6 +3078,201 @@ setMode(modeById(S.mode)||modeById('phys-p4'));
 renderExams();renderGrades();renderSubjects();renderLaps();swPaint();swUi();
 renderPapers();renderProgress();renderBoard();renderAccount();updateChips();initSync();
 setTimeout(function(){introShow(false)},900);
+})();
+
+/* ---------- help guide ---------- */
+(function(){
+  function g(parts){return parts.map(function(p){return '<h4>'+p[0]+'</h4><ul>'+p[1].map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>'}).join('')}
+  var HELP={
+    top:{t:'The top bar',h:g([
+      ['What you see',['<b>Points</b>: earned from focus time, logged past papers and daily streaks.','<b>Rank</b>: goes up as your points grow. Settings, then Progress, lists every rank.','<b>Day streak</b>: days in a row you studied. Missing a day resets it.']],
+      ['Help',['<b>Chat button</b> (left of your points): ask how to do something and it shows the steps, with a button that takes you there.','<b>Question mark on the tabs row</b>: a guide to the page you are on.']],
+      ['Controls',['<b>Subject picker</b>: the subject you are studying now. Your focus time counts toward it.','<b>Theme</b>: switches between automatic, light and dark mode.']]])},
+    timer:{t:'Timer',h:g([
+      ['Mode',['Pick an exam paper, a preset focus length or your own custom session.','It is locked while the timer runs.','For exam papers you get a pacing table showing where you should be at each checkpoint.']],
+      ['Start, pause and reset',['Start begins the countdown, press again to pause, then Resume.','Reset puts the timer back to its full time.','You earn 1 point per focused minute, plus a bonus for finishing.']],
+      ['Sound',['Choose noise (white, pink, brown), a tone in Hz, or type your own frequency and press Use.','Set the volume and press Play sound.','Turn on the checkbox to start and stop the sound with the timer.']]])},
+    stopwatch:{t:'Stopwatch',h:g([
+      ['How it works',['Counts up from zero, for timing anything freely.','Start begins it, press again to pause.','Lap saves the current time without stopping.','Reset clears the time and all laps.']],
+      ['Laps',['Every lap you save is listed on the right.']]])},
+    exams:{t:'Exam countdown',h:g([
+      ['Add an exam',['Choose the subject, type the paper (for example Paper 4) and the date and start time.','The countdown runs to that moment.']],
+      ['Your exams',['All exams are listed by date, each with its own countdown.','The next exam is shown large at the top.']]])},
+    papers:{t:'Past papers',h:g([
+      ['Log papers',['Record a paper you did: subject, paper name, date, your mark and what it is out of.','Logging earns points, and counts toward your averages.','Optionally attach the paper file to open again later. It stays on this device only.','Your logged papers are listed below. You can edit or delete them.']],
+      ['Grade boundaries',['The marks needed for each grade, by subject and exam board.']],
+      ['Past paper links',['Pick a subject, then a paper and a year to get links to the paper and its mark scheme.','The Sites list has other websites to try if a link does not work.']]])},
+    board:{t:'Leaderboard',h:g([
+      ['Rankings',['Everyone is ranked by points. Use the filter buttons to show everyone or just your friends.','Click a name to open their profile: rank, points, time focused and leaderboard position.','You need to sign in to appear here. Guests are not listed.']]])},
+    subjects:{t:'My subjects',h:g([
+      ['Your subjects',['The subjects you take. Each one has its own color across the whole site.','Remove a subject from its row.']],
+      ['Add a subject',['Type a name (suggestions appear) and pick the exam board. The board decides which grade scale is used.','Quick add adds a common subject in one click.']]])},
+    tracker:{t:'Tracker',h:g([
+      ['Set a goal',['Choose the subject, write your goal and set the deadline.','The page shows roughly how many points it is worth.']],
+      ['Finish it',['Press <b>I\'m done</b> when you finish. Earlier than the deadline earns bonus points, after it earns half.','<b>Not done</b> closes the goal and earns nothing.']],
+      ['Need more time?',['Pick an amount and press <b>Add time</b>.','Each extra time takes 15% off the points, down to a minimum of 25%.','Only 3 finished goals a day earn points.']]])},
+    schedule:{t:'Schedule',h:g([
+      ['Calendar',['Click a day to see its sessions and add new ones.','Dots show sessions, exams and papers.']],
+      ['Add a session',['Give it a name, subject, date and times. It can repeat every week or every day.','Add links such as papers, notes or videos, and a note.','Set a reminder to get notified before it starts. A reminder needs a start time.']],
+      ['Reminders',['Allow notifications once and your browser remembers.','They work only while Study Studio is open in your browser.']],
+      ['Reminder sound',['Choose a built-in sound, upload your own (MP3, WAV or OGG up to 3 MB, kept on this device), or choose no sound.','Set the volume and use Preview to hear it.']]])},
+    settings:{t:'Settings',h:g([
+      ['Account',['Sign in with Google to save your progress and join the leaderboard.','Choose your username, your public name (3 to 16 letters, numbers or underscores).','See your rank and how far the next one is, how points work, and add friends by username.']],
+      ['Progress',['Your focus time over the last 14 days, recent points, and your past paper averages with expected grades.']],
+      ['Colors',['Light or dark mode, accent color, background and how frosted the cards look.','Fine-tune every color is optional. Reset puts everything back to default.']]])}
+  };
+  var tip=document.createElement('div');tip.id='hqTip';tip.setAttribute('role','tooltip');tip.hidden=true;document.body.appendChild(tip);
+  function mk(id,key){var b=document.createElement('button');b.type='button';b.className='hq';b.id=id;b.textContent='?';b.dataset.help=key;b.setAttribute('aria-label','What can I do here?');return b}
+  var tb=document.getElementById('themeBtn');tb.parentNode.appendChild(mk('hqTop','top'));
+  var tw=document.querySelector('.tabs-wrap'),row=document.createElement('div');row.className='tabs-row';
+  tw.parentNode.insertBefore(row,tw);row.appendChild(tw);row.appendChild(mk('hqTab','tab'));
+  function curKey(){var a=document.querySelector('.tab[aria-selected="true"]');return a?a.dataset.tab:'timer'}
+  function html(b){var k=b.dataset.help==='tab'?curKey():b.dataset.help,d=HELP[k];return d?'<div class="hq-t">'+d.t+'</div>'+d.h:''}
+  var cur=null,pinned=false;
+  function place(b){
+    tip.innerHTML=html(b);tip.hidden=false;tip.style.left='0px';tip.style.top='0px';
+    var r=b.getBoundingClientRect(),w=tip.offsetWidth,h=tip.offsetHeight,vw=document.documentElement.clientWidth,x=r.right-w;
+    x=Math.max(8,Math.min(vw-w-8,x));var y=r.bottom+8;
+    if(y+h>window.innerHeight-8)y=Math.max(8,Math.min(r.top-h-8,window.innerHeight-h-8));
+    tip.style.left=x+'px';tip.style.top=y+'px';tip.classList.toggle('pin',pinned);b.setAttribute('aria-describedby','hqTip');
+  }
+  function hide(){tip.hidden=true;if(cur){cur.removeAttribute('aria-describedby');cur.classList.remove('on')}cur=null;pinned=false}
+  function show(b,pin){if(cur&&cur!==b)cur.classList.remove('on');cur=b;pinned=!!pin;b.classList.toggle('on',!!pin);place(b)}
+  document.addEventListener('mouseover',function(e){var b=e.target.closest&&e.target.closest('.hq');if(b&&!pinned)show(b,false)});
+  document.addEventListener('mouseout',function(e){var b=e.target.closest&&e.target.closest('.hq');if(b&&!pinned&&cur===b)hide()});
+  document.addEventListener('focusin',function(e){var b=e.target.closest&&e.target.closest('.hq');if(b&&!pinned)show(b,false)});
+  document.addEventListener('focusout',function(e){var b=e.target.closest&&e.target.closest('.hq');if(b&&!pinned&&cur===b)hide()});
+  document.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('.hq');
+    if(b){e.preventDefault();e.stopPropagation();if(pinned&&cur===b)hide();else show(b,true);return}
+    if(cur&&pinned&&!(e.target.closest&&e.target.closest('#hqTip')))hide();
+    else if(cur&&!pinned)hide();
+  },true);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&cur)hide()});
+  window.addEventListener('resize',function(){if(cur)place(cur)});
+  document.addEventListener('scroll',function(e){if(cur&&!(e.target&&e.target.id==='hqTip')){if(pinned)place(cur);else hide()}},true);
+})();
+
+/* ---------- ask assistant ---------- */
+(function(){
+  var KB=[
+    {t:'Past paper links',k:['past paper link','paper links','links','find a paper','download paper','mark scheme','markscheme','ms','question paper','qp','papacambridge','pmt','dynamic papers','esl','aqa','year','past papers'],
+     s:['Open <b>Past papers</b>.','Click <b>Past paper links</b>.','Pick your subject, then the paper and year. Each row has links to the paper and mark scheme.'],go:['papers','pp-links']},
+    {t:'Grade boundaries',k:['grade boundar','boundaries','grade','what mark','marks for a','cutoff','cut off','threshold','a*','9'],
+     s:['Open <b>Past papers</b>.','Click <b>Grade boundaries</b>.','Choose the subject and exam board.'],go:['papers','pp-grades']},
+    {t:'Log a past paper',k:['log a paper','log paper','log a past paper','record a paper','record paper','add a paper','add paper','my mark','save paper','enter mark','paper mark','score'],
+     s:['Open <b>Past papers</b>.','Stay on <b>Log papers</b>.','Fill in the subject, paper, date, your mark and what it is out of, then press <b>Log paper</b>. You earn points for it.'],go:['papers','pp-log']},
+    {t:'Attach or open a paper file',k:['attach','upload paper','paper file','pdf','open my paper','edit file','keep the paper','file'],
+     s:['Open <b>Past papers</b>, then <b>Log papers</b>.','While logging a paper, use <b>Attach the paper (optional)</b> to choose the PDF.','Later, use <b>Open</b> or <b>Edit file</b> on the paper in <b>Your papers</b>. The file stays on this device only.'],go:['papers','pp-log']},
+    {t:'Edit or delete a logged paper',k:['delete paper','remove paper','edit paper','change paper','undo paper','your papers'],
+     s:['Open <b>Past papers</b>, then <b>Log papers</b>.','Find the paper under <b>Your papers</b> and use its <b>×</b> to delete it.'],go:['papers','pp-log']},
+    {t:'Start the timer / pick a mode',k:['timer','start timer','study timer','countdown timer','mode','exam mode','paper timer','physics p4','p4','p2','p6','focus mode','pomodoro','deep focus','break','pacing','custom session','custom mode','start studying','study'],
+     s:['Open <b>Timer</b>.','Pick a <b>Mode</b> on the right: an exam paper, a focus length or your own custom session.','Press <b>Start</b>. Press it again to pause.'],go:['timer',null]},
+    {t:'Play background sound',k:['sound','noise','white noise','brown noise','pink noise','tone','frequency','hz','432','528','music','background sound','binaural','own frequency','custom frequency'],
+     s:['Open <b>Timer</b>.','In the <b>Sound</b> card choose a noise, a tone in Hz, or type your own frequency and press <b>Use</b>.','Press <b>Play sound</b>, or tick <b>Start and stop with the timer</b>.'],go:['timer',null]},
+    {t:'Stopwatch and laps',k:['stopwatch','stop watch','lap','laps','count up','time myself'],
+     s:['Open <b>Stopwatch</b>.','Press <b>Start</b>. Use <b>Lap</b> to save a lap time and <b>Reset</b> to clear.'],go:['stopwatch',null]},
+    {t:'Exam countdown',k:['exam countdown','countdown','add exam','add an exam','exam date','when is my exam','days until','exams','next exam'],
+     s:['Open <b>Exam countdown</b>.','Under <b>Add an exam</b> choose the subject, paper and date and start time.','Your exams are listed below, each with a countdown.'],go:['exams',null]},
+    {t:'Leaderboard',k:['leaderboard','leader board','ranking','rankings','top players','position','compete','scoreboard','global','weekly'],
+     s:['Open <b>Leaderboard</b>.','Use the filters to show everyone or just friends, and to rank by different totals.','Click a name to see their profile.'],go:['board',null]},
+    {t:'Player profile',k:['profile','someone\'s profile','view profile','profile theme','profile color','profile colour'],
+     s:['Open <b>Leaderboard</b> and click any player\'s name to see their profile.','To change your own profile theme, open your profile from the leaderboard and pick <b>Follow my rank</b> or a color.'],go:['board',null]},
+    {t:'Add friends',k:['friend','friends','add friend','add a friend','add friends','friend list','invite'],
+     s:['Open <b>Settings</b>, then <b>Account</b>.','Scroll to <b>Friends</b>, type your friend\'s exact username and add them.','Then use the friends filter on the <b>Leaderboard</b>.'],go:['settings','st-account']},
+    {t:'Add or manage subjects',k:['subject','subjects','add subject','add a subject','my subjects','remove subject','delete subject','exam board','edexcel','cambridge','oxford','quick add','igcse','a level','a-level'],
+     s:['Open <b>My subjects</b>.','Under <b>Add a subject</b> type the name and pick the exam board, or use <b>Quick add</b>.','Pick your active subject with the picker in the top bar.'],go:['subjects',null]},
+    {t:'Set a goal and deadline (Tracker)',k:['tracker','goal','goals','deadline','target','finish by','track','extra time','add time','extend','done','not done','objective','task','homework'],
+     s:['Open <b>Tracker</b>.','Under <b>Set a goal</b> pick the subject, write your goal and choose a deadline.','When you finish press <b>I\'m done</b> for points. Need longer? Use <b>Add time</b>, which takes a little off your points.'],go:['tracker',null]},
+    {t:'Add a study session to the schedule',k:['schedule','session','add session','add a session','calendar','plan','planner','timetable','repeat','weekly','daily','link to session','add link','study plan','plan a session'],
+     s:['Open <b>Schedule</b>.','Click a day on the calendar, or use <b>Add a session</b>.','Fill in the name, time, repeat and any links, then save.'],go:['schedule',null]},
+    {t:'Set a reminder',k:['reminder','reminders','remind me','notification','notifications','notify','alert','allow notifications','not getting','no notification'],
+     s:['Open <b>Schedule</b>.','Press <b>Allow notifications</b> once at the top (your browser remembers).','When adding a session, choose <b>Remind me</b>. It needs a start time.','Reminders work only while Study Studio is open in your browser.'],go:['schedule',null]},
+    {t:'Reminder sound',k:['reminder sound','change sound','alarm sound','notification sound','custom sound','own sound','upload sound','volume','mute','no sound','silent','ringtone','chime'],
+     s:['Open <b>Schedule</b>.','In the <b>Reminder sound</b> card pick a sound, set the volume, or use <b>Add your own sound</b> to upload an MP3, WAV or OGG.','Press <b>Preview</b> to hear it.'],go:['schedule',null]},
+    {t:'Change colors and theme',k:['color','colour','colors','colours','theme','dark mode','light mode','dark','light','accent','background','frosted','glass','blur','appearance','look','customise','customize','reset colors','change the look'],
+     s:['Open <b>Settings</b>.','Click <b>Colors</b>.','Choose light or dark, an accent color, a background, and how frosted the cards look. <b>Reset all colors</b> undoes it.','The <b>Theme</b> button in the top bar also switches light, dark and auto.'],go:['settings','st-colors']},
+    {t:'Sign in and your username',k:['sign in','signin','log in','login','sign up','signup','account','google','username','user name','my name','change name','email','guest','sign out','logout','log out','save progress'],
+     s:['Open <b>Settings</b>, then <b>Account</b>.','Sign in with Google to save your progress on every device.','Choose your <b>Username</b>. It is your public name on the leaderboard.'],go:['settings','st-account']},
+    {t:'Points, ranks and streaks',k:['point','points','how do points','earn','rank','ranks','streak','streaks','level','next rank','sovereign','paragon','da7ee7','xp','score points'],
+     s:['Open <b>Settings</b>, then <b>Account</b>.','<b>Your rank</b> shows where you are and what is next. <b>How points work</b> explains how to earn them.','Short version: focus time, logged past papers and daily streaks all earn points.'],go:['settings','st-account']},
+    {t:'Your progress and averages',k:['progress','average','averages','stats','statistics','focus time','how much have i studied','expected grade','predicted','recent points','history','chart','graph','analytics'],
+     s:['Open <b>Settings</b>.','Click <b>Progress</b>.','You will see your focus time for the last 14 days, recent points and past paper averages with expected grades.'],go:['settings','st-progress']}
+  ];
+  var STOP={a:1,an:1,the:1,i:1,my:1,me:1,to:1,do:1,how:1,can:1,where:1,is:1,are:1,of:1,and:1,or:1,get:1,go:1,find:1,what:1,whats:1,'what\'s':1,on:1,in:1,it:1,for:1,please:1,want:1,need:1,show:1,tell:1,u:1,you:1,does:1,this:1,that:1,with:1,there:1};
+  function norm(s){return ' '+String(s).toLowerCase().replace(/[^a-z0-9*\s'-]/g,' ').replace(/\s+/g,' ').trim()+' '}
+  function answer(q){
+    var n=norm(q),words=n.trim().split(' ').filter(function(w){return w&&!STOP[w]});
+    if(!words.length)return null;
+    var best=[];
+    KB.forEach(function(e,i){
+      var sc=0;
+      e.k.forEach(function(k){
+        var nk=norm(k).trim();
+        if(n.indexOf(' '+nk+' ')>-1)sc+=3+nk.split(' ').length;
+        else if(nk.length>3&&n.indexOf(nk)>-1)sc+=2+nk.split(' ').length-1;
+        else words.forEach(function(w){if(w.length>3&&nk.indexOf(w)===0)sc+=1});
+      });
+      if(norm(e.t).indexOf(n.trim())>-1&&n.trim().length>3)sc+=3;
+      if(sc>0)best.push({e:e,sc:sc,i:i});
+    });
+    best.sort(function(a,b){return b.sc-a.sc||a.i-b.i});
+    return best.length?best:null;
+  }
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function card(e,k){
+    var h='<div class="ch-ans"><b>'+e.t+'</b><ol>'+e.s.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ol>';
+    if(e.go)h+='<button type="button" class="btn sm primary" data-chgo="'+k+'">Take me there</button>';
+    return h+'</div>';
+  }
+  var btn=document.createElement('button');btn.type='button';btn.id='chatBtn';btn.className='chat-btn';btn.title='Ask how to do something';btn.setAttribute('aria-label','Ask how to do something');
+  btn.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9 11h6M9 14h4"/></svg>';
+  var pts=document.getElementById('chipPts');pts.parentNode.insertBefore(btn,pts);
+  var pan=document.createElement('div');pan.id='chatPanel';pan.hidden=true;pan.setAttribute('role','dialog');pan.setAttribute('aria-label','Ask Study Studio');
+  pan.innerHTML='<div class="ch-head"><b>Ask Study Studio</b><button type="button" class="x" id="chClose" aria-label="Close">×</button></div><div class="ch-log" id="chLog" aria-live="polite"></div><div class="ch-sug" id="chSug"></div><form class="ch-form" id="chForm" autocomplete="off"><input type="text" id="chIn" maxlength="120" placeholder="How do I get to…" aria-label="Your question"><button type="submit" class="btn primary sm">Ask</button></form>';
+  document.body.appendChild(pan);
+  var log=document.getElementById('chLog'),inp=document.getElementById('chIn'),sug=document.getElementById('chSug'),started=false,last=[];
+  var SUG=['How do I get to past paper links?','How do I add friends?','How do I change colors?','How do I set a reminder?'];
+  sug.innerHTML=SUG.map(function(s){return '<button type="button" class="chip" data-chq="'+esc(s)+'">'+esc(s)+'</button>'}).join('');
+  function add(cls,html){var d=document.createElement('div');d.className='ch-m '+cls;d.innerHTML=html;log.appendChild(d);log.scrollTop=log.scrollHeight}
+  function ask(q){
+    q=q.trim();if(!q)return;add('me',esc(q));
+    var r=answer(q);
+    if(!r){add('bot','I am not sure about that one. Try asking things like <i>where are the grade boundaries</i> or <i>how do I add a reminder</i>. You can also tap the <b>?</b> next to the tabs for a guide to the page you are on.');return}
+    last=r.slice(0,3).map(function(x){return x.e});
+    var h=card(r[0].e,KB.indexOf(r[0].e));
+    var more=r.slice(1,3).filter(function(x){return x.sc>=r[0].sc-2});
+    if(more.length)h+='<div class="ch-more">Maybe also: '+more.map(function(x){return '<button type="button" class="chip" data-chq="'+esc(x.e.t)+'">'+esc(x.e.t)+'</button>'}).join('')+'</div>';
+    add('bot',h);
+  }
+  function openP(){
+    pan.hidden=false;btn.classList.add('on');
+    if(!started){started=true;add('bot','Hi! Ask me how to do something on this site, for example <i>How do I get to past paper links?</i>')}
+    var r=btn.getBoundingClientRect(),w=pan.offsetWidth,vw=document.documentElement.clientWidth;
+    pan.style.left=Math.max(8,Math.min(vw-w-8,r.left))+'px';pan.style.top=(r.bottom+8)+'px';
+    setTimeout(function(){inp.focus()},30);
+  }
+  function closeP(){pan.hidden=true;btn.classList.remove('on')}
+  btn.addEventListener('click',function(e){e.stopPropagation();if(pan.hidden)openP();else closeP()});
+  document.getElementById('chClose').addEventListener('click',closeP);
+  document.getElementById('chForm').addEventListener('submit',function(e){e.preventDefault();var v=inp.value;inp.value='';ask(v)});
+  pan.addEventListener('click',function(e){
+    var q=e.target.closest('[data-chq]');
+    if(q){var t=q.dataset.chq,en=KB.filter(function(x){return x.t===t})[0];if(en){add('me',esc(t));add('bot',card(en,KB.indexOf(en)))}else ask(t);return}
+    var g=e.target.closest('[data-chgo]');
+    if(g){var en2=KB[+g.dataset.chgo];if(en2&&en2.go)go(en2.go)}
+  });
+  function pulse(el){if(!el)return;el.classList.add('ch-pulse');setTimeout(function(){el.classList.remove('ch-pulse')},2600)}
+  function go(d){
+    closeP();
+    var tab=document.querySelector('.tab[data-tab="'+d[0]+'"]');if(tab){tab.click();pulse(tab)}
+    if(d[1]){var sb=document.querySelector('[data-sub="'+d[1]+'"]');if(sb){sb.click();pulse(sb)}}
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  document.addEventListener('click',function(e){if(!pan.hidden&&!e.target.closest('#chatPanel')&&!e.target.closest('#chatBtn'))closeP()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!pan.hidden){closeP();btn.focus()}});
+  window.addEventListener('resize',function(){if(!pan.hidden){var r=btn.getBoundingClientRect(),w=pan.offsetWidth,vw=document.documentElement.clientWidth;pan.style.left=Math.max(8,Math.min(vw-w-8,r.left))+'px';pan.style.top=(r.bottom+8)+'px'}});
+  window.__chatAnswer=answer;
 })();
 </script>
 </body></html>
