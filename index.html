@@ -492,6 +492,37 @@ html[data-glass="on"] .ach{background:color-mix(in srgb,var(--input-bg) 45%,tran
 .ach.secret .an{color:var(--muted)}
 .rk-bar.sm{height:6px}
 #achBody{display:grid; gap:16px}
+
+html[data-hq="off"] .hq,html[data-hq="off"] #hqTip{display:none !important}
+.pf-tabs{display:flex; gap:8px; padding:14px 28px 0; flex-wrap:wrap}
+.pf-strip{padding:4px 28px 12px; display:grid; gap:6px}
+.pf-badges{display:flex; align-items:center; gap:4px; flex-wrap:wrap; background:none; border:0; padding:4px 0; cursor:pointer; color:var(--muted); font:inherit; font-size:.82rem; text-align:left}
+.pf-badges span{margin-left:8px; text-decoration:underline}
+.pf-ach{display:grid; gap:8px; padding:16px 28px 10px; max-height:46vh; overflow:auto}
+
+.ach-claimall{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-top:12px; padding:10px 12px; border-radius:12px; background:var(--accent-soft)}
+.ach.claim{border-color:var(--accent); box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 25%,transparent)}
+.ach.claim .btn{margin-top:6px}
+.tab[data-n]::after{content:attr(data-n); display:inline-flex; align-items:center; justify-content:center; min-width:16px; height:16px; margin-left:6px; padding:0 4px; border-radius:999px; background:var(--accent); color:var(--on-accent); font-size:.64rem; font-weight:700}
+
+/* bold sovereign and paragon profiles */
+.pf-sovereign,.pf-paragon{border:2px solid #E8B923}
+.pf-sovereign{box-shadow:0 0 0 1px rgba(255,214,90,.6),0 0 34px rgba(210,0,45,.65),0 24px 70px rgba(0,0,0,.5)}
+.pf-paragon{box-shadow:0 0 0 1px rgba(255,214,90,.6),0 0 34px rgba(18,168,255,.7),0 24px 70px rgba(0,0,0,.45)}
+.pf-sovereign .pf-top{background:radial-gradient(120% 140% at 85% 0%,#F0204A 0%,rgba(240,32,74,0) 55%),linear-gradient(135deg,#4A000F 0%,#A60028 55%,#D4002F 100%); border-bottom:3px solid #E8B923; box-shadow:0 6px 22px rgba(210,0,45,.5)}
+.pf-paragon .pf-top{background:radial-gradient(120% 140% at 85% 0%,#B6F0FF 0%,rgba(182,240,255,0) 55%),linear-gradient(135deg,#0A5BD1 0%,#0C95F0 50%,#35C4FF 100%); border-bottom:3px solid #E8B923; box-shadow:0 6px 22px rgba(18,168,255,.55)}
+.pf-sovereign .pf-name,.pf-paragon .pf-name{color:#fff; text-shadow:0 0 14px rgba(255,255,255,.35),0 2px 6px rgba(0,0,0,.35)}
+.pf-sovereign .pf-pos,.pf-paragon .pf-pos{color:rgba(255,255,255,.88)}
+.pf-sovereign .pf-pos b,.pf-paragon .pf-pos b{color:#FFD54A; text-shadow:0 0 8px rgba(255,200,40,.8)}
+.pf-sovereign .pf-stat{border-color:rgba(232,185,35,.7); background:rgba(196,0,43,.1); box-shadow:inset 0 0 12px rgba(196,0,43,.12)}
+.pf-paragon .pf-stat{border-color:rgba(232,185,35,.7); background:rgba(18,168,255,.1); box-shadow:inset 0 0 12px rgba(18,168,255,.14)}
+.pf-sovereign .pf-stat b{color:#C4002B}
+.pf-paragon .pf-stat b{color:#0B7FD6}
+.pf-sovereign .pf-bar i{background:linear-gradient(90deg,#C4002B,#FF3A5C,#FFD54A); box-shadow:0 0 10px rgba(255,40,80,.8)}
+.pf-paragon .pf-bar i{background:linear-gradient(90deg,#0C95F0,#7DE3FF,#FFD54A); box-shadow:0 0 10px rgba(60,200,255,.9)}
+.pf-sovereign .pf-tabs .chip[aria-pressed="true"]{background:#C4002B; border-color:#E8B923; color:#fff}
+.pf-paragon .pf-tabs .chip[aria-pressed="true"]{background:#0C95F0; border-color:#E8B923; color:#fff}
+.pf-sovereign .ach.on,.pf-paragon .ach.on{border-color:rgba(232,185,35,.7)}
 </style>
 </head><body>
 
@@ -863,7 +894,7 @@ html[data-glass="on"] .ach{background:color-mix(in srgb,var(--input-bg) 45%,tran
               <li><b>+5</b> for finishing a full session, <b>+10</b> for finishing an exam paper timer.</li>
               <li><b>10 points + 1 per 5%</b> for every past paper you log.</li>
               <li><b>Goals</b> from the Tracker tab: finish on time for up to 60 points, less for each extra time you add.</li>
-              <li><b>Achievements</b> pay points once when unlocked: 15 for easy ones up to 4,000 for the hardest.</li>
+              <li><b>Achievements</b> pay points once, when you press Claim: 15 for easy ones up to 4,000 for the hardest.</li>
               <li><b>Streak bonus</b> of up to 10 points the first time you reach 10 focus minutes or log a paper each day.</li>
             </ul>
           </div>
@@ -924,6 +955,11 @@ html[data-glass="on"] .ach{background:color-mix(in srgb,var(--input-bg) 45%,tran
             <p class="muted" style="font-size:.88rem">Pick a color and the cards and text adjust to match. Each circle shows light and dark.</p>
             <div class="sw-grid" id="bgSw"></div>
             <p class="cap" id="bgCap"></p>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>Question marks</h2></div>
+            <p class="muted" style="font-size:.88rem;margin:0 0 12px">The small ? buttons that explain each page. Turn them off if you do not need them. The Ask button stays.</p>
+            <div class="chip-row" id="hqSet" role="group" aria-label="Question marks"><button type="button" class="chip" data-hq="on" aria-pressed="true">Show</button><button type="button" class="chip" data-hq="off" aria-pressed="false">Hide</button></div>
           </div>
           <div class="card">
             <div class="card-head"><h2>Frosted glass</h2></div>
@@ -1820,7 +1856,7 @@ function rkNameKnown(k,pts){var r=RANKS[k];return r.showName==null||pts>=r.showN
 function nextRank(pts){var i=rankIdx(pts),n=RANKS[i+1];return n&&rkKnown(i+1,pts)?n:null}
 function nextBadge(pts){var i=rankIdx(pts)+1;return rkNameKnown(i,pts)?rankBadge(RANKS[i].min):'<span class="rank r-mystery" title="Unknown rank"><span class="rt">?</span></span>'}
 function rankIdx(pts){pts=pts||0;var i=0;for(var k=0;k<RANKS.length;k++)if(pts>=RANKS[k].min)i=k;return i}
-function rankBadge(pts,big){var r=RANKS[rankIdx(pts)];return '<span class="rank r-'+r.id+(big?' lg':'')+'" title="'+r.name+'"><span class="rt">'+r.name+'</span></span>'}
+function rankBadge(pts,big){var r=RANKS[rankIdx(pts)],hide=r.showName!=null&&(S.pts||0)<r.showName;return '<span class="rank r-'+r.id+(big?' lg':'')+'" title="'+(hide?'A secret rank':r.name)+'"><span class="rt">'+(hide?'?':r.name)+'</span></span>'}
 var _rankKey='';
 function renderRank(){
   var pts=S.pts||0,i=rankIdx(pts),key=pts+'|'+i;
@@ -1834,8 +1870,10 @@ function renderRank(){
   h+='<ul class="rk-list">'+RANKS.map(function(r,k){if(!rkKnown(k,pts))return '';var nm=rkNameKnown(k,pts);return '<li class="'+(k===i?'cur':'')+'">'+(nm?rankBadge(r.min):'<span class="rank r-mystery"><span class="rt">?</span></span>')+'<small>'+(r.min?r.min+'+ pts':'0 pts')+'</small></li>'}).join('')+'</ul>';
   $('rankBody').innerHTML=h;
 }
+function applyHq(){document.documentElement.setAttribute('data-hq',S.hqOff?'off':'on');var b=document.querySelectorAll('#hqSet [data-hq]');[].forEach.call(b,function(x){x.setAttribute('aria-pressed',(x.dataset.hq==='off')===!!S.hqOff?'true':'false')})}
+document.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest('#hqSet [data-hq]');if(!t)return;S.hqOff=t.dataset.hq==='off';save();applyHq()});
 function updateChips(){
-  achCheck();
+  achCheck();applyHq();
   var st=calcStreak(),c=$('chipStreak');
   $('chipRank').innerHTML=rankBadge(S.pts||0);renderRank();
   $('chipPts').innerHTML='<b>'+(S.pts||0)+'</b> pts';
@@ -2066,6 +2104,7 @@ async function flush(){
       await SY.fs.doc('users/'+SY.uid).set({ts:ts,blob:JSON.stringify(S)});
       if(S.me.claimed&&S.me.username)await SY.fs.doc('players/'+SY.uid).set(pubDoc());
       if(S.me.claimed&&S.me.username){try{await SY.fs.doc('players/'+SY.uid).set({pth:S.me.pth||'rank'},{merge:true})}catch(e){}}
+      if(S.me.claimed&&S.me.username){try{await SY.fs.doc('players/'+SY.uid).set({ach:Object.keys(S.ach||{})},{merge:true})}catch(e){}}
     }while(SY.dirty);
     SY.state='saved';SY.err='';
   }catch(e){
@@ -2888,8 +2927,8 @@ var TOUR=[
  {e:'Practice',t:'Past papers and links',p:'Log the marks you get and Study Studio works out your average and expected grade.',l:['Log papers and see your averages per subject','Past paper links by subject, year and paper for IGCSE and A Level','Direct links to question papers and mark schemes']},
  {e:'Tracker',t:'Goals and deadlines',p:'Pick a subject, say what you want to get done and by when.',l:['Tell it when you are done, or that you did not finish','Finishing earlier than your deadline earns bonus points','Need longer? Add extra time, but each extra time takes a little off your points']},
  {e:'Schedule',t:'Calendar and session schedule',p:'Plan your study time and never miss a session.',l:['A calendar showing your sessions, exams and logged papers','Add session times, with repeats and any links you want','Reminders that pop up as notifications before a session starts'],notif:true},
- {e:'Progress',t:'Points, streaks and ranks',p:'Studying earns points, and so does every paper you log.',l:['Points for focus time and for paper marks','Daily streaks, kept alive by 10 minutes of focus or a paper','Ranks from Starter up to the golden da7ee7, and the very best players find there is more beyond it','Achievements with badges, also worth points']},
- {e:'Achievements',t:'Badges and bonus points',p:'Hit milestones and unlock achievements. Each one pays out points once, and harder ones pay more.',l:['Badges for focus hours, streaks, papers logged and paper scores','Achievements for your Tracker goals, with names to match','Locked ones show how close you are, and some are secret until you earn them','Find them in Settings, then Achievements']},
+ {e:'Progress',t:'Points, streaks and ranks',p:'Studying earns points, and so does every paper you log.',l:['Points for focus time and for paper marks','Daily streaks, kept alive by 10 minutes of focus or a paper','Ranks from Starter up to the golden da7ee7, and the very best players find there is more beyond it','Achievements with badges that you can claim points for']},
+ {e:'Achievements',t:'Badges and bonus points',p:'Hit milestones and unlock achievements. Press Claim on each one to collect its points. Harder ones pay more.',l:['Badges for focus hours, streaks, papers logged and paper scores','Achievements for your Tracker goals, with names to match','Locked ones show how close you are, and some are secret until you earn them','Find them in Settings, then Achievements']},
  {e:'Compete',t:'Leaderboard and profiles',p:'Sign in to see how you compare.',l:['Website-wide and friends leaderboards','Click anyone\'s name to open their profile','Make your own profile follow your rank or pick a color']},
  {e:'Help',t:'Ask, or tap the question mark',p:'You are never stuck. Help is always one click away.',l:['The chat button next to your points answers questions like "How do I get to past paper links?" with the steps, and can take you there','The question mark beside the Theme button explains the top bar','The question mark at the end of the tabs gives a short guide to the page you are on, in bullet points']},
  {e:'Get started',t:'How do you want to start?',final:true}
@@ -3098,34 +3137,50 @@ var ACH=[
 ];
 function achVal(a,c){return c[a.key]||0}
 function achOk(a,c){return achVal(a,c)>=a.t}
-function achBadge(a,on){
+function achBadge(a,on,sz){sz=sz||56;
   var t=ACH_TIER[a.tier]||ACH_TIER.bronze,id='ab'+a.id;
-  return '<svg class="ach-b'+(on?'':' off')+'" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true"><defs><linearGradient id="'+id+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+t.a+'"/><stop offset="1" stop-color="'+t.b+'"/></linearGradient></defs>'+
+  return '<svg class="ach-b'+(on?'':' off')+'" viewBox="0 0 64 64" width="'+sz+'" height="'+sz+'" aria-hidden="true"><defs><linearGradient id="'+id+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+t.a+'"/><stop offset="1" stop-color="'+t.b+'"/></linearGradient></defs>'+
     '<path d="M32 3l24 13v32L32 61 8 48V16z" fill="url(#'+id+')" stroke="'+(a.tier==='sov'?'#E8B923':'rgba(255,255,255,.55)')+'" stroke-width="'+(a.tier==='sov'?3:2)+'"/>'+
     '<path d="M32 9l19 10.5v25L32 55 13 44.5v-25z" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>'+
     '<g transform="translate(16 16) scale(1.33)" fill="none" stroke="'+t.i+'" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+(ACH_IC[a.icon]||'')+'</g></svg>';
 }
 var _achBusy=false;
+function achClaimed(){
+  if(!S.achC||typeof S.achC!=='object'||Array.isArray(S.achC)){
+    S.achC={};
+    (S.feed||[]).forEach(function(f){if(f.k==='ach')ACH.forEach(function(a){if(S.ach&&S.ach[a.id]&&f.w==='Achievement · '+a.name)S.achC[a.id]=f.t})});
+  }
+  return S.achC;
+}
+function achPending(){achClaimed();return ACH.filter(function(a){return S.ach&&S.ach[a.id]&&!S.achC[a.id]})}
+function achMarks(){
+  var n=achPending().length,ch=document.querySelector('[data-sub="st-ach"]'),st=document.querySelector('.tab[data-tab="settings"]');
+  if(ch)ch.textContent=n?'Achievements · '+n:'Achievements';
+  if(st){if(n)st.setAttribute('data-n',n);else st.removeAttribute('data-n')}
+}
 function achCheck(){
   if(_achBusy)return;_achBusy=true;
   try{
     if(!S.ach||typeof S.ach!=='object'||Array.isArray(S.ach))S.ach={};
-    var now=Date.now(),fresh=[],gain=0,guard=0,again=true;
-    while(again&&guard++<8){
-      again=false;var c=achCtx();
-      ACH.forEach(function(a){
-        if(!S.ach[a.id]&&achOk(a,c)){S.ach[a.id]=now;fresh.push(a);gain+=a.r;again=true;
-          S.pts=(S.pts||0)+a.r;rollWeek();S.wk.p+=a.r;
-          S.feed.unshift({t:now,n:a.r,w:'Achievement · '+a.name,k:'ach'});if(S.feed.length>25)S.feed.length=25}
-      });
+    achClaimed();
+    var now=Date.now(),fresh=[],c=achCtx();
+    ACH.forEach(function(a){if(!S.ach[a.id]&&achOk(a,c)){S.ach[a.id]=now;fresh.push(a)}});
+    if(fresh.length){
+      if(!S.achInit){S.achInit=1;toast(fresh.length+' achievement'+(fresh.length>1?'s':'')+' unlocked from your progress so far. Open Settings, then Achievements, to claim the points.')}
+      else if(fresh.length<=2)fresh.forEach(function(a){toast('Achievement unlocked: '+a.name+'. Claim +'+a.r+' pts in Settings, then Achievements.')});
+      else toast(fresh.length+' achievements unlocked! Claim their points in Settings, then Achievements.');
+      if(TOUCHED)save();
     }
-    if(!fresh.length)return;
-    if(!S.achInit){S.achInit=1;toast(fresh.length+' achievement'+(fresh.length>1?'s':'')+' unlocked from your progress so far, worth '+gain+' pts. See Settings, then Achievements.')}
-    else if(fresh.length<=2)fresh.forEach(function(a){toast('Achievement unlocked: '+a.name+' (+'+a.r+' pts). '+a.desc+'.')});
-    else toast(fresh.length+' achievements unlocked, worth '+gain+' pts! See Settings, then Achievements.');
-    if(TOUCHED)save();
+    achMarks();
     if($('st-ach')&&!$('st-ach').hidden)renderAch();
   }finally{_achBusy=false}
+}
+function achClaim(ids){
+  achClaimed();var now=Date.now(),gain=0,names=[];
+  ids.forEach(function(id){var a=ACH.filter(function(x){return x.id===id})[0];if(a&&S.ach[id]&&!S.achC[id]){S.achC[id]=now;gain+=a.r;names.push(a.name)}});
+  if(!gain)return;
+  award(gain,names.length===1?'Achievement · '+names[0]:'Achievements · '+names.length+' claimed','ach');
+  achMarks();renderAch();
 }
 function achFmt(a,c){var v=achVal(a,c);if(a.key==='avg'||a.key==='top')return Math.round(v)+'%';if(a.key==='hrs')return (Math.floor(v*10)/10)+' h';return String(Math.floor(v))}
 function achTgt(a){return a.key==='avg'||a.key==='top'?a.t+'%':a.key==='hrs'?a.t+' h':String(a.t)}
@@ -3133,31 +3188,48 @@ function renderAch(){
   if(!S.ach||typeof S.ach!=='object')S.ach={};
   var c=achCtx(),h='',cats=[],done=ACH.filter(function(a){return S.ach[a.id]}).length;
   ACH.forEach(function(a){if(cats.indexOf(a.cat)<0)cats.push(a.cat)});
-  h+='<div class="card"><div class="card-head"><h2>Achievements</h2><span class="pill run">'+done+' of '+ACH.length+'</span></div><div class="rk-bar"><i style="width:'+(done/ACH.length*100).toFixed(1)+'%"></i></div></div>';
+  var pend=achPending(),pg=pend.reduce(function(a,x){return a+x.r},0);
+  h+='<div class="card"><div class="card-head"><h2>Achievements</h2><span class="pill run">'+done+' of '+ACH.length+'</span></div><div class="rk-bar"><i style="width:'+(done/ACH.length*100).toFixed(1)+'%"></i></div>'+(pend.length?'<div class="ach-claimall"><span><b>'+pend.length+'</b> to claim, worth <b>'+pg+' pts</b></span><button type="button" class="btn primary" data-achall="1">Claim all</button></div>':'')+'</div>';
   cats.forEach(function(cat){
     h+='<div class="card"><div class="card-head"><h2>'+esc(cat)+'</h2></div><div class="ach-grid">'+ACH.filter(function(a){return a.cat===cat}).map(function(a){
-      var on=!!S.ach[a.id];
-      if(a.secret&&!on)return '<div class="ach secret"><svg class="ach-b off" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true"><path d="M32 3l24 13v32L32 61 8 48V16z" fill="#64748B" stroke="rgba(255,255,255,.4)" stroke-width="2"/><text x="32" y="42" text-anchor="middle" font-size="26" font-weight="700" fill="#fff">?</text></svg><div><div class="an">Secret achievement</div><div class="ad">Keep going to find out. It pays points when unlocked.</div></div></div>';
+      var on=!!S.ach[a.id],cl=on&&!!S.achC[a.id];
+      if(a.secret&&!on)return '<div class="ach secret"><svg class="ach-b off" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true"><path d="M32 3l24 13v32L32 61 8 48V16z" fill="#64748B" stroke="rgba(255,255,255,.4)" stroke-width="2"/><text x="32" y="42" text-anchor="middle" font-size="26" font-weight="700" fill="#fff">?</text></svg><div><div class="an">Secret achievement</div><div class="ad">Keep going to find out. You claim its points once unlocked.</div></div></div>';
       var pr=achVal(a,c),pc=Math.max(0,Math.min(100,pr/a.t*100));
-      return '<div class="ach'+(on?' on':'')+'">'+achBadge(a,on)+'<div style="min-width:0"><div class="an">'+esc(a.name)+'</div><div class="ad">'+esc(a.desc)+'</div>'+
-        (on?'<div class="ap">Unlocked '+new Date(S.ach[a.id]).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+' · +'+a.r+' pts</div>':'<div class="rk-bar sm"><i style="width:'+pc.toFixed(1)+'%"></i></div><div class="ap">'+achFmt(a,c)+' of '+achTgt(a)+' · +'+a.r+' pts</div>')+'</div></div>';
+      return '<div class="ach'+(on?' on':'')+(on&&!cl?' claim':'')+'">'+achBadge(a,on)+'<div style="min-width:0"><div class="an">'+esc(a.name)+'</div><div class="ad">'+esc(a.desc)+'</div>'+
+        (on?'<div class="ap">Unlocked '+new Date(S.ach[a.id]).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+(cl?' · +'+a.r+' pts claimed':'')+'</div>'+(cl?'':'<button type="button" class="btn sm primary" data-achclaim="'+a.id+'">Claim +'+a.r+' pts</button>'):'<div class="rk-bar sm"><i style="width:'+pc.toFixed(1)+'%"></i></div><div class="ap">'+achFmt(a,c)+' of '+achTgt(a)+' · +'+a.r+' pts</div>')+'</div></div>';
     }).join('')+'</div></div>';
   });
   $('achBody').innerHTML=h;
 }
+$('achBody').addEventListener('click',function(e){var t=e.target.closest('[data-achclaim],[data-achall]');if(!t)return;if(t.dataset.achall)achClaim(achPending().map(function(a){return a.id}));else achClaim([t.dataset.achclaim])});
 
 /* ---------- profiles ---------- */
-var RANK_COL={starter:'#64748B',amateur:'#16A34A',popping:'#2F7BF5',hard:'#D92D20',gamed:'#E5221B',achiever:'#8E9AB0',da7ee7:'#D99A00',sovereign:'#E0102A',paragon:'#38BDF8'};
+var RANK_COL={starter:'#64748B',amateur:'#16A34A',popping:'#2F7BF5',hard:'#D92D20',gamed:'#E5221B',achiever:'#8E9AB0',da7ee7:'#D99A00',sovereign:'#C4002B',paragon:'#12A8FF'};
 var PF={id:null};
 function pfColor(pth,pts){
   if(typeof pth==='string'&&pth.indexOf('h:')===0){var h=+pth.slice(2);if(!isNaN(h))return 'hsl('+h+' 72% 48%)'}
   return RANK_COL[RANKS[rankIdx(pts)].id];
 }
 function pfData(id){
-  if(signedIn()&&id===SY.uid&&S.me.claimed&&S.me.username){var m=pubDoc();m.id=SY.uid;m.pth=S.me.pth||'rank';return m}
+  if(signedIn()&&id===SY.uid&&S.me.claimed&&S.me.username){var m=pubDoc();m.id=SY.uid;m.pth=S.me.pth||'rank';m.ach=Object.keys(S.ach||{});return m}
   return playerById(id);
 }
-function openProfile(id){PF.id=id;renderProfile();$('profOv').hidden=false}
+
+var ACH_W={bronze:1,silver:2,gold:3,diamond:4,sov:5};
+function achMask(sz){return '<svg class="ach-b off" viewBox="0 0 64 64" width="'+sz+'" height="'+sz+'" aria-hidden="true"><path d="M32 3l24 13v32L32 61 8 48V16z" fill="#64748B" stroke="rgba(255,255,255,.4)" stroke-width="2"/><text x="32" y="42" text-anchor="middle" font-size="26" font-weight="700" fill="#fff">?</text></svg>'}
+function pfHid(a){return !!a.secret&&!(S.ach&&S.ach[a.id])}
+function pfIds(p){var me=signedIn()&&p.id===SY.uid,ids=me?Object.keys(S.ach||{}):(Array.isArray(p.ach)?p.ach:[]);return ACH.filter(function(a){return ids.indexOf(a.id)>-1}).sort(function(a,b){return (ACH_W[b.tier]||0)-(ACH_W[a.tier]||0)||b.r-a.r})}
+function pfTabs(p){var n=pfIds(p).length;return '<div class="pf-tabs"><button type="button" class="chip" data-pfv="main" aria-pressed="'+(PF.v!=='ach')+'">Overview</button><button type="button" class="chip" data-pfv="ach" aria-pressed="'+(PF.v==='ach')+'">Achievements · '+n+'</button></div>'}
+function pfStrip(p){
+  var l=pfIds(p);if(!l.length)return '<div class="pf-strip"><small class="muted">No achievements yet.</small></div>';
+  return '<div class="pf-strip"><small class="muted">Badges</small><button type="button" class="pf-badges" data-pfv="ach" aria-label="View all achievements">'+l.slice(0,6).map(function(a){return pfHid(a)?achMask(44):achBadge(a,true,44)}).join('')+'<span>View all '+l.length+'</span></button></div>';
+}
+function pfAch(p){
+  var l=pfIds(p);
+  if(!l.length)return '<div class="pf-ach"><p class="muted" style="margin:0">No achievements unlocked yet.</p></div>';
+  return '<div class="pf-ach">'+l.map(function(a){var h2=pfHid(a);return '<div class="ach on">'+(h2?achMask(48):achBadge(a,true,48))+'<div style="min-width:0"><div class="an">'+(h2?'Secret achievement':esc(a.name))+'</div><div class="ad" style="margin-bottom:0">'+(h2?'Keep going to find out.':esc(a.desc))+'</div></div></div>'}).join('')+'</div>';
+}
+function openProfile(id){PF.id=id;PF.v='main';renderProfile();$('profOv').hidden=false}
 function renderProfile(){
   var p=pfData(PF.id),el=$('profCard');
   if(!p){el.innerHTML='<div class="in-body"><h2>Profile not found</h2><p>This player is not loaded yet. Try again in a moment.</p></div><div class="in-foot"><span></span><button type="button" class="btn" data-pfclose>Close</button></div>';return}
@@ -3167,23 +3239,25 @@ function renderProfile(){
   var pos=0;all.forEach(function(x,k){if(x.id===p.id)pos=k+1});
   var pth=me?(S.me.pth||'rank'):(p.pth||'rank'),col=pfColor(pth,pts);
   el.style.setProperty('--pc',col);
+  var rid=RANKS[i].id;el.className='ov-card pf'+((pth==='rank'&&(rid==='sovereign'||rid==='paragon'))?' pf-'+rid:'');
+  var hideNx=!me&&((RANKS[i+1]&&RANKS[i+1].showMin!=null&&(S.pts||0)<RANKS[i+1].showMin)||(cur.showName!=null&&(S.pts||0)<cur.showName));
   var done=nx?Math.min(100,Math.max(0,(pts-cur.min)/(nx.min-cur.min)*100)):100;
   var h='<div class="pf-top"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div><h2 class="pf-name">'+esc(p.username)+(me?' <span class="pill run">You</span>':'')+'</h2>'+rankBadge(pts,true)+'</div><button type="button" class="btn sm" data-pfclose>Close</button></div>'+
     '<div class="pf-pos">Position <b>#'+(pos||'-')+'</b> of '+all.length+' on the leaderboard</div></div>'+
-    '<div class="pf-grid">'+
+    pfTabs(p)+(PF.v==='ach'?pfAch(p):('<div class="pf-grid">'+
     '<div class="pf-stat"><small>Points</small><b>'+pts+'</b></div>'+
     '<div class="pf-stat"><small>Time focused</small><b>'+fmtMin(p.focus||0)+'</b></div>'+
     '<div class="pf-stat"><small>Streak</small><b>'+effStreak(p)+' days</b></div>'+
     '<div class="pf-stat"><small>Best streak</small><b>'+(p.best||0)+' days</b></div>'+
     '<div class="pf-stat"><small>Points this week</small><b>'+wkVal(p)+'</b></div>'+
     '<div class="pf-stat"><small>Papers logged</small><b>'+(p.papers||0)+(p.avg!=null?' · '+Math.round(p.avg)+'%':'')+'</b></div></div>'+
-    '<div class="pf-prog"><small class="muted">Progress to next rank</small><div class="pf-bar"><i style="width:'+done.toFixed(1)+'%"></i></div>'+
-    '<small class="muted">'+(nx?'<b style="color:var(--ink)">'+(nx.min-pts)+' pts</b> to '+(rkNameKnown(i+1,pts)?esc(nx.name):'?'):'Top rank reached')+'</small></div>';
-  if(me){
+    (hideNx?'':'<div class="pf-prog"><small class="muted">Progress to next rank</small><div class="pf-bar"><i style="width:'+done.toFixed(1)+'%"></i></div>'+
+    '<small class="muted">'+(nx?'<b style="color:var(--ink)">'+(nx.min-pts)+' pts</b> to '+(rkNameKnown(i+1,pts)?esc(nx.name):'?'):'Top rank reached')+'</small></div>')+pfStrip(p)));
+  if(me&&PF.v!=='ach'){
     h+='<div class="pf-theme"><b>Profile theme</b><div class="pf-sw"><button type="button" class="btn sm" data-pth="rank" aria-pressed="'+(pth==='rank')+'">Follow my rank</button></div><div class="pf-sw">'+
       HUES.map(function(hu,k){return '<button type="button" class="sw" data-pth="h:'+hu+'" title="'+HUE_NAMES[k]+'" aria-label="'+HUE_NAMES[k]+'" aria-pressed="'+(pth==='h:'+hu)+'" style="background:hsl('+hu+' 72% 48%)"></button>'}).join('')+'</div>'+
       '<p class="muted" style="font-size:.8rem;margin:8px 0 0">Other players see this theme on your profile.</p></div>';
-  }else if(signedIn()&&!S.friends.some(function(f){return f.id===p.id})){
+  }else if(PF.v!=='ach'&&signedIn()&&!S.friends.some(function(f){return f.id===p.id})){
     h+='<div class="pf-theme"><button type="button" class="btn sm" data-pfadd="'+esc(p.id)+'">Add friend</button></div>';
   }
   h+='<div class="in-foot"><span></span></div>';
@@ -3191,6 +3265,8 @@ function renderProfile(){
 }
 $('profOv').addEventListener('click',function(e){
   if(e.target===$('profOv')||e.target.closest('[data-pfclose]')){$('profOv').hidden=true;return}
+  var v=e.target.closest('[data-pfv]');
+  if(v){PF.v=v.dataset.pfv;renderProfile();return}
   var t=e.target.closest('[data-pth]');
   if(t){S.me.pth=t.dataset.pth;save();renderProfile();return}
   var a=e.target.closest('[data-pfadd]');
@@ -3267,7 +3343,7 @@ setTimeout(function(){introShow(false)},900);
     settings:{t:'Settings',h:g([
       ['Account',['Sign in with Google to save your progress and join the leaderboard.','Choose your username, your public name (3 to 16 letters, numbers or underscores).','See your rank and how far the next one is, how points work, and add friends by username.']],
       ['Progress',['Your focus time over the last 14 days, recent points, and your past paper averages with expected grades.']],
-      ['Achievements',['Badges you unlock for focus hours, points, streaks, papers logged, paper scores and Tracker goals.','Each one pays points once, more for harder ones.','Locked ones show how far along you are. A few are secret.']],
+      ['Achievements',['Badges you unlock for focus hours, points, streaks, papers logged, paper scores and Tracker goals.','Press Claim on an unlocked one to collect its points. Harder ones pay more.','Locked ones show how far along you are. A few are secret.']],
       ['Colors',['Light or dark mode, accent color, background and how frosted the cards look.','Fine-tune every color is optional. Reset puts everything back to default.']]])}
   };
   var tip=document.createElement('div');tip.id='hqTip';tip.setAttribute('role','tooltip');tip.hidden=true;document.body.appendChild(tip);
@@ -3346,7 +3422,7 @@ setTimeout(function(){introShow(false)},900);
     {t:'Points, ranks and streaks',k:['point','points','how do points','earn','rank','ranks','streak','streaks','level','next rank','sovereign','paragon','da7ee7','xp','score points'],
      s:['Open <b>Settings</b>, then <b>Account</b>.','<b>Your rank</b> shows where you are and what is next. <b>How points work</b> explains how to earn them.','Short version: focus time, logged past papers and daily streaks all earn points.'],go:['settings','st-account']},
     {t:'Achievements and badges',k:['achievement','achievements','badge','badges','unlock','unlocked','trophy','trophies','milestone','medal'],
-     s:['Open <b>Settings</b>.','Click <b>Achievements</b>.','Unlocked badges are in color, locked ones show your progress. Some are secret.'],go:['settings','st-ach']},
+     s:['Open <b>Settings</b>.','Click <b>Achievements</b>.','Unlocked badges are in color, with a Claim button for the points. Locked ones show your progress. Some are secret.'],go:['settings','st-ach']},
     {t:'Your progress and averages',k:['progress','average','averages','stats','statistics','focus time','how much have i studied','expected grade','predicted','recent points','history','chart','graph','analytics'],
      s:['Open <b>Settings</b>.','Click <b>Progress</b>.','You will see your focus time for the last 14 days, recent points and past paper averages with expected grades.'],go:['settings','st-progress']}
   ];
