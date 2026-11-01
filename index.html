@@ -523,6 +523,16 @@ html[data-hq="off"] .hq,html[data-hq="off"] #hqTip{display:none !important}
 .pf-sovereign .pf-tabs .chip[aria-pressed="true"]{background:#C4002B; border-color:#E8B923; color:#fff}
 .pf-paragon .pf-tabs .chip[aria-pressed="true"]{background:#0C95F0; border-color:#E8B923; color:#fff}
 .pf-sovereign .ach.on,.pf-paragon .ach.on{border-color:rgba(232,185,35,.7)}
+
+.pd-card{width:min(1200px,98vw); height:min(94vh,900px); display:flex; flex-direction:column; background:var(--surface); color:var(--ink); border:1px solid var(--card-line,var(--line)); border-radius:16px; box-shadow:0 24px 70px rgba(0,0,0,.4); overflow:hidden}
+.pd-head{display:flex; align-items:center; justify-content:space-between; gap:10px 14px; flex-wrap:wrap; padding:12px 16px; border-bottom:1px solid var(--line)}
+.pd-title{font-family:var(--font-display); font-weight:700; font-size:1.05rem}
+.pd-body{flex:1; min-height:0; display:flex; background:var(--surface-2)}
+.pd-body>div{flex:1; min-width:0; display:flex}
+.pd-body iframe{flex:1; width:100%; height:100%; border:0; background:#fff}
+.pd-body.two>div+div{border-left:2px solid var(--line)}
+.pd-note{margin:0; padding:6px 16px; font-size:.78rem; border-top:1px solid var(--line)}
+@media (max-width:760px){.pd-body.two{flex-direction:column}.pd-body.two>div+div{border-left:0; border-top:2px solid var(--line)}#pdBothBtn{display:none}}
 </style>
 </head><body>
 
@@ -709,6 +719,7 @@ html[data-hq="off"] .hq,html[data-hq="off"] #hqTip{display:none !important}
               <div class="stack">
                 <div class="chip-row" id="plLevel" role="group" aria-label="Level"></div>
                 <label class="field" for="plSubj">Subject<select class="sel" id="plSubj"></select></label>
+                <div class="group" id="plVarWrap" hidden><div class="eyebrow">Version</div><div class="chip-row" id="plVar" role="group" aria-label="Maths A version"></div></div>
                 <div class="group" id="plPapersWrap"><div class="eyebrow">Papers</div><div class="chip-row" id="plPapers" role="group" aria-label="Papers"></div></div>
                 <label class="field" for="plYear" id="plYearWrap">Year<select class="sel" id="plYear"></select></label>
               </div>
@@ -995,6 +1006,17 @@ html[data-hq="off"] .hq,html[data-hq="off"] #hqTip{display:none !important}
 </div>
 <div class="ov" id="profOv" role="dialog" aria-modal="true" aria-label="Player profile" hidden>
   <div class="ov-card pf" id="profCard"></div>
+</div>
+<div class="ov" id="pdfOv" role="dialog" aria-modal="true" aria-labelledby="pdTitle" hidden>
+  <div class="pd-card">
+    <div class="pd-head">
+      <div style="min-width:0"><div class="pd-title" id="pdTitle"></div></div>
+      <div class="chip-row" id="pdModes" role="group" aria-label="View"><button type="button" class="chip" data-pdm="qp" aria-pressed="true">Question paper</button><button type="button" class="chip" data-pdm="ms" aria-pressed="false">Mark scheme</button><button type="button" class="chip" data-pdm="both" aria-pressed="false" id="pdBothBtn">Side by side</button></div>
+      <div style="display:flex;gap:8px;align-items:center"><a class="btn sm" id="pdOpen" href="#" target="_blank" rel="noopener noreferrer">Open in new tab ↗</a><button type="button" class="btn sm" id="pdClose">Close</button></div>
+    </div>
+    <div class="pd-body" id="pdBody"></div>
+    <p class="pd-note muted">If the paper does not show on your phone, use Open in new tab.</p>
+  </div>
 </div>
 <div class="ov" id="fileOv" role="dialog" aria-modal="true" aria-labelledby="feTitle" hidden>
   <div class="ov-card" id="fileCard"></div>
@@ -2436,7 +2458,7 @@ function eslHtml(){
   });
   return h;
 }
-var PLS={sid:null,papers:[],year:'all',level:'igcse'};
+var PLS={sid:null,papers:[],year:'all',level:'igcse',mod:false};
 (function(){
  var P5=[{n:'1',l:'Paper 1',t:'AS multiple choice'},{n:'2',l:'Paper 2',t:'AS structured questions'},{n:'3',l:'Paper 3',t:'Advanced practical skills'},{n:'4',l:'Paper 4',t:'A level structured questions'},{n:'5',l:'Paper 5',t:'Planning, analysis and evaluation'}];
  var D={'Physics 9702':['9702',P5,['2','4']],'Chemistry 9701':['9701',P5,['2','4']],'Biology 9700':['9700',P5,['2','4']],
@@ -2475,10 +2497,21 @@ var PLS={sid:null,papers:[],year:'all',level:'igcse'};
  PL.splice(at+1,0,psy);
 })();
 (function(){var e=PL.filter(function(x){return x.id==='a-esl'})[0];if(e)e.note='Your ESL past papers folder is the first button. The other sites are backups.'})();
+
+var MODBASE='https://qualifications.pearson.com/content/dam/pdf/International-GCSE/Mathematics-A/2024/Exam-materials/';
+var MODF={U1H:['4wm1h','20250516','20250821'],U2H:['4wm2h','20250605','20250821'],U1F:['4wm1f','20250516','20250821'],U2F:['4wm2f','20250605','20250821']};
+var MODSRC=[['Pearson, official course materials','https://qualifications.pearson.com/en/qualifications/edexcel-international-gcses/mathematics-a-2024-modular.coursematerials.html'],['Save My Exams, Modular papers','https://www.savemyexams.com/igcse/maths/edexcel/a-modular/past-papers/'],['He Loves Math, Modular papers','https://helovesmath.com/past-papers/edexcel-igcse-maths-a-modular-past-papers/']];
+var MODP=[{n:'U1H',l:'Unit 1 Higher',t:'4WM1H/01'},{n:'U2H',l:'Unit 2 Higher',t:'4WM2H/01'},{n:'U1F',l:'Unit 1 Foundation',t:'4WM1F/01'},{n:'U2F',l:'Unit 2 Foundation',t:'4WM2F/01'}];
+function plEff(sj){if(sj.id==='e-math'&&PLS.mod)return Object.assign({},sj,{mod:true,papers:MODP,code:'4XMA1',def:['U1H','U2H'],src:MODSRC});return sj}
+var L26='papers/2026/';
+function l26(name){return L26+name+'-2026.pdf'}
+function local26(code,lab){return '<span class="pl-var"><b>'+lab[0]+'</b>'+lk(l26(code+lab[1]+'-QP'),'QP')+lk(l26(code+lab[1]+'-MS'),'MS')+'</span>'}
+function modUnitPage(p){return 'https://www.savemyexams.com/igcse/maths/edexcel/a-modular/past-papers/unit-'+p.n.charAt(1)+'/'}
 function plSubject(){return PL.filter(function(s){return s.id===PLS.sid})[0]||PL[0]}
-function plSelect(id){var s=PL.filter(function(x){return x.id===id})[0]||PL[0];PLS.sid=s.id;PLS.papers=(s.def||[]).slice();PLS.year='all';$('plSubj').value=s.id}
+function plSelect(id){PLS.mod=false;var s=PL.filter(function(x){return x.id===id})[0]||PL[0];PLS.sid=s.id;PLS.papers=(s.def||[]).slice();PLS.year='all';$('plSubj').value=s.id}
 function plGroups(sj){
   var cy=new Date().getFullYear(),now=new Date(),g=[],y,L=[];
+  if(sj.mod)return [{y:'2026',rows:[{m:'May/June 2026',src:1,local:1},{m:'Nov 2026 (after the exams)',src:1}]},{y:'2025',rows:[{m:'November 2025',src:1},{m:'June 2025',files:1}]}];
   if(sj.kind==='caie'){
     for(y=cy;y>=2016;y--){
       var rows=[];
@@ -2492,12 +2525,12 @@ function plGroups(sj){
   }
   if(sj.kind==='em'){
     for(y=2012;y<=2023;y++)L.push({y:y,m:'January',std:'January '+y,r:y>=2014?'January '+y+' (R)':null,ma:y>=2019});
-    for(y=2011;y<=2025;y++)L.push({y:y,m:'June',std:'June '+y,r:(y>=2013&&y!==2021)?'June '+y+' (R)':null,ma:y>=2018&&y<=2023});
+    for(y=2011;y<=2026;y++)L.push({y:y,m:'June',std:'June '+y,r:(y>=2013&&y!==2021)?'June '+y+' (R)':null,ma:y>=2018&&y<=2023});
     L.push({y:2021,m:'November',std:'November 2021',r:null,ma:false});
     L.push({y:'Specimen',m:'Specimen',std:'Specimen',r:null,ma:true});
   }else{
     for(y=2020;y<=2023;y++)L.push({y:y,m:'January',std:'January '+y,r:'January '+y+' (R)'});
-    for(y=2019;y<=2025;y++)L.push({y:y,m:'June',std:'June '+y,r:y!==2021?'June '+y+' (R)':null});
+    for(y=2019;y<=2026;y++)L.push({y:y,m:'June',std:'June '+y,r:y!==2021?'June '+y+' (R)':null});
     if(sj.nov20)L.push({y:2020,m:'November',std:'November 2020',r:'November 2020 (R)'});
     L.push({y:2021,m:'November',std:'November 2021',r:null});
     L.push({y:2017,m:'Specimen',std:'Specimen 2017',r:null});
@@ -2522,6 +2555,11 @@ function pmtSet(sj,p,r,label,series){
   return '<span class="pl-var"><b>'+label+'</b>'+types.map(function(T){return lk(pmtUrl(sj,p,T,series),T)}).join('')+'</span>';
 }
 function plRow(sj,p,gr,r){
+  if(sj.mod){
+    if(r.files){var f=MODF[p.n];return '<div class="pl-row"><span class="pl-ses">'+r.m+'</span><span class="pl-vars">'+[['Std',''],['R','r']].map(function(v){return '<span class="pl-var"><b>'+v[0]+'</b>'+lk(MODBASE+f[0]+'-01'+v[1]+'-que-'+f[1]+'.pdf','QP')+lk(MODBASE+f[0]+'-01'+v[1]+'-rms-'+f[2]+'.pdf','MS')+'</span>'}).join('')+'</span></div>'}
+    if(r.local&&/H$/.test(p.n)){var c='4WM'+p.n.charAt(1)+'H-01';return '<div class="pl-row"><span class="pl-ses">'+r.m+'</span><span class="pl-vars">'+local26(c,['Std','']).replace('-QP-2026','-QP-2026')+local26(c,['R','R'])+'</span></div>'}
+    return '<div class="pl-row"><span class="pl-ses">'+r.m+'</span><span class="pl-vars"><span class="pl-var">'+lk(modUnitPage(p),'Save My Exams')+lk(MODSRC[0][1],'Pearson')+'</span></span></div>';
+  }
   if(sj.kind==='caie'){
     var vars=r.k==='m'?[2]:[1,2,3];
     return '<div class="pl-row"><span class="pl-ses">'+r.m+'</span><span class="pl-vars">'+vars.map(function(v){
@@ -2529,9 +2567,14 @@ function plRow(sj,p,gr,r){
       return '<span class="pl-var"><b>'+pv+'</b>'+lk(base+'qp_'+pv+'.pdf','QP')+lk(base+'ms_'+pv+'.pdf','MS')+'</span>';
     }).join('')+'</span></div>';
   }
+  if(sj.kind==='em'&&r.y===2026&&r.m==='June'){
+    if(/H$/.test(p.n)){var c2='4MA1-'+p.n;return '<div class="pl-row"><span class="pl-ses">May/June</span><span class="pl-vars">'+local26(c2,['Std','']).replace(/(4MA1-\d)H-QP/,'$1H-QP')+local26('4MA1-'+p.n,['R','R'])+'</span></div>'}
+    return '<div class="pl-row"><span class="pl-ses">May/June</span><span class="pl-vars"><span class="muted" style="font-size:.82rem">Foundation 2026 papers are not added yet.</span></span></div>';
+  }
   return '<div class="pl-row"><span class="pl-ses">'+r.m+'</span><span class="pl-vars">'+pmtSet(sj,p,r,'Std',r.std)+pmtSet(sj,p,r,'R',r.r)+'</span></div>';
 }
 function plPageUrl(sj,p){
+  if(sj.mod)return modUnitPage(p);
   if(sj.kind==='caie')return PMT_PAGES+sj.pmt+'/cie-igcse-paper-'+p.n+'/';
   if(sj.kind==='em')return PMT_PAGES+'gcse-maths/edexcel-igcse-a-paper-'+p.n.charAt(0)+'/';
   return PMT_PAGES+sj.pmt+'/edexcel-igcse-paper-'+p.n+'/';
@@ -2555,7 +2598,9 @@ function renderLinks(){
       plSelect(m.id);
     }
   }
-  var sj=plSubject(),isEsl=sj.kind==='esl',isIdx=sj.kind==='idx';
+  var sj=plEff(plSubject()),isEsl=sj.kind==='esl',isIdx=sj.kind==='idx';
+  $('plVarWrap').hidden=sj.id!=='e-math';
+  $('plVar').innerHTML=[[false,'Linear · 4MA1'],[true,'Modular · 4XMA1']].map(function(v){return '<button type="button" class="chip" data-pmod="'+(v[0]?'1':'0')+'" aria-pressed="'+(!!PLS.mod===v[0])+'">'+v[1]+'</button>'}).join('');
   $('plPapersWrap').hidden=isIdx||isEsl;$('plYearWrap').hidden=isIdx||isEsl;$('plSources').parentNode.hidden=isIdx;
   $('plSources').innerHTML=sj.src.map(function(s){return lk(s[1],'<span>'+esc(s[0])+'</span><span aria-hidden="true">↗</span>','src')}).join('');
   var res=$('plResults'),h2='';
@@ -2572,12 +2617,12 @@ function renderLinks(){
   if(!groups.some(function(g){return g.y===PLS.year}))PLS.year='all';
   yr.value=PLS.year;
   var shown=groups.filter(function(g){return PLS.year==='all'||g.y===PLS.year});
-  $('plNote').textContent=sj.kind==='caie'?'Direct PDF links open on PapaCambridge. They are third-party copies of the Cambridge papers.':'Direct PDF links open on Physics & Maths Tutor.';
+  $('plNote').textContent=sj.mod?'June 2025 links open Pearson\'s own PDFs (Std is the standard paper, R the regional one). The 2026 Higher units open files stored with this site. Other later series link to the unit pages and Pearson\'s course materials.':sj.kind==='caie'?'Direct PDF links open on PapaCambridge. They are third-party copies of the Cambridge papers.':'Direct PDF links open on Physics & Maths Tutor. The 2026 Higher papers open files stored with this site, and 2026 Foundation papers are not added yet.';
   h2+='<p class="muted" style="font-size:.85rem">'+(sj.kind==='caie'
     ?'Each number is the paper and variant, so 42 is Paper 4, variant 2. QP is the question paper and MS is the mark scheme. Feb/March series only have variant 2, and not every variant exists in every series.'
-    :'QP is the question paper, MS the mark scheme'+(sj.kind==='em'?' and MA the model answers':'')+'. Std is the standard paper and R is the regional version some countries sit.')+' If a link does not open, try the sites on the left.</p>';
+    :sj.mod?'The modular course has two units, each sat at Higher or Foundation tier. Linear (4MA1) is the original course. Modular started with the 2025 exams.':'QP is the question paper, MS the mark scheme'+(sj.kind==='em'?' and MA the model answers':'')+'. Std is the standard paper and R is the regional version some countries sit.')+' If a link does not open, try the sites on the left.</p>';
   sj.papers.filter(function(p){return PLS.papers.indexOf(p.n)>=0}).forEach(function(p){
-    h2+='<div class="pl-paper"><div class="pl-head"><div><h2>'+esc(p.l)+'</h2><small>'+esc(p.t)+' · '+esc(sj.name)+' '+esc(sj.code)+'</small></div>'+((sj.kind==='caie'&&!sj.pmt)?'':lk(plPageUrl(sj,p),'Paper page on PMT ↗'))+'</div>';
+    h2+='<div class="pl-paper"><div class="pl-head"><div><h2>'+esc(p.l)+'</h2><small>'+esc(p.t)+' · '+esc(sj.name)+' '+esc(sj.code)+'</small></div>'+((sj.kind==='caie'&&!sj.pmt)?'':lk(plPageUrl(sj,p),sj.mod?'Unit page on Save My Exams ↗':'Paper page on PMT ↗'))+'</div>';
     shown.forEach(function(gr,i){
       h2+='<details class="pl-year"'+((PLS.year!=='all'||i<2)?' open':'')+'><summary>'+esc(gr.y)+'</summary>'+gr.rows.map(function(r){return plRow(sj,p,gr,r)}).join('')+'</details>';
     });
@@ -2586,6 +2631,7 @@ function renderLinks(){
   res.innerHTML=h2;
 }
 $('plLevel').addEventListener('click',function(e){var b=e.target.closest('[data-lv]');if(!b||PLS.level===b.dataset.lv)return;PLS.level=b.dataset.lv;renderLinks()});
+$('plVar').addEventListener('click',function(e){var b=e.target.closest('[data-pmod]');if(!b)return;PLS.mod=b.dataset.pmod==='1';var sj=plEff(plSubject());PLS.papers=sj.def.slice();PLS.year='all';renderLinks()});
 $('plSubj').addEventListener('change',function(e){plSelect(e.target.value);renderLinks()});
 $('plPapers').addEventListener('click',function(e){
   var b=e.target.closest('[data-pp]');if(!b)return;
@@ -3381,8 +3427,8 @@ setTimeout(function(){introShow(false)},900);
 /* ---------- ask assistant ---------- */
 (function(){
   var KB=[
-    {t:'Past paper links',k:['past paper link','paper links','links','find a paper','download paper','mark scheme','markscheme','ms','question paper','qp','papacambridge','pmt','dynamic papers','esl','aqa','year','past papers'],
-     s:['Open <b>Past papers</b>.','Click <b>Past paper links</b>.','Pick your subject, then the paper and year. Each row has links to the paper and mark scheme.'],go:['papers','pp-links']},
+    {t:'Past paper links',k:['modular','linear','4ma1','4wm1','unit 1','unit 2','2026','past paper link','paper links','links','find a paper','download paper','mark scheme','markscheme','ms','question paper','qp','papacambridge','pmt','dynamic papers','esl','aqa','year','past papers'],
+     s:['Open <b>Past papers</b>.','Click <b>Past paper links</b>.','Pick your subject, then the paper and year. Each row has links to the paper and mark scheme.','For Edexcel Mathematics A, choose <b>Linear</b> or <b>Modular</b> under Version.'],go:['papers','pp-links']},
     {t:'Grade boundaries',k:['grade boundar','boundaries','grade','what mark','marks for a','cutoff','cut off','threshold','a*','9'],
      s:['Open <b>Past papers</b>.','Click <b>Grade boundaries</b>.','Choose the subject and exam board.'],go:['papers','pp-grades']},
     {t:'Log a past paper',k:['log a paper','log paper','log a past paper','record a paper','record paper','add a paper','add paper','my mark','save paper','enter mark','paper mark','score'],
@@ -3500,6 +3546,33 @@ setTimeout(function(){introShow(false)},900);
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!pan.hidden){closeP();btn.focus()}});
   window.addEventListener('resize',function(){if(!pan.hidden){var r=btn.getBoundingClientRect(),w=pan.offsetWidth,vw=document.documentElement.clientWidth;pan.style.left=Math.max(8,Math.min(vw-w-8,r.left))+'px';pan.style.top=(r.bottom+8)+'px'}});
   window.__chatAnswer=answer;
+})();
+
+/* ---------- in-page paper viewer ---------- */
+(function(){
+  var ov=document.getElementById('pdfOv'),body=document.getElementById('pdBody'),mode='qp',cur=null;
+  function counter(h){return h.replace(/-(QP|MS)-/,function(m,t){return '-'+(t==='QP'?'MS':'QP')+'-'})}
+  function parse(h){var m=h.match(/papers\/2026\/(.+)-(QP|MS)-2026\.pdf$/);if(!m)return null;var code=m[1].replace('-','/');return {code:code,type:m[2],qp:h.replace(/-(QP|MS)-/,'-QP-'),ms:h.replace(/-(QP|MS)-/,'-MS-')}}
+  function frame(src){return '<iframe src="'+src+'#view=FitH" title="Paper" loading="lazy"></iframe>'}
+  function render(){
+    [].forEach.call(document.querySelectorAll('#pdModes [data-pdm]'),function(b){b.setAttribute('aria-pressed',b.dataset.pdm===mode?'true':'false')});
+    body.className='pd-body'+(mode==='both'?' two':'');
+    body.innerHTML=mode==='both'?'<div>'+frame(cur.qp)+'</div><div>'+frame(cur.ms)+'</div>':frame(mode==='qp'?cur.qp:cur.ms);
+    document.getElementById('pdOpen').href=mode==='ms'?cur.ms:cur.qp;
+  }
+  function open(h){
+    var p=parse(h);if(!p)return;cur=p;mode=p.type==='MS'?'ms':'qp';
+    document.getElementById('pdTitle').textContent=p.code+' · May/June 2026';
+    ov.hidden=false;render();
+  }
+  function close(){ov.hidden=true;body.innerHTML=''}
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('#plResults a.lk');
+    if(a){var h=a.getAttribute('href')||'';if(/^papers\/2026\//.test(h)){e.preventDefault();open(h);return}}
+    if(e.target===ov||e.target.closest('#pdClose'))close();
+    var m=e.target.closest&&e.target.closest('#pdModes [data-pdm]');if(m&&cur){mode=m.dataset.pdm;render()}
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!ov.hidden)close()});
 })();
 </script>
 </body></html>
