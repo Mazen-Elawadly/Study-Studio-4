@@ -1253,7 +1253,14 @@ try{var raw=localStorage.getItem(KEY); if(raw){var L=JSON.parse(raw); if(L&&L.su
   if(L.v!==2){S.subjects.forEach(function(x){var mk=x.mark;applyBounds(x,x.bounds&&x.bounds.max);x.mark=mk});S.v=2}
 }}}catch(e){}
 var LOAD_TS=S.ts||0,TOUCHED=false;
-function save(){S.ts=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}queueSync(false)}
+/* Passive saves while the page is loading (the timer mode picker, migrations) must not look like a new edit.
+   Otherwise an old copy on this device gets a fresh timestamp and overwrites newer progress saved in the account. */
+var BOOT=true;
+['pointerdown','keydown','touchstart'].forEach(function(ev){document.addEventListener(ev,function(){BOOT=false},true)});
+function save(){
+  if(BOOT&&!TOUCHED){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}return}
+  S.ts=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}queueSync(false)
+}
 function normalizeRemote(r){
   var n=Object.assign(freshState(),r),rl=r.look||{};
   n.noise=Object.assign({type:'brown',vol:.5,link:true},r.noise||{});
@@ -2251,7 +2258,7 @@ async function onUser(u){
     if(r&&r.blob){
       var owner=lsGet(UID_KEY),take=false;
       if(pristine())take=true;
-      else if(owner===u.uid)take=r.ts>(S.ts||0);
+      else if(owner===u.uid){take=r.ts>(S.ts||0);if(!take&&!TOUCHED){try{var rp=(JSON.parse(r.blob).pts)||0;if(rp>(S.pts||0))take=true}catch(e){}}}
       else take=confirm('This device already has progress ('+(S.pts||0)+' pts) that is not linked to this Google account.\n\nOK: replace it with the progress saved in your account.\nCancel: keep this device\'s progress and overwrite the account with it.');
       if(take)takeRemote(r);else S.me.claimed=false;
     }else{S.me.claimed=false}
