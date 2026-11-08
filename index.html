@@ -175,7 +175,8 @@ input[type=range]{width:100%; accent-color:var(--accent)}
 
 /* subjects */
 .subj-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column}
-.subj-list li{display:grid; grid-template-columns:auto minmax(120px,1fr) auto; gap:12px; align-items:center; padding:12px 0; border-top:1px solid var(--line)}
+.subj-list li{display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px 12px; align-items:center; padding:12px 0; border-top:1px solid var(--line)}
+.subj-list li .subj-opts{grid-column:1/-1; justify-content:flex-start}
 .subj-list li:first-child{border-top:0}
 .subj-opts{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end}
 .sw{width:22px; height:22px; border-radius:50%; border:2px solid transparent; cursor:pointer; padding:0}
@@ -787,6 +788,7 @@ html[data-hq="off"] .hq,html[data-hq="off"] #hqTip{display:none !important}
 
     <!-- SUBJECTS -->
     <section id="tab-subjects" hidden>
+      <div class="chip-row" id="subjLv" role="group" aria-label="Level" style="margin-bottom:14px"></div>
       <div class="split">
         <div class="card">
           <div class="card-head"><h2>Your subjects</h2><span class="muted" style="font-size:.85rem">Each subject has its own color</span></div>
@@ -804,6 +806,7 @@ html[data-hq="off"] .hq,html[data-hq="off"] #hqTip{display:none !important}
           </div>
           <div class="card">
             <div class="card-head"><h2>Quick add</h2></div>
+            <div class="chip-row" id="qaBoard" role="group" aria-label="Exam board" style="margin-bottom:10px" hidden></div>
             <div class="chip-row" id="quickAdd"></div>
           </div>
         </div>
@@ -1075,10 +1078,11 @@ var KEY='studystudio.v1';
 var HUES=[215,175,150,45,28,8,330,290,255];
 var HUE_NAMES=['Blue','Teal','Green','Amber','Orange','Red','Pink','Purple','Indigo'];
 var NINE=['9','8','7','6','5','4','3','2','1'];
-var SCALE={cambridge:['A*','A','B','C','D','E','F','G'],edexcel:NINE,oxford:NINE};
-var PCT={cambridge:[78,66,54,42,32,22,12,6],edexcel:[80,70,60,51,42,33,24,15,6],oxford:[80,70,60,51,42,33,24,15,6]};
-var BOARD_NAME={cambridge:'Cambridge · A* to G',edexcel:'Edexcel · 9 to 1',oxford:'OxfordAQA · 9 to 1'};
-var SRC_NAME={cambridge:'Cambridge',edexcel:'Pearson Edexcel',oxford:'OxfordAQA'};
+var ALET=['A*','A','B','C','D','E'];
+var SCALE={cambridge:['A*','A','B','C','D','E','F','G'],edexcel:NINE,oxford:NINE,'cambridge-a':ALET,'edexcel-a':ALET,'oxford-a':ALET};
+var PCT={cambridge:[78,66,54,42,32,22,12,6],edexcel:[80,70,60,51,42,33,24,15,6],oxford:[80,70,60,51,42,33,24,15,6],'cambridge-a':[80,70,60,50,40,30],'edexcel-a':[80,70,60,50,40,30],'oxford-a':[80,70,60,50,40,30]};
+var BOARD_NAME={cambridge:'Cambridge · A* to G',edexcel:'Edexcel · 9 to 1',oxford:'OxfordAQA · 9 to 1','cambridge-a':'Cambridge A Level · A* to E','edexcel-a':'Edexcel A Level · A* to E','oxford-a':'OxfordAQA A Level · A* to E'};
+var SRC_NAME={cambridge:'Cambridge',edexcel:'Pearson Edexcel',oxford:'OxfordAQA','cambridge-a':'Cambridge','edexcel-a':'Pearson Edexcel','oxford-a':'OxfordAQA'};
 var TOOLS=[['timer','Timer'],['stopwatch','Stopwatch'],['exams','Exam countdown'],['papers','Past papers'],['board','Leaderboard'],['subjects','My subjects'],['tracker','Tracker'],['schedule','Schedule'],['settings','Settings']];
 var PAL={
  slate:{n:'Slate'},
@@ -1113,8 +1117,25 @@ var CATALOG=[
  {n:'Islamic Studies',b:'cambridge',m:100},{n:'Art and Design',b:'cambridge',m:100},{n:'Physical Education',b:'cambridge',m:100},
  {n:'Psychology',b:'oxford',m:200},{n:'Media Studies',b:'oxford',m:200},{n:'Urdu',b:'oxford',m:140},{n:'Pakistan Studies',b:'edexcel',m:150},
  {n:'Commerce',b:'edexcel',m:160},{n:'Human Biology',b:'edexcel',m:180},{n:'Religious Studies',b:'edexcel',m:167},{n:'Chinese',b:'edexcel',m:160},
- {n:'Science (Single Award)',b:'edexcel',m:180}
+ {n:'Science (Single Award)',b:'edexcel',m:180},
+ {n:'English as a Second Language',b:'cambridge',m:120},{n:'Global Perspectives',b:'cambridge',m:100},{n:'Environmental Management',b:'cambridge',m:100},
+ {n:'Co-ordinated Sciences',b:'cambridge',m:240},{n:'Physical Science',b:'cambridge',m:160},{n:'Mathematics (International)',b:'cambridge',m:200},
+ {n:'Agriculture',b:'cambridge',m:100},{n:'Food and Nutrition',b:'cambridge',m:100},{n:'Design and Technology',b:'cambridge',m:100},
+ {n:'Drama',b:'cambridge',m:100},{n:'Music',b:'cambridge',m:100},{n:'Travel and Tourism',b:'cambridge',m:100},{n:'Enterprise',b:'cambridge',m:100},
+ {n:'Development Studies',b:'cambridge',m:100},{n:'Hindi',b:'cambridge',m:100},{n:'Italian',b:'cambridge',m:100},{n:'Portuguese',b:'cambridge',m:100},
+ {n:'Turkish',b:'cambridge',m:100},{n:'Bengali',b:'cambridge',m:100},{n:'Mandarin Chinese',b:'cambridge',m:100},{n:'Statistics',b:'edexcel',m:160},
+ {n:'Mathematics B',b:'edexcel',m:200},{n:'English Language B',b:'edexcel',m:150},{n:'Music (Edexcel)',b:'edexcel',m:100}
 ];
+var CAT_A=[];
+(function(){
+ var L={
+  cambridge:[['Physics',270],['Chemistry',270],['Biology',270],['Mathematics',250],['Further Mathematics',250],['Computer Science',250],['Information Technology',200],['Business',200],['Economics',200],['Accounting',200],['Psychology',200],['Sociology',200],['Geography',200],['History',200],['English Language',200],['English Literature',200],['English General Paper',100],['Law',200],['Art and Design',200],['Drama',200],['Music',200],['Design and Technology',200],['Global Perspectives and Research',200],['Environmental Management',200],['Marine Science',200],['Travel and Tourism',200],['Media Studies',200],['Islamic Studies',200],['Classical Studies',200],['Divinity',200],['Physical Education',200],['Food Studies',200],['Thinking Skills',100],['Arabic',200],['French',200],['Spanish',200],['German',200],['Urdu',200],['Hindi',200],['Chinese',200],['Portuguese',200],['Italian',200],['Japanese',200]],
+  edexcel:[['Physics',440],['Chemistry',440],['Biology',440],['Mathematics',300],['Pure Mathematics',240],['Further Mathematics',300],['Further Pure Mathematics',240],['Statistics',200],['Mechanics',200],['Decision Mathematics',100],['Economics',300],['Business',300],['Accounting',300],['Information Technology',300],['Computer Science',300],['Law',300],['Geography',300],['History',300],['English Language',300],['English Literature',300],['Psychology',300],['Arabic',300],['French',300],['Spanish',300],['German',300],['Chinese',300]],
+  oxford:[['Physics',300],['Chemistry',300],['Biology',300],['Mathematics',300],['Further Mathematics',300],['Economics',300],['Business',300],['Computer Science',300],['Psychology',300],['English Language',300],['English Literature',300],['History',300],['Geography',300],['Accounting',300],['Sociology',300],['Law',300],['French',300],['Spanish',300]]
+ };
+ ['cambridge','edexcel','oxford'].forEach(function(b){L[b].forEach(function(x){CAT_A.push({n:x[0]+' (A Level)',b:b+'-a',m:x[1],lv:'a'})})});
+})();
+var CAT_ALL=CATALOG.concat(CAT_A);
 var MODES=[
  {id:'f25',g:'focus',name:'Focus',min:25},{id:'f50',g:'focus',name:'Deep focus',min:50},
  {id:'b5',g:'focus',name:'Short break',min:5,brk:true},{id:'b15',g:'focus',name:'Long break',min:15,brk:true},
@@ -1203,7 +1224,7 @@ function lookupBounds(board,name){
 }
 function applyBounds(s,mx){
   var d=lookupBounds(s.board,s.name),n=SCALE[s.board].length;
-  var cat=CATALOG.filter(function(c){return c.n.toLowerCase()===s.name.toLowerCase()})[0];
+  var cat=CAT_ALL.filter(function(c){return c.n.toLowerCase()===s.name.toLowerCase()})[0];
   if(d){s.bounds={max:d.max,marks:d.m.slice(0,n)};s.src={official:true,text:SRC_NAME[s.board]+' · June 2026 · '+d.code+(d.note?' · '+d.note:'')}}
   else{s.bounds=defaultBounds(s.board,mx||(cat?cat.m:100));s.src={official:false}}
 }
@@ -1827,35 +1848,51 @@ $('gradeList').addEventListener('click',function(e){
 });
 
 /* ---------- subjects ---------- */
+var SUBJ={lv:'o',qb:'cambridge'};
+var BOARD_OPTS={o:[['cambridge','Cambridge'],['edexcel','Edexcel'],['oxford','OxfordAQA']],a:[['cambridge-a','Cambridge'],['edexcel-a','Edexcel'],['oxford-a','OxfordAQA']]};
+function subjLv(x){return x.lvl==='a'?'a':'o'}
 function renderSubjects(){
-  $('subjList').innerHTML=S.subjects.map(function(s){
+  var lv=SUBJ.lv,list=S.subjects.filter(function(s){return subjLv(s)===lv});
+  $('subjLv').innerHTML=[['o','O-level / IGCSE'],['a','A-level']].map(function(m){return '<button type="button" class="chip" data-slv="'+m[0]+'" aria-pressed="'+(lv===m[0])+'">'+m[1]+'<span class="muted" style="margin-left:6px">'+S.subjects.filter(function(s){return subjLv(s)===m[0]}).length+'</span></button>'}).join('');
+  $('subjList').innerHTML=list.length?list.map(function(s){
     return '<li class="hued" data-sid="'+s.id+'" style="--h:'+s.hue+'"><span class="dot"></span>'+
       '<input type="text" data-f="name" value="'+esc(s.name)+'" maxlength="40" aria-label="Subject name">'+
-      '<div class="subj-opts"><select class="sel" data-f="board" aria-label="Exam board" style="width:auto"><option value="cambridge"'+(s.board==='cambridge'?' selected':'')+'>Cambridge</option><option value="edexcel"'+(s.board==='edexcel'?' selected':'')+'>Edexcel</option><option value="oxford"'+(s.board==='oxford'?' selected':'')+'>OxfordAQA</option></select>'+
+      '<div class="subj-opts"><select class="sel" data-f="board" aria-label="Exam board" style="width:auto">'+BOARD_OPTS[lv].map(function(o){return '<option value="'+o[0]+'"'+(s.board===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select>'+
       '<div class="sw-row" role="group" aria-label="Color">'+HUES.map(function(h,i){return '<button type="button" class="sw" data-hue="'+h+'" aria-label="'+HUE_NAMES[i]+'" aria-pressed="'+(s.hue===h)+'" style="background:hsl('+h+' 70% 45%)"></button>'}).join('')+'</div>'+
       '<button type="button" class="x" data-delsubj="'+s.id+'" aria-label="Remove '+esc(s.name)+'"'+(S.subjects.length<2?' disabled':'')+'>×</button></div></li>';
-  }).join('');
-  $('quickAdd').innerHTML=CATALOG.filter(function(c){return !S.subjects.some(function(s){return s.name.toLowerCase()===c.n.toLowerCase()})}).map(function(c){
-    return '<button type="button" class="chip" data-quick="'+esc(c.n)+'">+ '+esc(c.n)+'</button>'}).join('')||'<span class="muted">Every listed subject is added.</span>';
-  $('catalogList').innerHTML=CATALOG.map(function(c){return '<option value="'+esc(c.n)+'">'}).join('');
+  }).join(''):'<li class="muted" style="list-style:none;padding:8px 0">No '+(lv==='a'?'A-level':'O-level or IGCSE')+' subjects yet. Add one from the right.</li>';
+  var sb=$('subjBoard'),bo=BOARD_OPTS[lv];
+  if(sb.dataset.lv!==lv){sb.innerHTML=bo.map(function(o){return '<option value="'+o[0]+'">'+o[1]+' ('+(lv==='a'?'A* to E':o[0]==='cambridge'?'A* to G':'9 to 1')+')</option>'}).join('');sb.dataset.lv=lv}
+  $('subjName').placeholder=lv==='a'?'Physics':'Chemistry';
+  var qb=$('qaBoard');qb.hidden=lv!=='a';
+  if(lv==='a')qb.innerHTML=BOARD_OPTS.a.map(function(o){var k=o[0].replace('-a','');return '<button type="button" class="chip" data-qb="'+k+'" aria-pressed="'+(SUBJ.qb===k)+'">'+o[1]+'</button>'}).join('');
+  var src=lv==='a'?CAT_A.filter(function(c){return c.b===SUBJ.qb+'-a'}):CATALOG;
+  $('quickAdd').innerHTML=src.filter(function(c){return !S.subjects.some(function(s){return s.name.toLowerCase()===c.n.toLowerCase()&&subjLv(s)===lv})}).map(function(c){
+    return '<button type="button" class="chip" data-quick="'+esc(c.n)+'" data-qbd="'+c.b+'" data-qm="'+c.m+'">+ '+esc(lv==='a'?c.n.replace(' (A Level)',''):c.n)+'</button>'}).join('')||'<span class="muted">Every listed subject is added.</span>';
+  $('catalogList').innerHTML=(lv==='a'?CAT_A.filter(function(c,i,a){return a.map(function(x){return x.n}).indexOf(c.n)===i}).map(function(c){return c.n.replace(' (A Level)','')}):CATALOG.map(function(c){return c.n})).map(function(n){return '<option value="'+esc(n)+'">'}).join('');
 }
 function refreshSubjectViews(){renderSubjectSelect();applyHue();renderSubjects();renderGrades();renderExams();renderPapers();renderProgress()}
-function addSubject(name,board,max){
-  name=name.trim();if(!name){$('subjMsg').textContent='Type a subject name.';return}
-  if(S.subjects.some(function(s){return s.name.toLowerCase()===name.toLowerCase()})){$('subjMsg').textContent='Already added.';return}
-  var cat=CATALOG.filter(function(c){return c.n.toLowerCase()===name.toLowerCase()})[0];
+function addSubject(name,board,max,lvl){
+  lvl=lvl||SUBJ.lv;name=name.trim();if(!name){$('subjMsg').textContent='Type a subject name.';return}
+  if(lvl==='a'&&!/\(A Level\)$/i.test(name))name+=' (A Level)';
+  if(S.subjects.some(function(s){return s.name.toLowerCase()===name.toLowerCase()&&subjLv(s)===lvl})){$('subjMsg').textContent='Already added.';return}
+  var cat=CAT_ALL.filter(function(c){return c.n.toLowerCase()===name.toLowerCase()})[0];
   var ns={id:'s-'+uid(),name:cat?cat.n:name,board:board,hue:HUES[S.subjects.length%HUES.length],bounds:null,mark:null};
+  if(lvl==='a')ns.lvl='a';
   applyBounds(ns,max||(cat?cat.m:100));S.subjects.push(ns);
   $('subjName').value='';$('subjMsg').textContent='';save();refreshSubjectViews();
 }
-$('subjAdd').addEventListener('click',function(){addSubject($('subjName').value,$('subjBoard').value)});
+$('subjAdd').addEventListener('click',function(){addSubject($('subjName').value,$('subjBoard').value,0,SUBJ.lv)});
 $('subjName').addEventListener('change',function(e){
-  var cat=CATALOG.filter(function(c){return c.n.toLowerCase()===e.target.value.trim().toLowerCase()})[0];if(cat)$('subjBoard').value=cat.b;
+  var v=e.target.value.trim().toLowerCase();if(SUBJ.lv==='a'&&!/\(a level\)$/.test(v))v+=' (a level)';
+  var cat=(SUBJ.lv==='a'?CAT_A.filter(function(c){return c.b===SUBJ.qb+'-a'}):CATALOG).filter(function(c){return c.n.toLowerCase()===v})[0];if(cat&&$('subjBoard').querySelector('option[value="'+cat.b+'"]'))$('subjBoard').value=cat.b;
 });
 $('quickAdd').addEventListener('click',function(e){
   var b=e.target.closest('[data-quick]');if(!b)return;
-  var cat=CATALOG.filter(function(c){return c.n===b.dataset.quick})[0];addSubject(cat.n,cat.b,cat.m);
+  addSubject(b.dataset.quick,b.dataset.qbd,+b.dataset.qm||100,SUBJ.lv);
 });
+$('subjLv').addEventListener('click',function(e){var b=e.target.closest('[data-slv]');if(!b)return;SUBJ.lv=b.dataset.slv;$('subjMsg').textContent='';renderSubjects()});
+$('qaBoard').addEventListener('click',function(e){var b=e.target.closest('[data-qb]');if(!b)return;SUBJ.qb=b.dataset.qb;renderSubjects()});
 $('subjList').addEventListener('change',function(e){
   var li=e.target.closest('li');if(!li)return;var s=subj(li.dataset.sid),f=e.target.dataset.f;
   if(f==='name'){var v=e.target.value.trim();if(v&&v!==s.name){s.name=v;S.exams.forEach(function(x){if(x.sid===s.id)x.subj=v});applyBounds(s,s.bounds.max)}}
@@ -2117,7 +2154,7 @@ function renderProgress(){
     if(s&&s.bounds){
       var mk=Math.round(avg/100*s.bounds.max),gg=gradeFor({board:s.board,bounds:s.bounds,mark:mk});
       exp=mk+' / '+s.bounds.max;
-      if(gg){gr=gg.grade;nx=gg.next>0?gg.next+' marks to '+(s.board==='cambridge'?'':'grade ')+gg.nextName:(gg.next===null?'Top grade':'–')}
+      if(gg){gr=gg.grade;nx=gg.next>0?gg.next+' marks to '+((s.board==='edexcel'||s.board==='oxford')?'grade ':'')+gg.nextName:(gg.next===null?'Top grade':'–')}
     }
     return '<tr class="hued" style="--h:'+(s?s.hue:215)+'"><td><span class="dot"></span> '+esc(s?s.name:g.name)+'</td><td class="num">'+cnt+'</td><td class="num">'+Math.round(avg)+'%</td><td class="num">'+Math.round(g.best)+'%</td><td>'+trend+'</td><td class="num">'+exp+'</td><td class="num"><b>'+esc(gr)+'</b></td><td>'+esc(nx)+'</td></tr>';
   });
@@ -2545,6 +2582,84 @@ var PLS={sid:null,papers:[],year:'all',level:'igcse',mod:false};
 })();
 (function(){var e=PL.filter(function(x){return x.id==='a-esl'})[0];if(e)e.note='Your ESL past papers folder is the first button. The other sites are backups.'})();
 
+/* ---------- more A level past papers ---------- */
+(function(){
+ var CAM='Cambridge International AS & A Level',EDX='Pearson Edexcel International A Level',OXF='OxfordAQA International A Level',UK='UK A Level (Edexcel, AQA, OCR)';
+ function T(a){return a.map(function(x){return {n:String(x[0]),l:'Paper '+x[0],t:x[1]}})}
+ function G(n){var a=[];for(var i=1;i<=n;i++)a.push([i,'Paper '+i]);return T(a)}
+ var SMEC=['Save My Exams, all Cambridge A Level subjects',SME+'a-level/boards/cie/past-papers/'],PAPAALL=['PapaCambridge, all AS and A Level subjects',PAPA+'as-and-a-level'];
+ function ca(name,code,keys,papers,def,extra){return {id:'ca-'+code,grp:CAM,name:name,code:code,keys:keys,kind:'caie',level:'alevel',papers:papers,def:def,src:(extra||[]).concat([PAPAALL,SMEC])}}
+ var add=[
+  ca('Information Technology','9626',['information technology','ict'],T([[1,'Theory'],[2,'Practical'],[3,'Advanced theory'],[4,'Advanced practical']]),['1','2']),
+  ca('Media Studies','9607',['media studies'],G(4),['1','2']),
+  ca('Marine Science','9693',['marine science'],G(4),['1','2']),
+  ca('Environmental Management','8291',['environmental management'],G(4),['1','2']),
+  ca('Travel and Tourism','9395',['travel and tourism'],G(4),['1','2']),
+  ca('Global Perspectives and Research','9239',['global perspectives','global perspectives and research'],G(3),['1','2']),
+  ca('Thinking Skills','9694',['thinking skills'],G(4),['1','2']),
+  ca('Islamic Studies','9488',['islamic studies'],G(4),['1','2']),
+  ca('Classical Studies','9274',['classical studies'],G(4),['1','2']),
+  ca('Divinity','9011',['divinity'],G(3),['1','2']),
+  ca('Physical Education','9396',['physical education','pe'],G(4),['1','2']),
+  ca('Music','9483',['music'],G(4),['1','2']),
+  ca('Design and Technology','9705',['design and technology'],G(4),['1','2']),
+  ca('Arabic','9680',['arabic'],G(4),['1','2']),
+  ca('French','9716',['french'],G(4),['1','2']),
+  ca('Spanish','9719',['spanish'],G(4),['1','2']),
+  ca('German','9717',['german'],G(4),['1','2']),
+  ca('Urdu','9686',['urdu'],G(4),['1','2']),
+  ca('Hindi','9687',['hindi'],G(4),['1','2']),
+  ca('Chinese','9715',['chinese'],G(4),['1','2'])
+ ];
+ var at=PL.map(function(x){return x.id}).indexOf('al-cambridge-international-as-a-level-every-other-cambridge-subject');
+ if(at<0)at=PL.length;
+ PL.splice.apply(PL,[at,0].concat(add));
+ /* Edexcel IAL science: direct PMT files */
+ var U={
+  Physics:['WPH','Physics',[['Mechanics and Materials'],['Waves and Electricity'],['Practical Skills I'],['Further Mechanics, Fields and Particles'],['Thermodynamics, Radiation, Oscillations and Cosmology'],['Practical Skills II']]],
+  Chemistry:['WCH','Chemistry',[['Structure, Bonding and Introduction to Organic Chemistry'],['Energetics, Group Chemistry, Halogenoalkanes and Alcohols'],['Practical Skills I'],['Rates, Equilibria and Further Organic Chemistry'],['Transition Metals and Organic Nitrogen Chemistry'],['Practical Skills II']]],
+  Biology:['WBI','Biology',[['Molecules, Diet, Transport and Health'],['Cells, Development, Biodiversity and Conservation'],['Practical Skills in Biology I'],['Energy, Environment, Microbiology and Immunity'],['Respiration, Internal Environment, Coordination and Gene Technology'],['Practical Skills in Biology II']]]
+ };
+ PL.forEach(function(x){
+  if(x.grp!==EDX||!U[x.name])return;
+  var u=U[x.name];x.kind='ial';x.dir=u[1];x.code=u[0]+'11 to '+u[0]+'16';
+  x.papers=u[2].map(function(t,i){return {n:String(i+1),l:'Unit '+(i+1),t:u[0]+'1'+(i+1)+' · '+t[0]}});
+  x.def=['1','2'];
+ });
+ /* IAL maths: unit codes listed, source pages */
+ PL.forEach(function(x){
+  if(x.grp!==EDX)return;
+  if(x.name==='Mathematics')x.note='Units: P1 WMA11, P2 WMA12, P3 WMA13, P4 WMA14, M1 WME01, M2 WME02, M3 WME03, S1 WST01, S2 WST02, S3 WST03, D1 WDM11. Each button opens the site\'s own page, where you pick the unit, year and series.';
+  if(x.name==='Further Mathematics')x.note='Units: FP1 WFM01, FP2 WFM02, FP3 WFM03, plus the Mechanics, Statistics and Decision units listed under Mathematics. Each button opens the site\'s own page, where you pick the unit, year and series.';
+  if(x.name==='Mathematics'||x.name==='Further Mathematics')x.src=[['Pearson, official course materials and papers','https://qualifications.pearson.com/en/qualifications/edexcel-international-advanced-levels/'+(x.name==='Mathematics'?'mathematics':'further-mathematics')+'-2018.html']].concat(x.src);
+ });
+ /* OxfordAQA and UK Edexcel index entries */
+ var SMEI='international-a-level/',MG='https://www.mathsgenie.co.uk/international-a-level/';
+ function ox(n,slug,keys){return AL(OXF,n,[['Save My Exams',SME+SMEI+slug+'/oxford-aqa/past-papers/'],['Maths Genie',MG+slug+'/oxford-aqa'],['OxfordAQA, exams administration','https://www.oxfordaqa.com/']],keys)}
+ function uk(n,pg,slug,keys,note){return AL(UK,n,[['Physics & Maths Tutor',PMT_PAGES+pg+'/'],['Save My Exams',SME+'a-level/'+slug+'/edexcel/past-papers/']],keys,note)}
+ var tail=[
+  ox('Physics','physics',['physics']),ox('Chemistry','chemistry',['chemistry']),ox('Biology','biology',['biology']),
+  ox('Mathematics','maths',['mathematics','maths']),ox('Further Mathematics','further-maths',['further mathematics','further maths']),
+  uk('Edexcel Physics 9PH0 (Papers 1 to 3)','a-level-physics','physics',['physics']),
+  uk('Edexcel Chemistry 9CH0 (Papers 1 to 3)','a-level-chemistry','chemistry',['chemistry']),
+  uk('Edexcel Biology 9BI0 (Papers 1 to 3)','a-level-biology','biology',['biology']),
+  AL(UK,'Edexcel Mathematics 9MA0 (Papers 1 to 3)',[['Physics & Maths Tutor','https://www.physicsandmathstutor.com/a-level-maths-papers/'],['Save My Exams',SME+'a-level/maths/edexcel/past-papers/']],['mathematics','maths']),
+  AL(UK,'Edexcel Further Mathematics 9FM0',[['Save My Exams',SME+'a-level/further-maths/edexcel/past-papers/'],['Physics & Maths Tutor','https://www.physicsandmathstutor.com/a-level-further-maths-papers/']],['further mathematics','further maths'])
+ ];
+ var ukAt=PL.map(function(x){return x.id}).indexOf('al-uk-a-level-edexcel-aqa-ocr-computer-science');
+ /* OxfordAQA group goes before the UK group */
+ var oxs=tail.slice(0,5),uks=tail.slice(5);
+ if(ukAt<0)ukAt=PL.length;
+ PL.splice.apply(PL,[ukAt,0].concat(oxs));
+ PL.splice.apply(PL,[PL.length,0].concat(uks));
+ /* tidy order inside the A Level list: Cambridge, Edexcel IAL, OxfordAQA, UK. Entries that are catch-alls go last in their group. */
+ var ord=[CAM,EDX,OXF,UK],slots=[],ents=[];
+ PL.forEach(function(x,i){if(x.level==='alevel'){slots.push(i);ents.push(x)}});
+ var last=function(x){return /^(Every other|Other)/.test(x.name)?1:0};
+ var pos=ents.slice();ents.sort(function(a,b){var d=ord.indexOf(a.grp)-ord.indexOf(b.grp);if(d)return d;return last(a)-last(b)||pos.indexOf(a)-pos.indexOf(b)});
+ slots.forEach(function(i,k){PL[i]=ents[k]});
+})();
+
 var MODBASE='https://qualifications.pearson.com/content/dam/pdf/International-GCSE/Mathematics-A/2024/Exam-materials/';
 var MODF={U1H:['4wm1h','20250516','20250821'],U2H:['4wm2h','20250605','20250821'],U1F:['4wm1f','20250516','20250821'],U2F:['4wm2f','20250605','20250821']};
 var MODSRC=[['Pearson, official course materials','https://qualifications.pearson.com/en/qualifications/edexcel-international-gcses/mathematics-a-2024-modular.coursematerials.html'],['Save My Exams, Modular papers','https://www.savemyexams.com/igcse/maths/edexcel/a-modular/past-papers/'],['He Loves Math, Modular papers','https://helovesmath.com/past-papers/edexcel-igcse-maths-a-modular-past-papers/']];
@@ -2559,6 +2674,16 @@ function plSelect(id){PLS.mod=false;var s=PL.filter(function(x){return x.id===id
 function plGroups(sj){
   var cy=new Date().getFullYear(),now=new Date(),g=[],y,L=[];
   if(sj.mod)return [{y:'2026',rows:[{m:'May/June 2026',src:1,local:1},{m:'Nov 2026 (after the exams)',src:1}]},{y:'2025',rows:[{m:'November 2025',src:1},{m:'June 2025',files:1}]}];
+  if(sj.kind==='ial'){
+    for(y=cy;y>=2019;y--){
+      var rw=[];
+      if(!(y===cy&&now.getMonth()<10))rw.push({m:'October',s:'October '+y});
+      if(!(y===cy&&now.getMonth()<5))rw.push({m:'June',s:'June '+y});
+      rw.push({m:'January',s:'January '+y});
+      g.push({y:String(y),rows:rw});
+    }
+    return g;
+  }
   if(sj.kind==='caie'){
     for(y=cy;y>=2016;y--){
       var rows=[];
@@ -2607,6 +2732,10 @@ function plRow(sj,p,gr,r){
     if(r.local&&/H$/.test(p.n)){var c='4WM'+p.n.charAt(1)+'H-01';return '<div class="pl-row"><span class="pl-ses">'+r.m+'</span><span class="pl-vars">'+local26(c,['Std','']).replace('-QP-2026','-QP-2026')+local26(c,['R','R'])+'</span></div>'}
     return '<div class="pl-row"><span class="pl-ses">'+r.m+'</span><span class="pl-vars"><span class="pl-var">'+lk(modUnitPage(p),'Save My Exams')+lk(MODSRC[0][1],'Pearson')+'</span></span></div>';
   }
+  if(sj.kind==='ial'){
+    var pf=function(T){return PMT_FILES+sj.dir+'/A-level/Past-Papers/Edexcel-IAL/2018-spec/Unit-'+p.n+'/'+T+'/'+plEnc(r.s+' (IAL) '+T+'.pdf')};
+    return '<div class="pl-row"><span class="pl-ses">'+r.m+'</span><span class="pl-vars"><span class="pl-var"><b>Unit '+p.n+'</b>'+lk(pf('QP'),'QP')+lk(pf('MS'),'MS')+'</span></span></div>';
+  }
   if(sj.kind==='caie'){
     var vars=r.k==='m'?[2]:[1,2,3];
     return '<div class="pl-row"><span class="pl-ses">'+r.m+'</span><span class="pl-vars">'+vars.map(function(v){
@@ -2629,19 +2758,20 @@ function plPageUrl(sj,p){
 function plList(){return PL.filter(function(s){return (s.level||'igcse')===PLS.level})}
 function renderLinks(){
   var sel=$('plSubj');
+  var a0=activeSubj();if(a0&&PLS.autoFor!==a0.id){PLS.autoFor=a0.id;PLS.level=a0.lvl==='a'?'alevel':'igcse';sel.dataset.lv=''}
   $('plLevel').innerHTML=[['igcse','IGCSE'],['alevel','A Level']].map(function(m){return '<button type="button" class="chip" data-lv="'+m[0]+'" aria-pressed="'+(PLS.level===m[0])+'">'+m[1]+'</button>'}).join('');
   if(sel.dataset.lv!==PLS.level){
     var list=plList(),gs=[],h='';
     list.forEach(function(s){if(gs.indexOf(s.grp)<0)gs.push(s.grp)});
     gs.forEach(function(g){h+='<optgroup label="'+esc(g)+'">'+list.filter(function(s){return s.grp===g}).map(function(s){return '<option value="'+s.id+'">'+esc(s.name+(s.code?' · '+s.code:''))+'</option>'}).join('')+'</optgroup>'});
     sel.innerHTML=h;sel.dataset.lv=PLS.level;
-    var a=activeSubj(),pre=(a&&a.board==='edexcel')?'e-':'i-',nm=a?a.name.toLowerCase():'';
+    var a=activeSubj(),pre=(a&&/^edexcel/.test(a.board))?'e-':'i-',nm=a?a.name.toLowerCase().replace(/\s*\(a level\)$/,''):'';
     var m;
     if(PLS.level==='igcse'){
       m=list.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0&&(s.id.indexOf(pre)===0||s.id.indexOf('c-')===0&&pre==='i-')})[0]||list.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0})[0];
       plSelect(m?m.id:'c-phys');
     }else{
-      m=list.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0&&(pre==='e-'?s.grp.indexOf('Edexcel')>=0:s.grp.indexOf('Cambridge')>=0)})[0]||list.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0})[0]||list[0];
+      m=list.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0&&(/^edexcel/.test(a&&a.board||'')?s.grp.indexOf('Edexcel')>=0:/^oxford/.test(a&&a.board||'')?s.grp.indexOf('Oxford')>=0:s.grp.indexOf('Cambridge')>=0)})[0]||list.filter(function(s){return s.keys&&s.keys.indexOf(nm)>=0})[0]||list[0];
       plSelect(m.id);
     }
   }
@@ -2664,12 +2794,12 @@ function renderLinks(){
   if(!groups.some(function(g){return g.y===PLS.year}))PLS.year='all';
   yr.value=PLS.year;
   var shown=groups.filter(function(g){return PLS.year==='all'||g.y===PLS.year});
-  $('plNote').textContent=sj.mod?'June 2025 links open Pearson\'s own PDFs (Std is the standard paper, R the regional one). The 2026 Higher units open files stored with this site. Other later series link to the unit pages and Pearson\'s course materials.':sj.kind==='caie'?'Direct PDF links open on PapaCambridge. They are third-party copies of the Cambridge papers.':'Direct PDF links open on Physics & Maths Tutor. The 2026 Higher papers open files stored with this site, and 2026 Foundation papers are not added yet.';
-  h2+='<p class="muted" style="font-size:.85rem">'+(sj.kind==='caie'
+  $('plNote').textContent=sj.kind==='ial'?'Direct PDF links open on Physics & Maths Tutor (2018 specification units, 2019 onwards).':sj.mod?'June 2025 links open Pearson\'s own PDFs (Std is the standard paper, R the regional one). The 2026 Higher units open files stored with this site. Other later series link to the unit pages and Pearson\'s course materials.':sj.kind==='caie'?'Direct PDF links open on PapaCambridge. They are third-party copies of the Cambridge papers.':'Direct PDF links open on Physics & Maths Tutor. The 2026 Higher papers open files stored with this site, and 2026 Foundation papers are not added yet.';
+  h2+='<p class="muted" style="font-size:.85rem">'+(sj.kind==='ial'?'QP is the question paper and MS the mark scheme. Sessions are January, June and October. Not every unit is sat in every session, so a link may not open.':sj.kind==='caie'
     ?'Each number is the paper and variant, so 42 is Paper 4, variant 2. QP is the question paper and MS is the mark scheme. Feb/March series only have variant 2, and not every variant exists in every series.'
     :sj.mod?'The modular course has two units, each sat at Higher or Foundation tier. Linear (4MA1) is the original course. Modular started with the 2025 exams.':'QP is the question paper, MS the mark scheme'+(sj.kind==='em'?' and MA the model answers':'')+'. Std is the standard paper and R is the regional version some countries sit.')+' If a link does not open, try the sites on the left.</p>';
   sj.papers.filter(function(p){return PLS.papers.indexOf(p.n)>=0}).forEach(function(p){
-    h2+='<div class="pl-paper"><div class="pl-head"><div><h2>'+esc(p.l)+'</h2><small>'+esc(p.t)+' · '+esc(sj.name)+' '+esc(sj.code)+'</small></div>'+((sj.kind==='caie'&&!sj.pmt)?'':lk(plPageUrl(sj,p),sj.mod?'Unit page on Save My Exams ↗':'Paper page on PMT ↗'))+'</div>';
+    h2+='<div class="pl-paper"><div class="pl-head"><div><h2>'+esc(p.l)+'</h2><small>'+esc(p.t)+' · '+esc(sj.name)+' '+esc(sj.code)+'</small></div>'+(((sj.kind==='caie'||sj.kind==='ial')&&!sj.pmt)?'':lk(plPageUrl(sj,p),sj.mod?'Unit page on Save My Exams ↗':'Paper page on PMT ↗'))+'</div>';
     shown.forEach(function(gr,i){
       h2+='<details class="pl-year"'+((PLS.year!=='all'||i<2)?' open':'')+'><summary>'+esc(gr.y)+'</summary>'+gr.rows.map(function(r){return plRow(sj,p,gr,r)}).join('')+'</details>';
     });
