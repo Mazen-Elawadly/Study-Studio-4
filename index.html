@@ -328,6 +328,9 @@ table.data th.num{text-align:right; font-family:var(--font-body)}
 .lb li:nth-child(-n+3) .rk{color:var(--rank)}
 .lb .val{font-family:var(--font-mono); font-size:1.15rem; text-align:right; font-variant-numeric:tabular-nums}
 .lb .val small{font-family:var(--font-body); font-size:.72rem; color:var(--muted); font-weight:400}
+.fr-h{font-size:.74rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); margin:18px 0 2px}
+.fr-act{display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end}
+.fr-list li.req .when b{color:var(--ink)}
 .fr-list li{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:12px; align-items:center; padding:10px 0; border-top:1px solid var(--line)}
 .ava{width:40px; height:40px; border-radius:50%; flex:none; background:var(--surface-2)}
 .who{display:flex; gap:12px; align-items:center}
@@ -951,15 +954,21 @@ html[data-hq="off"] .hq,html[data-hq="off"] #hqTip{display:none !important}
             </ul>
           </div>
         </div>
-        <div class="card">
-          <div class="card-head"><h2>Friends</h2></div>
+        <div class="card" id="frCard">
+          <div class="card-head"><h2>Friends</h2><span class="pill" id="frCount" hidden></span></div>
           <div class="row">
             <label class="field" for="frName">Friend's username<input type="text" id="frName" maxlength="16" autocomplete="off" autocapitalize="off" spellcheck="false"></label>
-            <button class="btn primary" id="frAdd" type="button">Add friend</button>
+            <button class="btn primary" id="frAdd" type="button">Send request</button>
           </div>
           <p class="hint" id="frMsg" style="margin-top:8px"></p>
+          <p class="err" id="frErr" hidden></p>
+          <div id="frReqWrap" hidden>
+            <h3 class="fr-h">Requests</h3>
+            <ul class="fr-list" id="frReq"></ul>
+          </div>
+          <h3 class="fr-h" id="frHead">Your friends</h3>
           <ul class="fr-list" id="frList"></ul>
-          <p class="empty" id="frEmpty">No friends yet. Ask a friend for their username and add it here, then switch the leaderboard to Friends.</p>
+          <p class="empty" id="frEmpty">No friends yet. Type a friend's username and send a request. They accept it from their own Settings, then you will both see each other on the Friends leaderboard.</p>
         </div>
       </div>
       </div>
@@ -2171,7 +2180,7 @@ function renderProgress(){
 }
 
 /* ---------- account, sync, friends (Firebase: Google sign-in + Firestore) ---------- */
-var SY={fs:null,auth:null,uid:null,me:null,cfg:false,state:'local',timer:0,flushing:false,dirty:false,lastPush:0,players:[],unsub:null,unsubSave:null,busy:false,err:''};
+var SY={fs:null,auth:null,uid:null,me:null,cfg:false,state:'local',timer:0,flushing:false,dirty:false,lastPush:0,players:[],unsub:null,unsubSave:null,busy:false,err:'',fr:{friends:[],inc:[],out:[]},frUn:[],frErr:''};
 var UID_KEY='studystudio.uid';
 function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
@@ -2254,7 +2263,7 @@ async function onUser(u){
   if(!u){
     if(SY.unsub){try{SY.unsub()}catch(e){}SY.unsub=null}
     if(SY.unsubSave){try{SY.unsubSave()}catch(e){}SY.unsubSave=null}
-    SY.uid=null;SY.me=null;SY.players=[];SY.state='local';SY.busy=false;
+    stopFriends();SY.uid=null;SY.me=null;SY.players=[];SY.state='local';SY.busy=false;
     renderAccount();renderBoard();return;
   }
   introHide('signin');
@@ -2285,7 +2294,7 @@ async function onUser(u){
       pullRemote(d,0);
     },function(){});
   }catch(e){}
-  subscribePlayers();
+  subscribePlayers();subscribeFriends();
   if(S.me.username&&!S.me.claimed)await claimUsername(S.me.username,true);
   if(SY.state!=='denied'&&SY.state!=='error')SY.state='saved';
   queueSync(true);renderAccount();renderBoard();
@@ -2378,16 +2387,49 @@ function renderAccount(){
 }
 function playerById(id){return SY.players.filter(function(p){return p.id===id})[0]}
 function effStreak(d){return d.day&&d.day>=addDays(dKey(),-1)?(d.streak||0):0}
+function frName(id,fb){var p=playerById(id);return p&&p.username?p.username:(fb||'Player')}
+function frWho(id,fb){var p=playerById(id);return '<div class="t"><button type="button" class="nm" data-prof="'+esc(id)+'">'+esc(frName(id,fb))+'</button>'+(p?' '+rankBadge(p.pts):'')+'</div>'}
 function renderFriends(){
-  var L=S.friends;
-  $('frEmpty').hidden=L.length>0;
+  var fr=SY.fr,L=fr.friends,inc=fr.inc,out=fr.out;
+  var cnt=$('frCount');cnt.hidden=!inc.length;cnt.textContent=inc.length+(inc.length===1?' request':' requests');cnt.className='pill warn';
+  var er=$('frErr');er.hidden=!SY.frErr;
+  er.textContent=SY.frErr==='denied'?'Friend requests need the updated Firestore rules. Publish the new rules (friend-rules.txt), then reload this page.':SY.frErr?'Could not load your friends. It will retry when you reload.':'';
+  $('frReqWrap').hidden=!(inc.length||out.length);
+  $('frReq').innerHTML=inc.map(function(r){
+    return '<li class="req">'+'<div style="min-width:0">'+frWho(r.id,r.u)+'<div class="when"><b>Wants to be your friend</b></div></div><div class="fr-act"><button type="button" class="btn sm primary" data-fracc="'+esc(r.id)+'">Accept</button><button type="button" class="btn sm" data-frdec="'+esc(r.id)+'">Decline</button></div></li>';
+  }).join('')+out.map(function(r){
+    return '<li class="req"><div style="min-width:0">'+frWho(r.id,r.u)+'<div class="when">Request sent. Waiting for them to accept.</div></div><div class="fr-act"><button type="button" class="btn sm" data-frcan="'+esc(r.id)+'">Cancel</button></div></li>';
+  }).join('');
+  $('frHead').hidden=!L.length;
+  $('frEmpty').hidden=L.length>0||inc.length>0||out.length>0;
+  $('frEmpty').textContent=signedIn()?'No friends yet. Type a friend\'s username and send a request. They accept it from their own Settings, then you will both see each other on the Friends leaderboard.':'Sign in with Google to add friends.';
   $('frList').innerHTML=L.map(function(f){
     var p=playerById(f.id);
-    return '<li><div style="min-width:0"><div class="t">'+(p?'<button type="button" class="nm" data-prof="'+esc(p.id)+'">'+esc(p.username)+'</button>':esc(f.u))+(p?' '+rankBadge(p.pts):'')+'</div><div class="when">'+(p?(p.pts||0)+' pts · '+effStreak(p)+' day streak':'Not loaded yet')+'</div></div><button type="button" class="x" data-delfriend="'+esc(f.id)+'" aria-label="Remove friend">×</button></li>';
+    return '<li><div style="min-width:0">'+frWho(f.id,f.u)+'<div class="when">'+(p?(p.pts||0)+' pts · '+effStreak(p)+' day streak':'Not loaded yet')+'</div></div><button type="button" class="x" data-delfriend="'+esc(f.id)+'" aria-label="Remove friend">×</button></li>';
   }).join('');
+  achMarks();
 }
 $('acSave').addEventListener('click',function(){claimUsername($('acName').value.trim(),false)});
 $('acName').addEventListener('keydown',function(e){if(e.key==='Enter')claimUsername($('acName').value.trim(),false)});
+function frKey(a,b){return a<b?a+'_'+b:b+'_'+a}
+function frMe(){return !!(S.me&&S.me.claimed&&S.me.username)}
+async function frSend(id,nm){
+  var fr=SY.fr;
+  if(id===SY.uid)return 'That is your own username.';
+  if(!frMe())return 'Save a username in the Account section first, so your friend can see who is asking.';
+  if(fr.friends.some(function(f){return f.id===id}))return 'You are already friends.';
+  if(fr.inc.some(function(r){return r.id===id})){await frAccept(id,nm);return 'You are now friends with '+nm+'.'}
+  if(fr.out.some(function(r){return r.id===id}))return 'Request already sent. Waiting for '+nm+' to accept.';
+  await SY.fs.doc('friendReqs/'+SY.uid+'_'+id).set({from:SY.uid,to:id,fromName:S.me.username,toName:nm,at:Date.now()});
+  return 'Request sent to '+nm+'.';
+}
+async function frAccept(id,nm){
+  var fs=SY.fs,me=SY.uid,b=fs.batch(),u={};u[me]=S.me.username||'';u[id]=nm||frName(id);
+  b.set(fs.doc('friendships/'+frKey(me,id)),{members:[me,id].sort(),u:u,at:Date.now()});
+  b.delete(fs.doc('friendReqs/'+id+'_'+me));
+  if(SY.fr.out.some(function(r){return r.id===id}))b.delete(fs.doc('friendReqs/'+me+'_'+id));
+  await b.commit();
+}
 async function addFriend(){
   var low=$('frName').value.trim().toLowerCase(),msg=$('frMsg');
   if(!low){msg.textContent='Type your friend\'s username.';return}
@@ -2395,19 +2437,47 @@ async function addFriend(){
   try{
     var u=await SY.fs.doc('usernames/'+low).get();
     if(!u.exists){msg.textContent='No player has that username yet. They need to sign in and save a username first.';return}
-    var id=u.data().owner;
-    if(id===SY.uid){msg.textContent='That is your own username.';return}
-    if(S.friends.some(function(f){return f.id===id})){msg.textContent='Already in your friends.';return}
-    var pd=await SY.fs.doc('players/'+id).get(),nm=pd.exists&&pd.data().username?pd.data().username:low;
-    S.friends.push({id:id,u:nm});$('frName').value='';msg.textContent='Added '+nm+'.';save();renderFriends();renderBoard();
-  }catch(e){msg.textContent='Could not look that username up. Try again.'}
+    var id=u.data().owner,pd=await SY.fs.doc('players/'+id).get(),nm=pd.exists&&pd.data().username?pd.data().username:low;
+    msg.textContent=await frSend(id,nm);$('frName').value='';
+  }catch(e){msg.textContent=(e&&e.code==='permission-denied')?'Firebase refused that. Publish the updated Firestore rules (friend-rules.txt).':'Could not send the request. Try again.'}
 }
 $('frAdd').addEventListener('click',addFriend);
 $('frName').addEventListener('keydown',function(e){if(e.key==='Enter')addFriend()});
-$('frList').addEventListener('click',function(e){
-  var b=e.target.closest('[data-delfriend]');if(!b)return;
-  S.friends=S.friends.filter(function(f){return f.id!==b.dataset.delfriend});save();renderFriends();renderBoard();
+function frDo(p){p.catch(function(){$('frMsg').textContent='That did not go through. Try again.'})}
+$('frCard').addEventListener('click',function(e){
+  var b,fs=SY.fs,me=SY.uid;if(!fs)return;
+  if(b=e.target.closest('[data-fracc]')){var r=SY.fr.inc.filter(function(x){return x.id===b.dataset.fracc})[0];frDo(frAccept(b.dataset.fracc,r&&r.u))}
+  else if(b=e.target.closest('[data-frdec]'))frDo(fs.doc('friendReqs/'+b.dataset.frdec+'_'+me).delete());
+  else if(b=e.target.closest('[data-frcan]'))frDo(fs.doc('friendReqs/'+me+'_'+b.dataset.frcan).delete());
+  else if(b=e.target.closest('[data-delfriend]')){if(confirm('Remove this friend? You will both stop seeing each other on the Friends leaderboard.'))frDo(fs.doc('friendships/'+frKey(me,b.dataset.delfriend)).delete())}
 });
+function stopFriends(){(SY.frUn||[]).forEach(function(f){try{f()}catch(e){}});SY.frUn=[];SY.fr={friends:[],inc:[],out:[]};SY.frErr=''}
+function frChanged(){renderFriends();renderBoard()}
+function subscribeFriends(){
+  stopFriends();if(!SY.fs||!SY.uid)return;
+  var fs=SY.fs,uid=SY.uid,first={f:1,i:1,o:1};
+  function err(e){SY.frErr=(e&&e.code==='permission-denied')?'denied':'error';renderFriends()}
+  function reqs(s,pick){return s.docs.map(function(d){var x=d.data();return {id:x[pick],u:pick==='from'?x.fromName:x.toName,rid:d.id}})}
+  SY.frUn=[
+    fs.collection('friendships').where('members','array-contains',uid).onSnapshot(function(s){
+      var legacy=(S.friends||[]).slice();
+      SY.fr.friends=s.docs.map(function(d){var x=d.data(),o=x.members[0]===uid?x.members[1]:x.members[0];return {id:o,u:(x.u&&x.u[o])||'',fid:d.id}});
+      S.friends=SY.fr.friends.map(function(f){return {id:f.id,u:f.u}});
+      if(first.f){first.f=0;
+        if(!S.frMig&&frMe()){S.frMig=1;save();
+          legacy.forEach(function(f){if(f&&f.id&&!SY.fr.friends.some(function(x){return x.id===f.id}))frSend(f.id,f.u||'Player').catch(function(){})})}
+      }
+      SY.frErr='';frChanged();
+    },err),
+    fs.collection('friendReqs').where('to','==',uid).onSnapshot(function(s){
+      var prev=SY.fr.inc.map(function(r){return r.id});SY.fr.inc=reqs(s,'from');SY.frErr='';
+      if(!first.i){SY.fr.inc.forEach(function(r){if(prev.indexOf(r.id)<0)toast((r.u||'Someone')+' sent you a friend request. Open Settings, then Account, to accept.')})}
+      if(first.i&&SY.fr.inc.length)toast('You have '+SY.fr.inc.length+' friend request'+(SY.fr.inc.length>1?'s':'')+'. Open Settings, then Account, to accept.');
+      first.i=0;frChanged();
+    },err),
+    fs.collection('friendReqs').where('from','==',uid).onSnapshot(function(s){SY.fr.out=reqs(s,'to');first.o=0;frChanged()},err)
+  ];
+}
 
 /* ---------- leaderboard ---------- */
 var BOARD={scope:'all',metric:'pts'};
@@ -3396,9 +3466,11 @@ function achClaimed(){
 }
 function achPending(){achClaimed();return ACH.filter(function(a){return S.ach&&S.ach[a.id]&&!S.achC[a.id]})}
 function achMarks(){
-  var n=achPending().length,ch=document.querySelector('[data-sub="st-ach"]'),st=document.querySelector('.tab[data-tab="settings"]');
+  var n=achPending().length,ch=document.querySelector('[data-sub="st-ach"]'),st=document.querySelector('.tab[data-tab="settings"]'),ac=document.querySelector('[data-sub="st-account"]');
+  var inc=(SY&&SY.fr&&SY.fr.inc||[]).length,tot=n+inc;
   if(ch)ch.textContent=n?'Achievements · '+n:'Achievements';
-  if(st){if(n)st.setAttribute('data-n',n);else st.removeAttribute('data-n')}
+  if(ac)ac.textContent=inc?'Account · '+inc:'Account';
+  if(st){if(tot)st.setAttribute('data-n',tot);else st.removeAttribute('data-n')}
 }
 function achCheck(){
   if(_achBusy)return;_achBusy=true;
@@ -3499,8 +3571,8 @@ function renderProfile(){
     h+='<div class="pf-theme"><b>Profile theme</b><div class="pf-sw"><button type="button" class="btn sm" data-pth="rank" aria-pressed="'+(pth==='rank')+'">Follow my rank</button></div><div class="pf-sw">'+
       HUES.map(function(hu,k){return '<button type="button" class="sw" data-pth="h:'+hu+'" title="'+HUE_NAMES[k]+'" aria-label="'+HUE_NAMES[k]+'" aria-pressed="'+(pth==='h:'+hu)+'" style="background:hsl('+hu+' 72% 48%)"></button>'}).join('')+'</div>'+
       '<p class="muted" style="font-size:.8rem;margin:8px 0 0">Other players see this theme on your profile.</p></div>';
-  }else if(PF.v!=='ach'&&signedIn()&&!S.friends.some(function(f){return f.id===p.id})){
-    h+='<div class="pf-theme"><button type="button" class="btn sm" data-pfadd="'+esc(p.id)+'">Add friend</button></div>';
+  }else if(PF.v!=='ach'&&signedIn()&&!SY.fr.friends.some(function(f){return f.id===p.id})){
+    h+='<div class="pf-theme">'+(SY.fr.inc.some(function(r){return r.id===p.id})?'<button type="button" class="btn sm primary" data-pfacc="'+esc(p.id)+'">Accept friend request</button>':SY.fr.out.some(function(r){return r.id===p.id})?'<button type="button" class="btn sm" disabled>Request sent</button>':'<button type="button" class="btn sm" data-pfadd="'+esc(p.id)+'">Send friend request</button>')+'</div>';
   }
   h+='<div class="in-foot"><span></span></div>';
   el.innerHTML=h;
@@ -3513,10 +3585,13 @@ $('profOv').addEventListener('click',function(e){
   var t=e.target.closest('[data-pth]');
   if(t){S.me.pth=t.dataset.pth;save();renderProfile();return}
   var a=e.target.closest('[data-pfadd]');
-  if(a){var p=playerById(a.dataset.pfadd);if(p){S.friends.push({id:p.id,u:p.username});save();renderFriends();renderBoard();renderProfile()}}
+  if(a){var p=playerById(a.dataset.pfadd);if(p){a.disabled=true;frSend(p.id,p.username).then(function(m){toast(m)}).catch(function(){toast('Could not send the request. Check the Firestore rules.')}).then(renderProfile)}}
+  var c=e.target.closest('[data-pfacc]');
+  if(c){var q=playerById(c.dataset.pfacc);c.disabled=true;frAccept(c.dataset.pfacc,q&&q.username).then(renderProfile).catch(function(){toast('That did not go through.')})}
 });
 $('lbList').addEventListener('click',function(e){var b=e.target.closest('[data-prof]');if(b)openProfile(b.dataset.prof)});
 $('frList').addEventListener('click',function(e){var b=e.target.closest('[data-prof]');if(b)openProfile(b.dataset.prof)});
+$('frReq').addEventListener('click',function(e){var b=e.target.closest('[data-prof]');if(b)openProfile(b.dataset.prof)});
 
 /* ---------- keyboard + loop ---------- */
 document.addEventListener('keydown',function(e){
