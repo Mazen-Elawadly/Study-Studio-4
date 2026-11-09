@@ -2243,6 +2243,13 @@ function pullRemote(r,tries){
   if(r.ts<=(S.ts||0))return;
   takeRemote(r);
 }
+/* Owner override: add a number field called setPts to a user's document in Firestore (users/{uid}) and the next time that
+   account is open it takes the points from that field. The save that follows replaces the document, which removes the field. */
+function applySetPts(n){
+  S.pts=Math.round(n);TOUCHED=true;BOOT=false;save();
+  try{refreshAll()}catch(e){}
+  queueSync(true);
+}
 async function onUser(u){
   if(!u){
     if(SY.unsub){try{SY.unsub()}catch(e){}SY.unsub=null}
@@ -2256,11 +2263,13 @@ async function onUser(u){
   try{
     var snap=await SY.fs.doc('users/'+u.uid).get(),r=snap.exists?snap.data():null;
     if(r&&r.blob){
-      var owner=lsGet(UID_KEY),take=false;
-      if(pristine())take=true;
+      var owner=lsGet(UID_KEY),take=false,adm=(typeof r.setPts==='number'&&r.setPts>=0);
+      if(adm)take=true;
+      else if(pristine())take=true;
       else if(owner===u.uid){take=r.ts>(S.ts||0);if(!take&&!TOUCHED){try{var rp=(JSON.parse(r.blob).pts)||0;if(rp>(S.pts||0))take=true}catch(e){}}}
       else take=confirm('This device already has progress ('+(S.pts||0)+' pts) that is not linked to this Google account.\n\nOK: replace it with the progress saved in your account.\nCancel: keep this device\'s progress and overwrite the account with it.');
       if(take)takeRemote(r);else S.me.claimed=false;
+      if(adm)applySetPts(r.setPts);
     }else{S.me.claimed=false}
     lsSet(UID_KEY,u.uid);
   }catch(e){
@@ -2270,7 +2279,9 @@ async function onUser(u){
   try{
     SY.unsubSave=SY.fs.doc('users/'+u.uid).onSnapshot(function(s){
       if(!s.exists||s.metadata.hasPendingWrites)return;
-      var d=s.data();if(!d||!d.blob||d.ts<=(S.ts||0)||d.ts===SY.lastPush)return;
+      var d=s.data();
+      if(d&&d.blob&&typeof d.setPts==='number'&&d.setPts>=0){takeRemote(d);applySetPts(d.setPts);return}
+      if(!d||!d.blob||d.ts<=(S.ts||0)||d.ts===SY.lastPush)return;
       pullRemote(d,0);
     },function(){});
   }catch(e){}
